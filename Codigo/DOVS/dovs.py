@@ -1,3 +1,5 @@
+from sympy import Point, Line
+
 class DOVS:
     def __init__(self, robot, obstacles, timestep) -> None:
         self.robot = RobotDOVS(robot)
@@ -22,10 +24,10 @@ class DOVS:
             for trajectory in trajectories:
                 collision_points = self.compute_collision_points(trajectory, collision_band)
 
-                velocity_time = self.collision_velocity_times(collision_points)
+                velocity_time = self.collision_velocity_times(obstacle, collision_points)
                 velocity_time_space.append(velocity_time)
 
-            dovs = self.create_DOVS()#Calculamos el dovs para ese objeto
+            dovs = self.create_DOVS(velocity_time_space)#Calculamos el dovs para ese objeto
             self.append_DOVS(list_dovs, dovs)#Añadimos el dovs calculado al dovs total, geometrically merged
 
         
@@ -46,6 +48,12 @@ class DOVS:
         APENDIX B
         Devuelve tiempo y velocidades minimas y maximas que debe llevar le robot para no colisionar
         :return ((t1, v_max, w_max),(t2, v_min, w_min))
+        """
+        pass
+
+    def create_DOVS(velocity_time_space):
+        """
+        Dada la lista de velocidades crea el dovs de manera que se le puedan añadir mas dovs
         """
         pass
 
