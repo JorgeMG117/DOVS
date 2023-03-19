@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.lines as mlines
 import matplotlib.animation as animation
 
-import DOVS
+import DOVS.dovs as DOVS
 
 class DynamicObstacle:
     def __init__(self, v, w, x, y, theta, radius) -> None:
@@ -32,13 +32,14 @@ timestep = 0.2
 def computeDOVS(robot, obstacles, timestep):
     print("Here the DOVS function should be called")
     # return linear and angular velocities chosen for the robot
-    DOVS.compute_DOVS()
+    dovs = DOVS.DOVS(robot, obstacles, timestep)
+    dovs.compute_DOVS()
     return 0.0, 0.0
 
 plt.close('all')
 fig, ax = plt.subplots(1,1, figsize=(12,12))
 # ax = ax.reshape((-1))
-robot = Robot(0.0, 0.0, 0.0, 2.0, 0.0, 0.2, 0.0, -2.0, 0.0, 0.7, -np.pi/2, np.pi/2, 0.7, np.pi/2)
+robot = Robot(0.0, 0.0, 0.0, 0.0, np.pi/2, 0.2, 0.0, -2.0, 0.0, 0.7, -np.pi/2, np.pi/2, 0.7, np.pi/2)
 obstacles_vec = []
 obstacles_vec.append(DynamicObstacle(0.5, 0.0, -2.0, 0.0, 0.0, 0.2))
 

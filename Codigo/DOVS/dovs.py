@@ -15,7 +15,7 @@ class DOVS:
         """
         
         # Obtain all pasible trajectories of robot
-        trajectories = self.compute_trajectories()
+        trajectories = self.robot.compute_trajectories()
         """
         for obstacle in self.obstacles:
             # Compute the trajectory of the obstacle
@@ -68,7 +68,7 @@ class DOVS:
 
 
 
-class ObjectDOVS():
+class ObjectDOVS:
     def __init__(self, v, w, x, y, theta) -> None:
         self.v = v
         self.w = w
@@ -77,8 +77,8 @@ class ObjectDOVS():
         self.theta = theta #Radians
     
     def show_object_dovs(self, id):
-        print("Posicion" + str(id) + ": x =" + str(self.x) + ", y =" + str(self.y) + ", theta =" + str(self.theta))
-        print("Velocidad" + str(id) + ": v =" + str(self.v) + ", w =" + str(self.w))
+        print("Posicion " + str(id) + ": x = " + str(self.x) + ", y = " + str(self.y) + ", theta = " + str(self.theta))
+        print("Velocidad " + str(id) + ": v =" + str(self.v) + ", w = " + str(self.w))
 
 
 class DynamicObstacleDOVS(ObjectDOVS):
@@ -101,7 +101,6 @@ class DynamicObstacleDOVS(ObjectDOVS):
 
 class RobotDOVS(ObjectDOVS):
     def __init__(self, robot) -> None:
-        self.robot = robot
 
         self.x_goal = robot.x_goal
         self.y_goal = robot.y_goal
@@ -115,7 +114,7 @@ class RobotDOVS(ObjectDOVS):
         self.trajectory_max_radius = 10
         self.trajectory_step_radius = 2
 
-        super.__init__(robot.v, robot.w, robot.x, robot.y, robot.theta)
+        super().__init__(robot.v, robot.w, robot.x, robot.y, robot.theta)
     
     def compute_trajectories(self):
         """
@@ -127,9 +126,9 @@ class RobotDOVS(ObjectDOVS):
 
         for radius in range(-self.trajectory_max_radius, self.trajectory_max_radius, self.trajectory_step_radius):
             # Creo que habria que tener en cuenta theta
-            center_x = self.x + radius * math.cos(self.theta)
-            center_y = self.y + radius * math.sin(self.theta)
-            c = Circle(Point(self.x, center_y), radius)
+            center_x = self.x + radius * math.cos(self.theta + math.pi/2)
+            center_y = self.y + radius * math.sin(self.theta + math.pi/2)
+            c = Circle(Point(center_x, center_y), radius)
             print(c)
             trajectories.append(c)
         
