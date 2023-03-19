@@ -32,12 +32,13 @@ timestep = 0.2
 def computeDOVS(robot, obstacles, timestep):
     print("Here the DOVS function should be called")
     # return linear and angular velocities chosen for the robot
+    DOVS.compute_DOVS()
     return 0.0, 0.0
 
 plt.close('all')
 fig, ax = plt.subplots(1,1, figsize=(12,12))
 # ax = ax.reshape((-1))
-robot = Robot(0.0, 0.0, 0.0, 2.0, -np.pi, 0.2, 0.0, -2.0, 0.0, 0.7, -np.pi/2, np.pi/2, 0.7, np.pi/2)
+robot = Robot(0.0, 0.0, 0.0, 2.0, 0.0, 0.2, 0.0, -2.0, 0.0, 0.7, -np.pi/2, np.pi/2, 0.7, np.pi/2)
 obstacles_vec = []
 obstacles_vec.append(DynamicObstacle(0.5, 0.0, -2.0, 0.0, 0.0, 0.2))
 

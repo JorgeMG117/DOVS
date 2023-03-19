@@ -1,4 +1,5 @@
-from sympy import Point, Line
+from sympy import Point, Line, Circle
+import math
 
 class DOVS:
     def __init__(self, robot, obstacles, timestep) -> None:
@@ -12,9 +13,10 @@ class DOVS:
 
         This function should be call every timestep
         """
+        
         # Obtain all pasible trajectories of robot
         trajectories = self.compute_trajectories()
-
+        """
         for obstacle in self.obstacles:
             # Compute the trajectory of the obstacle
             collision_band = self.compute_collision_band()
@@ -32,6 +34,7 @@ class DOVS:
 
         
         self.plot_DOVS(velocity_time_space)
+        """
         
 
 
@@ -64,13 +67,18 @@ class DOVS:
 
 
 
+
 class ObjectDOVS():
     def __init__(self, v, w, x, y, theta) -> None:
         self.v = v
         self.w = w
         self.x = x
         self.y = y
-        self.theta = theta    
+        self.theta = theta #Radians
+    
+    def show_object_dovs(self, id):
+        print("Posicion" + str(id) + ": x =" + str(self.x) + ", y =" + str(self.y) + ", theta =" + str(self.theta))
+        print("Velocidad" + str(id) + ": v =" + str(self.v) + ", w =" + str(self.w))
 
 
 class DynamicObstacleDOVS(ObjectDOVS):
@@ -104,7 +112,8 @@ class RobotDOVS(ObjectDOVS):
         self.max_av = robot.max_av
         self.max_aw = robot.max_aw
 
-        self.trajectory_radius_max = 
+        self.trajectory_max_radius = 10
+        self.trajectory_step_radius = 2
 
         super.__init__(robot.v, robot.w, robot.x, robot.y, robot.theta)
     
@@ -113,6 +122,17 @@ class RobotDOVS(ObjectDOVS):
         Compute all the possible trajectories of the robot
         discretized set of feasible circular trajectories
         """
-        pass
+
+        trajectories = []
+
+        for radius in range(-self.trajectory_max_radius, self.trajectory_max_radius, self.trajectory_step_radius):
+            # Creo que habria que tener en cuenta theta
+            center_x = self.x + radius * math.cos(self.theta)
+            center_y = self.y + radius * math.sin(self.theta)
+            c = Circle(Point(self.x, center_y), radius)
+            print(c)
+            trajectories.append(c)
+        
+        return trajectories
 
         
