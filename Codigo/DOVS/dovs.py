@@ -15,27 +15,34 @@ class DOVS:
 
         This function should be call every timestep
         """
+
         
         # Obtain all pasible trajectories of robot
-        trajectories = self.robot.compute_trajectories()
+        robot_trajectories = self.robot.compute_trajectories()
         
+        obstacles_trajectory = []
         for obstacle in self.obstacles:
             # Compute the trajectory of the obstacle
-            collision_band = obstacle.compute_collision_band()
+            obstacle_trajectory = obstacle.compute_collision_band()
+
+            obstacles_trajectory.append(obstacle_trajectory)
         
-        self.plot_trajectories(trajectories, collision_band)
+            velocity_time_space = []
+            collision_points_list = []
+            for trajectory in robot_trajectories:
+                collision_points = self.compute_collision_points(trajectory, obstacle_trajectory)
+                # print("Collision points")
+                # print(collision_points)#Tupla de dos elementos cada uno de ellos con dos puntos 2d
+                collision_points_list.append(collision_points)
 
-            # velocity_time_space = []
-            # for trajectory in trajectories:
-            #     collision_points = self.compute_collision_points(trajectory, collision_band)
-            #     print(collision_points)
+                # velocity_time = self.collision_velocity_times(obstacle, collision_points)
+                # velocity_time_space.append(velocity_time)
             
-            # self.plot_trajectories(trajectories, collision_band)
+            
 
-        #         velocity_time = self.collision_velocity_times(obstacle, collision_points)
-        #         velocity_time_space.append(velocity_time)
+            # dovs = self.create_DOVS(velocity_time_space)#Calculamos el dovs para ese objeto
 
-        #     dovs = self.create_DOVS(velocity_time_space)#Calculamos el dovs para ese objeto
+        self.plot_trajectories(robot_trajectories, obstacles_trajectory, collision_points_list)
         #     self.append_DOVS(list_dovs, dovs)#Añadimos el dovs calculado al dovs total, geometrically merged
 
         
@@ -55,13 +62,24 @@ class DOVS:
 
         return intersection_1, intersection_2
     
-    def plot_trajectories(self, robot_trajectories, obstacle_trajectories):
+    def plot_trajectories(self, robot_trajectories, obstacles_trajectory, collision_points_list):
         # Create a figure and axis objects
         fig, ax = plt.subplots()
 
         self.robot.plot_position(ax)
 
         self.robot.plot_trajectories(ax, robot_trajectories)
+
+        for i, obstacle in enumerate(self.obstacles):
+            obstacle.plot_position(ax)
+            obstacle.plot_trajectories(ax, obstacles_trajectory[i])
+        
+        for collision_points in collision_points_list:
+            for collision_point in collision_points:
+                if collision_point:
+                    ax.plot(collision_point[0].coordinates[0], collision_point[0].coordinates[1], 'g.')
+                    ax.plot(collision_point[1].coordinates[0], collision_point[1].coordinates[1], 'g.')
+                    
 
         # Set the axis limits
         ax.set_xlim(-4, 4)
@@ -135,13 +153,27 @@ class DynamicObstacleDOVS(ObjectDOVS):
         y2 = self.y + self.radius * math.sin(self.theta - math.pi/2)
         p2 = Point(x2, y2)
 
-        angle = math.pi/2
-
         # Create a line using the point and angle
-        l1 = Line(p1, slope=math.tan(angle))
-        l2 = Line(p2, slope=math.tan(angle))
+        l1 = Line(p1, slope=self.theta)
+        l2 = Line(p2, slope=self.theta)
         
         return l1, l2
+    
+    def plot_trajectories(self, axis, trajectories):
+        # print("Plotting obstacle trajectories")
+        # print(trajectories)
+        for trajectory in trajectories:
+            # print(trajectory)
+            x1, y1 = trajectory.points[0].coordinates
+            x2, y2 = trajectory.points[1].coordinates
+            
+            axis.plot([x1,x2], [y1,y2], 'r-')
+            # axis.axline((round(x1), round(y1)), (round(x2), round(y2)), linewidth=4, color='r')
+            # break
+    
+
+    def plot_position(self, axis):
+        axis.add_patch(plt.Circle((self.x, self.y), self.radius, color='blue', fill=False))
 
 
 
