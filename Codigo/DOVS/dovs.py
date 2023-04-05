@@ -3,6 +3,12 @@ from sympy.geometry import *
 import math
 import matplotlib.pyplot as plt
 
+import numpy as np
+
+from sympy import nsolve, Symbol, symbols
+
+from DOVS.object_dovs import DynamicObstacleDOVS, RobotDOVS
+
 class DOVS:
     def __init__(self, robot, obstacles, timestep) -> None:
         self.robot = RobotDOVS(robot)
@@ -32,11 +38,11 @@ class DOVS:
             for trajectory in robot_trajectories:
                 collision_points = self.compute_collision_points(trajectory, obstacle_trajectory)
                 # print("Collision points")
-                # print(collision_points)#Tupla de dos elementos cada uno de ellos con dos puntos 2d
+                # print(collision_points)
                 collision_points_list.append(collision_points)
 
-                # velocity_time = self.collision_velocity_times(obstacle, collision_points)
-                # velocity_time_space.append(velocity_time)
+                velocity_time = self.collision_velocity_times(obstacle, collision_points, trajectory)
+                velocity_time_space.append(velocity_time)
             
             
 
@@ -49,18 +55,28 @@ class DOVS:
         # self.plot_DOVS(velocity_time_space)
         
         
-
+    # TODO: It doesn't selects the right collision point
+    def select_right_collision_point(self, collision_points):
+        """
+        Select the right collision point of the intersection of the robot trajectory and the obstacle trajectory
+        """
+        # If there is at least a collision point
+        if collision_points:
+            return collision_points[0]
+        else:
+            return None
 
 
     def compute_collision_points(self, trajectory, collision_band):
         """
         Compute the collision points of the trajectory with the collision band
         returns (passBehindCollisionPoint, passFrontCollisionPoint)
+        :return: returns a tuple with two values, if there is an intersection the value will be a Point2D, if not it will be None
         """
         intersection_1 = trajectory.intersection(collision_band[0])
         intersection_2 = trajectory.intersection(collision_band[1])
 
-        return intersection_1, intersection_2
+        return self.select_right_collision_point(intersection_1), self.select_right_collision_point(intersection_2)
     
     def plot_trajectories(self, robot_trajectories, obstacles_trajectory, collision_points_list):
         # Create a figure and axis objects
@@ -76,9 +92,8 @@ class DOVS:
         
         for collision_points in collision_points_list:
             for collision_point in collision_points:
-                if collision_point:
-                    ax.plot(collision_point[0].coordinates[0], collision_point[0].coordinates[1], 'g.')
-                    ax.plot(collision_point[1].coordinates[0], collision_point[1].coordinates[1], 'g.')
+                if collision_point != None:
+                    ax.plot(collision_point.coordinates[0], collision_point.coordinates[1], 'g.')
                     
 
         # Set the axis limits
@@ -88,15 +103,52 @@ class DOVS:
         plt.show()
         
 
-
-    def collision_velocity_times(self, obstacle, collision_points):
+    # TODO: Implement
+    def collision_velocity_times(self, obstacle, collision_points, trajectory):
         """
         APENDIX B
-        Devuelve tiempo y velocidades minimas y maximas que debe llevar le robot para no colisionar
+        Devuelve tiempo y velocidades minimas y maximas que debe llevar le robot para no colisionar con el obstaculo
+        Se llama a esta funcion con cada una de las trayectorias del robot y con cada uno de los obstaculos
+        :param obstacle: obstaculo con el que se va a comprobar la colision
+        :param collision_points: puntos de colision de la trayectoria del robot con el obstaculo, hay un maximo de dos colisiones
+        :param trajectory: trayectoria circular del robot
         :return ((t1, v_max, w_max),(t2, v_min, w_min))
         """
-        pass
+        x_object, y_object, theta_object = obstacle.get_location()
+        v_object, w_object = obstacle.get_speed()
 
+
+        for collision in collision_points:
+            if collision != None:
+                x_collision, y_collision = collision.coordinates
+
+                t = Symbol('t')
+
+                # x_collision = x_object + v_object * math.cos(theta_object) * t_i
+                # y_collision = y_object + v_object * math.sin(theta_object) * t_i
+                # trajectory.radius ** 2 = x_collision ** 2 + (y_collision - trajectory.y) ** 2
+
+                a = v_object ** 2
+                b = 2 * v_object * (x_object * math.cos(theta_object) + y_object * math.sin(theta_object)) - 2 * v_object * math.sin(theta_object) * trajectory.y
+                c = x_object ** 2 + y_object ** 2 + trajectory.y ** 2 - 2 * y_object * trajectory.y - trajectory.radius ** 2
+                times = np.roots([a, b, c])
+
+                for t in times:
+                    v = v_object * math.cos(theta_object) * t + x_object
+                # x, y, z = symbols('x y z ')
+
+                # eq1 = 3 * t1**2 - 2 * x2**2 - 1
+                # eq2 = x1**2 - 2 * x1 + x2**2 + 2 * x2 - 8
+                # print(nsolve((f1, f2), (x1, x2), (-1, 1)))
+                # sol = solve(eqs, (x, y, z))
+            else:
+                # TODO: Que hacer cuando no hay colision? Maxima v?
+                continue
+        
+        return None
+
+
+       
     def create_DOVS(velocity_time_space):
         """
         Dada la lista de velocidades crea el dovs de manera que se le puedan añadir mas dovs
@@ -109,116 +161,3 @@ class DOVS:
         pass
 
 
-
-
-class ObjectDOVS:
-    def __init__(self, v, w, x, y, theta) -> None:
-        self.v = v
-        self.w = w
-        self.x = x
-        self.y = y
-        self.theta = theta #Radians
-    
-    def show_object_dovs(self, id):
-        print("Posicion " + str(id) + ": x = " + str(self.x) + ", y = " + str(self.y) + ", theta = " + str(self.theta))
-        print("Velocidad " + str(id) + ": v =" + str(self.v) + ", w = " + str(self.w))
-
-    def plot_trajectories(self, axis, trajectories):
-        pass
-
-    def plot_position(self, axis):
-        pass
-        
-
-class DynamicObstacleDOVS(ObjectDOVS):
-    def __init__(self, obstacle, robot_radius) -> None:
-        # Colision band
-
-        # El tamaño del objeto es el cuadrado que rodea al circulo
-        self.radius = obstacle.radius + robot_radius
-
-        super().__init__(obstacle.v, obstacle.w, obstacle.x, obstacle.y, obstacle.theta)
-    
-    def compute_collision_band(self):
-        """
-        Returns the collision band of the obstacle(two trajectories)
-        [passBehind, passFront]
-        """
-
-        x1 = self.x + self.radius * math.cos(self.theta + math.pi/2)
-        y1 = self.y + self.radius * math.sin(self.theta + math.pi/2)
-        p1 = Point(x1, y1)
-
-        x2 = self.x + self.radius * math.cos(self.theta - math.pi/2)
-        y2 = self.y + self.radius * math.sin(self.theta - math.pi/2)
-        p2 = Point(x2, y2)
-
-        # Create a line using the point and angle
-        l1 = Line(p1, slope=self.theta)
-        l2 = Line(p2, slope=self.theta)
-        
-        return l1, l2
-    
-    def plot_trajectories(self, axis, trajectories):
-        # print("Plotting obstacle trajectories")
-        # print(trajectories)
-        for trajectory in trajectories:
-            # print(trajectory)
-            x1, y1 = trajectory.points[0].coordinates
-            x2, y2 = trajectory.points[1].coordinates
-            
-            axis.plot([x1,x2], [y1,y2], 'r-')
-            # axis.axline((round(x1), round(y1)), (round(x2), round(y2)), linewidth=4, color='r')
-            # break
-    
-
-    def plot_position(self, axis):
-        axis.add_patch(plt.Circle((self.x, self.y), self.radius, color='blue', fill=False))
-
-
-
-class RobotDOVS(ObjectDOVS):
-    def __init__(self, robot) -> None:
-
-        self.x_goal = robot.x_goal
-        self.y_goal = robot.y_goal
-        self.min_v = robot.min_v
-        self.max_v = robot.max_v
-        self.min_w = robot.min_w
-        self.max_w = robot.max_w
-        self.max_av = robot.max_av
-        self.max_aw = robot.max_aw
-
-        self.trajectory_max_radius = 10
-        self.trajectory_step_radius = 2
-
-        super().__init__(robot.v, robot.w, robot.x, robot.y, robot.theta)
-    
-    def compute_trajectories(self):
-        """
-        Compute all the possible trajectories of the robot
-        discretized set of feasible circular trajectories
-        """
-
-        trajectories = []
-
-        for radius in range(-self.trajectory_max_radius, self.trajectory_max_radius, self.trajectory_step_radius):
-            if radius == 0: continue
-            # Creo que habria que tener en cuenta theta
-            center_x = self.x + radius * math.cos(self.theta + math.pi/2)
-            center_y = self.y + radius * math.sin(self.theta + math.pi/2)
-            c = Circle(Point(center_x, center_y), radius)
-            
-            trajectories.append(c)
-        
-        return trajectories
-    
-    def plot_trajectories(self, axis, trajectories):
-        for trajectory in trajectories:
-            axis.add_patch(plt.Circle((trajectory.center.coordinates[0], trajectory.center.coordinates[1]), trajectory.radius, color='blue', fill=False))
-        
-
-    def plot_position(self, axis):
-        axis.plot(self.x, self.y, 'r.')
-
-        
