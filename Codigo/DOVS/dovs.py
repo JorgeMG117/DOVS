@@ -8,6 +8,7 @@ import numpy as np
 from sympy import nsolve, Symbol, symbols
 
 from DOVS.object_dovs import DynamicObstacleDOVS, RobotDOVS
+from DOVS.plot_dovs import PlotDOVS
 
 class DOVS:
     def __init__(self, robot, obstacles, timestep) -> None:
@@ -22,6 +23,7 @@ class DOVS:
         This function should be call every timestep
         """
 
+        plotDOVS = PlotDOVS(self.robot, self.obstacles)
         
         # Obtain all pasible trajectories of robot
         robot_trajectories = self.robot.compute_trajectories()
@@ -29,7 +31,7 @@ class DOVS:
         obstacles_trajectory = []
         for obstacle in self.obstacles:
             # Compute the trajectory of the obstacle
-            obstacle_trajectory = obstacle.compute_collision_band()
+            obstacle_trajectory = obstacle.compute_trajectory()
 
             obstacles_trajectory.append(obstacle_trajectory)
         
@@ -48,7 +50,7 @@ class DOVS:
 
             # dovs = self.create_DOVS(velocity_time_space)#Calculamos el dovs para ese objeto
 
-        self.plot_trajectories(robot_trajectories, obstacles_trajectory, collision_points_list)
+        plotDOVS.plot_trajectories(robot_trajectories, obstacles_trajectory, collision_points_list)
         #     self.append_DOVS(list_dovs, dovs)#Añadimos el dovs calculado al dovs total, geometrically merged
 
         
@@ -77,30 +79,6 @@ class DOVS:
         intersection_2 = trajectory.intersection(collision_band[1])
 
         return self.select_right_collision_point(intersection_1), self.select_right_collision_point(intersection_2)
-    
-    def plot_trajectories(self, robot_trajectories, obstacles_trajectory, collision_points_list):
-        # Create a figure and axis objects
-        fig, ax = plt.subplots()
-
-        self.robot.plot_position(ax)
-
-        self.robot.plot_trajectories(ax, robot_trajectories)
-
-        for i, obstacle in enumerate(self.obstacles):
-            obstacle.plot_position(ax)
-            obstacle.plot_trajectories(ax, obstacles_trajectory[i])
-        
-        for collision_points in collision_points_list:
-            for collision_point in collision_points:
-                if collision_point != None:
-                    ax.plot(collision_point.coordinates[0], collision_point.coordinates[1], 'g.')
-                    
-
-        # Set the axis limits
-        ax.set_xlim(-4, 4)
-        ax.set_ylim(-4, 4)
-
-        plt.show()
         
 
     # TODO: Implement
@@ -114,6 +92,7 @@ class DOVS:
         :param trajectory: trayectoria circular del robot
         :return ((t1, v_max, w_max),(t2, v_min, w_min))
         """
+        return None
         x_object, y_object, theta_object = obstacle.get_location()
         v_object, w_object = obstacle.get_speed()
 
@@ -155,9 +134,5 @@ class DOVS:
         """
         pass
 
-        
-    def plot_DOVS(self, velocity_time_space):
-        # Dibujar las velocidades de velocity_time_space
-        pass
 
 

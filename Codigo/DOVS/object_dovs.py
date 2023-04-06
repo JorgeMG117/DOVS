@@ -16,12 +16,6 @@ class ObjectDOVS:
         print("Posicion " + str(id) + ": x = " + str(self.x) + ", y = " + str(self.y) + ", theta = " + str(self.theta))
         print("Velocidad " + str(id) + ": v =" + str(self.v) + ", w = " + str(self.w))
 
-    def plot_trajectories(self, axis, trajectories):
-        pass
-
-    def plot_position(self, axis):
-        pass
-
     def get_location(self):
         """
         Returns the location of the DOVS object
@@ -36,6 +30,7 @@ class ObjectDOVS:
 
 
 
+
 class DynamicObstacleDOVS(ObjectDOVS):
     def __init__(self, obstacle, robot_radius) -> None:
         # Colision band
@@ -45,7 +40,7 @@ class DynamicObstacleDOVS(ObjectDOVS):
 
         super().__init__(obstacle.v, obstacle.w, obstacle.x, obstacle.y, obstacle.theta)
     
-    def compute_collision_band(self):
+    def compute_trajectory(self):
         """
         Returns the collision band of the obstacle(two trajectories)
         [passBehind, passFront]
@@ -65,23 +60,7 @@ class DynamicObstacleDOVS(ObjectDOVS):
         
         return l1, l2
     
-    # TODO: Doesn't plot the trajectory completely in the canvas
-    def plot_trajectories(self, axis, trajectories):
-        # print("Plotting obstacle trajectories")
-        # print(trajectories)
-        for trajectory in trajectories:
-            # print(trajectory)
-            x1, y1 = trajectory.points[0].coordinates
-            x2, y2 = trajectory.points[1].coordinates
-            
-            axis.plot([x1,x2], [y1,y2], 'r-')
-            # axis.axline((round(x1), round(y1)), (round(x2), round(y2)), linewidth=4, color='r')
-            # break
-    
-
-    def plot_position(self, axis):
-        axis.add_patch(plt.Circle((self.x, self.y), self.radius, color='blue', fill=False))
-
+   
 
 
 
@@ -121,12 +100,5 @@ class RobotDOVS(ObjectDOVS):
         
         return trajectories
     
-    def plot_trajectories(self, axis, trajectories):
-        for trajectory in trajectories:
-            axis.add_patch(plt.Circle((trajectory.center.coordinates[0], trajectory.center.coordinates[1]), trajectory.radius, color='blue', fill=False))
-        
-
-    def plot_position(self, axis):
-        axis.plot(self.x, self.y, 'r.')
 
         
