@@ -34,7 +34,6 @@ def computeDOVS(robot, obstacles, timestep):
     # return linear and angular velocities chosen for the robot
     dovs = DOVS.DOVS(robot, obstacles, timestep)
     dovs.compute_DOVS()
-    exit()
     return 0.0, 0.0
 
 plt.close('all')

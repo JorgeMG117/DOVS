@@ -69,6 +69,8 @@ class PlotRobotDOVS:
         
 
     def plot_position(self, axis):
+        #axis.scatter(self.robot.x, self.robot.y, color='red', marker='^', s=100, angle=0)
+
         axis.plot(self.robot.x, self.robot.y, 'r.')
 
 

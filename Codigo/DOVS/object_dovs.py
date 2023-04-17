@@ -1,7 +1,6 @@
-import sympy
 from sympy.geometry import *
 import math
-import matplotlib.pyplot as plt
+import numpy as np
 
 
 class ObjectDOVS:
@@ -27,18 +26,40 @@ class ObjectDOVS:
         Returns the speed of the DOVS object
         """
         return self.v, self.w
+    
+    @staticmethod
+    def hom(x):
+        """
+        Returns the homogeneous matrix of the position x, y, tita
+        """
+        print("En home")
+        H = np.array([[np.cos(x[2]), -np.sin(x[2]), x[0]],
+                    [np.sin(x[2]), np.cos(x[2]), x[1]],
+                    [0, 0, 1]])
+        return H
+
+    @staticmethod
+    def loc(H):
+        """
+        Returns the position x, y, tita of the homogeneous matrix H
+        """
+        x = np.array([H[0, 2], H[1, 2], np.arctan2(H[1, 0], H[0, 0])])
+        return x
+
 
 
 
 
 class DynamicObstacleDOVS(ObjectDOVS):
-    def __init__(self, obstacle, robot_radius) -> None:
-        # Colision band
+    def __init__(self, obstacle, robot_radius, robot_location) -> None:
+        # TODO: No esta funcionando el pasar a punto de vista del robot
+        # Get the obstacle position in the robot frame
+        obstacle_pos = self.loc(np.linalg.inv(self.hom(robot_location)) * self.hom((obstacle.x, obstacle.y, obstacle.theta)))
 
         # El tamaño del objeto es el cuadrado que rodea al circulo
         self.radius = obstacle.radius + robot_radius
 
-        super().__init__(obstacle.v, obstacle.w, obstacle.x, obstacle.y, obstacle.theta)
+        super().__init__(obstacle.v, obstacle.w, obstacle_pos[0], obstacle_pos[1], obstacle_pos[2])
     
     def compute_trajectory(self):
         """
@@ -67,7 +88,7 @@ class DynamicObstacleDOVS(ObjectDOVS):
 class RobotDOVS(ObjectDOVS):
     def __init__(self, robot) -> None:
 
-        self.x_goal = robot.x_goal
+        self.x_goal = robot.x_goal#TODO: El goal hay que transformarlo a la posicion del robot
         self.y_goal = robot.y_goal
         self.min_v = robot.min_v
         self.max_v = robot.max_v
@@ -79,7 +100,7 @@ class RobotDOVS(ObjectDOVS):
         self.trajectory_max_radius = 10
         self.trajectory_step_radius = 2
 
-        super().__init__(robot.v, robot.w, robot.x, robot.y, robot.theta)
+        super().__init__(robot.v, robot.w, 0, 0, 0)
     
     def compute_trajectories(self):
         """
