@@ -123,39 +123,26 @@ class DOVS:
         :return ((t1, v_max, w_max),(t2, v_min, w_min))
         """
         x_object, y_object, theta_object = obstacle.get_location()
-        v_object, w_object = obstacle.get_speed()
+        v_object, _ = obstacle.get_speed()
         velocity_times = []
 
 
         for collision in collision_points:
             if collision != None:
-                x_collision, y_collision = collision.coordinates#TODO: No utilizo para nada las colisiones, para que las he calculado entonces?
-
-                # t = Symbol('t')
-
-                # TODO: No entiendo bien porque he calculado los puntos de colision si no los utilizo en la formula para calcular velocidades
-                # x_collision = x_object + v_object * math.cos(theta_object) * t_i
-                # y_collision = y_object + v_object * math.sin(theta_object) * t_i
-                # trajectory.radius ** 2 = x_collision ** 2 + (y_collision - trajectory.y) ** 2
+                x_collision, y_collision = collision.coordinates
 
                 a = v_object ** 2
-
                 # # TODO: Es el angulo el de theta_object?
-                # b = 2 * v_object * (x_object * math.cos(theta_object) + y_object * math.sin(theta_object)) - 2 * v_object * math.sin(theta_object) * trajectory.y
+                b = 2 * v_object * (x_object * math.cos(theta_object) + y_object * math.sin(theta_object)) - 2 * v_object * math.sin(theta_object) * trajectory.center.coordinates[1]
+                c = x_object ** 2 + y_object ** 2 + trajectory.center.coordinates[1] ** 2 - 2 * y_object * trajectory.center.coordinates[1] - trajectory.radius ** 2
                 
-                # c = x_object ** 2 + y_object ** 2 + trajectory.y ** 2 - 2 * y_object * trajectory.y - trajectory.radius ** 2
-                # times = np.roots([a, b, c])
+                times = np.roots([a, b, c])
 
-                # for t in times:
-                #     w = trajectory.y / t #TODO: Esto no esta bien
-                #     v = trajectory.radius * w
-                #     velocity_times.append((t, v, w))
-                # # x, y, z = symbols('x y z ')
-
-                # # eq1 = 3 * t1**2 - 2 * x2**2 - 1
-                # # eq2 = x1**2 - 2 * x1 + x2**2 + 2 * x2 - 8
-                # # print(nsolve((f1, f2), (x1, x2), (-1, 1)))
-                # # sol = solve(eqs, (x, y, z))
+                for t in times:
+                    theta = math.atan2(2*x_collision*y_collision, x_collision**2-y_collision**2)
+                    w = theta / t
+                    v = trajectory.radius * w
+                    velocity_times.append((t, v, w))
         
         return velocity_times
    
