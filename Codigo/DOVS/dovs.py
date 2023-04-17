@@ -30,7 +30,6 @@ class DOVS:
         This function should be call every timestep
         """
 
-
         plotDOVS = PlotDOVS(self.robot, self.obstacles)
         
         # Obtain all pasible trajectories of robot

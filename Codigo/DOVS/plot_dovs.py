@@ -1,5 +1,5 @@
 from matplotlib import pyplot as plt
-
+import numpy as np
 
 class PlotDOVS:
     def __init__(self, robot, obstacles) -> None:
@@ -67,10 +67,33 @@ class PlotRobotDOVS:
         for trajectory in trajectories:
             axis.add_patch(plt.Circle((trajectory.center.coordinates[0], trajectory.center.coordinates[1]), trajectory.radius, color='blue', fill=False))
         
+    def dibrobot(self, axis, c):
+        largo=0.1
+        corto=0.05
+        descentre=0.01
+
+        trasera_dcha=np.array([-largo,-corto,1])
+        trasera_izda=np.array([-largo,corto,1])
+        delantera_dcha=np.array([largo,-corto,1])
+        delantera_izda=np.array([largo,corto,1])
+        frontal_robot=np.array([largo,0,1])
+        tita=self.robot.theta
+        Hwe=np.array([[np.cos(tita), -np.sin(tita), self.robot.x],
+                    [np.sin(tita), np.cos(tita), self.robot.y],
+                    [0,        0 ,        1]])
+        Hec=np.array([[1,0,descentre],
+                    [0,1,0],
+                    [0,0,1]])
+        extremos=np.array([trasera_izda, delantera_izda, delantera_dcha, trasera_dcha, trasera_izda, frontal_robot, trasera_dcha])
+        robot=np.dot(Hwe,np.dot(Hec,np.transpose(extremos)))
+        axis.plot(robot[0,:], robot[1,:], c)
 
     def plot_position(self, axis):
         #axis.scatter(self.robot.x, self.robot.y, color='red', marker='^', s=100, angle=0)
 
-        axis.plot(self.robot.x, self.robot.y, 'r.')
+        #axis.plot(self.robot.x, self.robot.y, 'r.')
+        self.dibrobot(axis, 'r')
+        #axis.plot(self.robot.x, self.robot.y, marker=(3, 0, self.robot.theta*90), markersize=20, linestyle='None')
+
 
 
