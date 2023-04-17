@@ -32,7 +32,6 @@ class ObjectDOVS:
         """
         Returns the homogeneous matrix of the position x, y, tita
         """
-        print("En home")
         H = np.array([[np.cos(x[2]), -np.sin(x[2]), x[0]],
                     [np.sin(x[2]), np.cos(x[2]), x[1]],
                     [0, 0, 1]])
@@ -52,14 +51,22 @@ class ObjectDOVS:
 
 class DynamicObstacleDOVS(ObjectDOVS):
     def __init__(self, obstacle, robot_radius, robot_location) -> None:
-        # TODO: No esta funcionando el pasar a punto de vista del robot
+        # print("Posicion del robot visto desde el mundo")
+        # print(robot_location)
+
+        # print("Posicion del obstaculo visto desde el mundo")
+        # print((obstacle.x, obstacle.y, obstacle.theta))
         # Get the obstacle position in the robot frame
-        obstacle_pos = self.loc(np.linalg.inv(self.hom(robot_location)) * self.hom((obstacle.x, obstacle.y, obstacle.theta)))
+        obstacle_pos = self.loc(np.dot(np.linalg.inv(self.hom(robot_location)),self.hom((obstacle.x, obstacle.y, obstacle.theta))))
+
+        # print("Posicion del obstaculo visto desde el robot")
+        # print(obstacle_pos)
 
         # El tamaño del objeto es el cuadrado que rodea al circulo
         self.radius = obstacle.radius + robot_radius
 
         super().__init__(obstacle.v, obstacle.w, obstacle_pos[0], obstacle_pos[1], obstacle_pos[2])
+        # super().__init__(obstacle.v, obstacle.w, obstacle.x, obstacle.y, obstacle.theta)
     
     def compute_trajectory(self):
         """
@@ -101,6 +108,7 @@ class RobotDOVS(ObjectDOVS):
         self.trajectory_step_radius = 2
 
         super().__init__(robot.v, robot.w, 0, 0, 0)
+        # super().__init__(robot.v, robot.w, robot.x, robot.y, robot.theta)
     
     def compute_trajectories(self):
         """

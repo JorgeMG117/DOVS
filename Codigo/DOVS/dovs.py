@@ -30,8 +30,6 @@ class DOVS:
         This function should be call every timestep
         """
 
-        print("Robot location: " + str(self.robot.get_location()))
-        print("Obs location: " + str(self.obstacles[0].get_location()))
 
         plotDOVS = PlotDOVS(self.robot, self.obstacles)
         
@@ -53,7 +51,7 @@ class DOVS:
                 # print(collision_points)
                 collision_points_list.append(collision_points)
 
-                velocity_time = self.collision_velocity_times(obstacle, collision_points, trajectory)
+                velocity_time = self._collision_velocity_times(obstacle, collision_points, trajectory)
                 velocity_time_space.append(velocity_time)
             
             
@@ -76,7 +74,7 @@ class DOVS:
             if len(collision_points) == 1:
                 return collision_points[0]
             else:
-                #TODO: Devolver el punto de colision mas cercano a la trayectoria del robot
+                # Devolver el punto de colision mas cercano a la trayectoria del robot
                 # Calculo longitud arco desde el robot 
 
                 # Primer punto de colision
@@ -92,7 +90,10 @@ class DOVS:
                 theta = 2 * math.atan(d / (2 * trajectory_radius))
                 arclength_2 = trajectory_radius * theta
 
-                return min(arclength_1, arclength_2)
+                if arclength_1 <= arclength_2:
+                    return collision_points[0]
+                else:
+                    return collision_points[1]
         else:
             return None
 
@@ -107,11 +108,11 @@ class DOVS:
         intersection_1 = trajectory.intersection(collision_band[0])
         intersection_2 = trajectory.intersection(collision_band[1])
 
-        return self._select_right_collision_point(intersection_1, trajectory.radius, self.robot.get_location()), self._select_right_collision_point(intersection_2, trajectory)
+        return self._select_right_collision_point(intersection_1, trajectory.radius, self.robot.get_location()), self._select_right_collision_point(intersection_2, trajectory.radius, self.robot.get_location())
         
 
     # TODO: Implement
-    def collision_velocity_times(self, obstacle, collision_points, trajectory):
+    def _collision_velocity_times(self, obstacle, collision_points, trajectory):
         """
         APENDIX B
         Devuelve tiempo y velocidades minimas y maximas que debe llevar le robot para no colisionar con el obstaculo
@@ -127,31 +128,35 @@ class DOVS:
         velocity_times = []
 
 
-        # for collision in collision_points:
-        #     if collision != None:
-        #         x_collision, y_collision = collision.coordinates#TODO: No utilizo para nada las colisiones, para que las he calculado entonces?
+        for collision in collision_points:
+            if collision != None:
+                x_collision, y_collision = collision.coordinates#TODO: No utilizo para nada las colisiones, para que las he calculado entonces?
 
-        #         t = Symbol('t')
+                # t = Symbol('t')
 
-        #         # x_collision = x_object + v_object * math.cos(theta_object) * t_i
-        #         # y_collision = y_object + v_object * math.sin(theta_object) * t_i
-        #         # trajectory.radius ** 2 = x_collision ** 2 + (y_collision - trajectory.y) ** 2
+                # TODO: No entiendo bien porque he calculado los puntos de colision si no los utilizo en la formula para calcular velocidades
+                # x_collision = x_object + v_object * math.cos(theta_object) * t_i
+                # y_collision = y_object + v_object * math.sin(theta_object) * t_i
+                # trajectory.radius ** 2 = x_collision ** 2 + (y_collision - trajectory.y) ** 2
 
-        #         a = v_object ** 2
-        #         b = 2 * v_object * (x_object * math.cos(theta_object) + y_object * math.sin(theta_object)) - 2 * v_object * math.sin(theta_object) * trajectory.y
-        #         c = x_object ** 2 + y_object ** 2 + trajectory.y ** 2 - 2 * y_object * trajectory.y - trajectory.radius ** 2
-        #         times = np.roots([a, b, c])
+                a = v_object ** 2
 
-        #         for t in times:
-        #             w = trajectory.y / t #TODO: Esto no esta bien
-        #             v = trajectory.radius * w
-        #             velocity_times.append((t, v, w))
-        #         # x, y, z = symbols('x y z ')
+                # # TODO: Es el angulo el de theta_object?
+                # b = 2 * v_object * (x_object * math.cos(theta_object) + y_object * math.sin(theta_object)) - 2 * v_object * math.sin(theta_object) * trajectory.y
+                
+                # c = x_object ** 2 + y_object ** 2 + trajectory.y ** 2 - 2 * y_object * trajectory.y - trajectory.radius ** 2
+                # times = np.roots([a, b, c])
 
-        #         # eq1 = 3 * t1**2 - 2 * x2**2 - 1
-        #         # eq2 = x1**2 - 2 * x1 + x2**2 + 2 * x2 - 8
-        #         # print(nsolve((f1, f2), (x1, x2), (-1, 1)))
-        #         # sol = solve(eqs, (x, y, z))
+                # for t in times:
+                #     w = trajectory.y / t #TODO: Esto no esta bien
+                #     v = trajectory.radius * w
+                #     velocity_times.append((t, v, w))
+                # # x, y, z = symbols('x y z ')
+
+                # # eq1 = 3 * t1**2 - 2 * x2**2 - 1
+                # # eq2 = x1**2 - 2 * x1 + x2**2 + 2 * x2 - 8
+                # # print(nsolve((f1, f2), (x1, x2), (-1, 1)))
+                # # sol = solve(eqs, (x, y, z))
         
         return velocity_times
    
