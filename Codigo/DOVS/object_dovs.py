@@ -1,7 +1,10 @@
 from sympy.geometry import *
+from sympy import Ray
 import math
 import numpy as np
 
+from sympy.plotting import plot
+from matplotlib import pyplot as plt
 
 class ObjectDOVS:
     def __init__(self, v, w, x, y, theta) -> None:
@@ -57,7 +60,7 @@ class DynamicObstacleDOVS(ObjectDOVS):
         # print("Posicion del obstaculo visto desde el mundo")
         # print((obstacle.x, obstacle.y, obstacle.theta))
         # Get the obstacle position in the robot frame
-        obstacle_pos = self.loc(np.dot(np.linalg.inv(self.hom(robot_location)),self.hom((obstacle.x, obstacle.y, obstacle.theta))))
+        obstacle_pos = self.loc(np.dot(np.linalg.inv(self.hom(robot_location)),self.hom((obstacle.x, obstacle.y, obstacle.theta))))#TODO: Hago esto dos veces, igual lo puedo meter en una funcion
 
         # print("Posicion del obstaculo visto desde el robot")
         # print(obstacle_pos)
@@ -83,8 +86,9 @@ class DynamicObstacleDOVS(ObjectDOVS):
         p2 = Point(x2, y2)
 
         # Create a line using the point and angle
-        l1 = Line(p1, slope=self.theta)
-        l2 = Line(p2, slope=self.theta)
+        ray_1 = Ray((0,0), angle=self.theta)
+        l1 = Line(p1, slope=ray_1.slope)
+        l2 = Line(p2, slope=ray_1.slope)
         
         return l1, l2
     
@@ -95,8 +99,10 @@ class DynamicObstacleDOVS(ObjectDOVS):
 class RobotDOVS(ObjectDOVS):
     def __init__(self, robot) -> None:
 
-        self.x_goal = robot.x_goal#TODO: El goal hay que transformarlo a la posicion del robot
-        self.y_goal = robot.y_goal
+        goal_pos = self.loc(np.dot(np.linalg.inv(self.hom((robot.x, robot.y, robot.theta))),self.hom((robot.x_goal, robot.y_goal, robot.theta))))
+        self.x_goal = goal_pos[0]
+        self.y_goal = goal_pos[1]
+
         self.min_v = robot.min_v
         self.max_v = robot.max_v
         self.min_w = robot.min_w
@@ -120,7 +126,7 @@ class RobotDOVS(ObjectDOVS):
 
         for radius in range(-self.trajectory_max_radius, self.trajectory_max_radius, self.trajectory_step_radius):
             if radius == 0: continue
-            # Creo que habria que tener en cuenta theta
+            
             center_x = self.x + radius * math.cos(self.theta + math.pi/2)
             center_y = self.y + radius * math.sin(self.theta + math.pi/2)
             c = Circle(Point(center_x, center_y), radius)

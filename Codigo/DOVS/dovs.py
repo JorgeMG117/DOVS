@@ -2,6 +2,7 @@ import sympy
 from sympy.geometry import *
 import math
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 
 import numpy as np
 
@@ -15,6 +16,16 @@ https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Polygon.html
 Buscar funcion que dado un poligono ver si velocidades pertence a ese poligono
 https://www.matecdev.com/posts/shapely-polygon-from-points.html
 """
+
+class Collisions:
+    def __init__(self) -> None:
+        self.x = 0
+        self.y = 0
+
+        self.angle = 0 #angle between robot and collision
+        self.arclenght = 0 #distance between robot and collision
+        self.distance_up = 0 #distance from the collision point to the object
+        self.distance_down = 0
 
 class DOVS:
     def __init__(self, robot, obstacles, timestep) -> None:
@@ -53,18 +64,16 @@ class DOVS:
                 velocity_time = self._collision_velocity_times(obstacle, collision_points, trajectory)
                 velocity_time_space.append(velocity_time)
             
-            
 
-            # dovs = self.create_DOVS(velocity_time_space)#Calculamos el dovs para ese objeto
+            dovs = self._create_DOVS(velocity_time_space)#Calculamos el dovs para ese objeto
 
-        plotDOVS.plot_trajectories(robot_trajectories, obstacles_trajectory, collision_points_list)
+        # plotDOVS.plot_trajectories(robot_trajectories, obstacles_trajectory, collision_points_list)
         #     self.append_DOVS(list_dovs, dovs)#Añadimos el dovs calculado al dovs total, geometrically merged
 
         
-        # self.plot_DOVS(velocity_time_space)
+        # plotDOVS.plot_DOVS(dovs)
         
-        
-    # TODO: It doesn't selects the right collision point
+    
     def _select_right_collision_point(self, collision_points, trajectory_radius, robot_position):
         """
         Select the right collision point of the intersection of the robot trajectory and the obstacle trajectory
@@ -110,7 +119,6 @@ class DOVS:
         return self._select_right_collision_point(intersection_1, trajectory.radius, self.robot.get_location()), self._select_right_collision_point(intersection_2, trajectory.radius, self.robot.get_location())
         
 
-    # TODO: Implement
     def _collision_velocity_times(self, obstacle, collision_points, trajectory):
         """
         APENDIX B
@@ -120,40 +128,122 @@ class DOVS:
         :param obstacle: obstaculo con el que se va a comprobar la colision
         :param collision_points: puntos de colision de la trayectoria del robot con el obstaculo, hay un maximo de dos colisiones
         :param trajectory: trayectoria circular del robot
-        :return ((t1, v_max, w_max),(t2, v_min, w_min))
+        :return ((t1, v_max, w_max),(t2, v_min, w_min)). velocity_time_space
         """
         x_object, y_object, theta_object = obstacle.get_location()
         v_object, _ = obstacle.get_speed()
         velocity_times = []
 
+        # if collision_points[0] == None:
+        #     # Calculo la velocidad maxima que puedo llevar
+        #     # Pongo como minima el limite superior. No hay velocidad de escape
 
-        for collision in collision_points:
-            if collision != None:
-                x_collision, y_collision = collision.coordinates
+        #     # El punto desde el que hay calcular distancia Esta a la izq del objeto
+        #     x_obj = obstacle.x + obstacle.radius * math.cos(obstacle.theta - math.pi/2)
+        #     y_obj = obstacle.y + obstacle.radius * math.sin(obstacle.theta - math.pi/2)
 
-                a = v_object ** 2
-                # # TODO: Es el angulo el de theta_object?
-                b = 2 * v_object * (x_object * math.cos(theta_object) + y_object * math.sin(theta_object)) - 2 * v_object * math.sin(theta_object) * trajectory.center.coordinates[1]
-                c = x_object ** 2 + y_object ** 2 + trajectory.center.coordinates[1] ** 2 - 2 * y_object * trajectory.center.coordinates[1] - trajectory.radius ** 2
-                
-                times = np.roots([a, b, c])
+        #     x_col = collision_points[1][0]
+        #     y_col = collision_points[1][1]
 
-                for t in times:
-                    theta = math.atan2(2*x_collision*y_collision, x_collision**2-y_collision**2)
-                    w = theta / t
-                    v = trajectory.radius * w
-                    velocity_times.append((t, v, w))
-        
+        #     distance = math.sqrt((x_col - x_obj)**2 + (y_col - y_obj)**2)
+
+        #     t = distance/v_object
+
+        #     x_robot, y_robot, _ = self.robot.get_location()
+        #     # d = math.sqrt((x_col - x_robot)**2 + (y_col - y_robot)**2)
+        #     # theta = 2 * math.atan(d / (2 * trajectory.radius))
+        #     # arclength = trajectory.radius * theta
+
+        #     angle = np.arctan2(2*x_object*y_object, pow(x_object,2)-pow(y_object,2))
+        #     r = radio trayectoria robo
+
+        #     w = angle/t
+        #     v = r*w
+        # elif collision_points[1] == None:
+        #     # Calculo la velocidad maxima que puedo llevar
+        #     # Pongo como minima el limite superior. No hay velocidad de escape
+        #     pass
+        # else:
+        #     idx_first = 0 # Tenemos que saber que punto de colision es el que corresponde al passBehind
+        #     # Puntos del cuadrado circunscrito al objeto#TODO
+        #     x1 = self.x + self.radius * math.cos(self.theta + math.pi/2)
+        #     y1 = self.y + self.radius * math.sin(self.theta + math.pi/2)
+
+        #     x2 = self.x + self.radius * math.cos(self.theta - math.pi/2)
+        #     y2 = self.y + self.radius * math.sin(self.theta - math.pi/2)
+            
+        #     # Tenemos que ver cual de los dos puntos de colision es el que va a definir la velocidad maxima 
+        #     x_robot, y_robot, th_robot = self.robot.get_location()
+
+        #     d = math.sqrt((collision_points[0][0] - x_robot)**2 + (collision_points[0][1] - y_robot)**2)
+        #     theta = 2 * math.atan(d / (2 * trajectory.radius))
+        #     arclength_1 = trajectory.radius * theta
+
+        #     # Segundo punto de colision
+        #     d = math.sqrt((collision_points[1][0] - x_robot)**2 + (collision_points[1][1] - y_robot)**2)
+        #     theta = 2 * math.atan(d / (2 * trajectory.radius))
+        #     arclength_2 = trajectory.radius * theta
+
+        #     if arclength_1 > arclength_2:
+        #         idx_first = 1
+
+        #     # First speed
+        #     #t_col1 = distancia(p_1, collision_points[idx_first])/v_object
+
         return velocity_times
+
+        # La linea con menos angulo es la primera en colisionar
+        # Calcular angulo entre el robot y el punto de colision
+        # Seleccionamos la primera como el que menos angulo tenga
+
+      
    
 
 
        
-    def create_DOVS(velocity_time_space):
+    def _create_DOVS(self, velocity_time_space):
         """
         Dada la lista de velocidades crea el dovs de manera que se le puedan añadir mas dovs
+        velocity_time_space = [(t1,v1,w1),(t2,v2,w2),(t3,v3,w3),(t4,v4,w4)]
         """
-        pass
+        velocity_time_space = [(1, 2, 3),(2,4,4),(1,5,2),(1,7,7),(1,1,1),(2,8,8)]
+        t, v, w = zip(*velocity_time_space)
+
+        v.sort()
+        w.sort()
+
+        #t, v, w = []
+
+        # # Extract x and y coordinates from points
+        # x = [point[1] for point in velocity_time_space]
+        # y = [point[2] for point in velocity_time_space]
+
+        # # Add first point to end of lists to close the polygon
+        # x.append(x[0])
+        # y.append(y[0])
+
+        # # Plot polygon
+        # plt.plot(x, y)
+        # plt.show()
+        #is_inside = polygon.contains_point(point)
 
 
+
+        # vertices = [(0, 0), (0, 1), (1, 1), (1, 0.5), (0.5, 0)]
+
+        # # Create a polygon object with the given vertices
+        # polygon = patches.Polygon(vertices, facecolor='red', edgecolor='black')
+
+        # # Create a figure and axis object
+        # fig, ax = plt.subplots()
+
+        # # Add the polygon to the axis
+        # ax.add_patch(polygon)
+
+        # # Set the limits of the axis
+        # ax.set_xlim([0, 1])
+        # ax.set_ylim([0, 1])
+
+        # # Show the plot
+        # plt.show()
 

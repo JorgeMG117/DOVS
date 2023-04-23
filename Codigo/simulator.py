@@ -45,16 +45,19 @@ obstacles_vec.append(DynamicObstacle(0.5, 0.0, -2.0, 0.0, 0.0, 0.2))
 
 
 obstacles_artist = []
+obstacles_arrow_artist = []
 for i_obs in range(len(obstacles_vec)):
     obstacle = plt.Circle((obstacles_vec[i_obs].x, obstacles_vec[i_obs].y), obstacles_vec[i_obs].radius, color='black', fill=True)
     ax.add_artist(obstacle)
     obstacles_artist.append(obstacle)
+    obstacles_arrow_artist.append(plt.arrow(obstacles_vec[i_obs].x, obstacles_vec[i_obs].y, obstacles_vec[i_obs].radius*np.cos(obstacles_vec[i_obs].theta), obstacles_vec[i_obs].radius*np.sin(obstacles_vec[i_obs].theta), width=0.035, color="red"))
 goal_artist = mlines.Line2D([robot.x_goal], [robot.y_goal],
                     color='red', marker='*', linestyle='None',
                     markersize=15, label='Goal')
 
 ax.title.set_text(r'Time: {0:.2f} s'.format(0))
 robot_artist = plt.Circle((robot.x, robot.y), robot.radius, fill=True, color="blue")
+robot_arrow_artist = plt.arrow(robot.x, robot.y, robot.radius*np.cos(robot.theta), robot.radius*np.sin(robot.theta), width=0.035, color="red")
 # This is for plotting the trajectory
 # ax.add_artist(plt.Circle((robot.x, robot.y), robot.radius/8, fill=True, color="blue"))
 
@@ -70,6 +73,7 @@ ax.set_ylim(-4, 4)
 
 time = 0
 def update(i_video):
+    global robot_arrow_artist
     time = i_video*timestep
     v_new, w_new = computeDOVS(robot=robot, obstacles=obstacles_vec, timestep=timestep)
     robot.v = v_new
@@ -77,16 +81,23 @@ def update(i_video):
 
     for i_obs in range(len(obstacles_vec)):
         if abs(obstacles_vec[i_obs].x)> 2.0:
-            obstacles_vec[i_obs].v = -obstacles_vec[i_obs].v
+            obstacles_vec[i_obs].theta = (obstacles_vec[i_obs].theta + np.pi)%(2*np.pi)
         obstacles_vec[i_obs].x = obstacles_vec[i_obs].x + obstacles_vec[i_obs].v*np.cos(obstacles_vec[i_obs].theta)*timestep
         obstacles_vec[i_obs].y = obstacles_vec[i_obs].y + obstacles_vec[i_obs].v*np.sin(obstacles_vec[i_obs].theta)*timestep
         obstacles_vec[i_obs].theta = obstacles_vec[i_obs].theta + obstacles_vec[i_obs].w*timestep
         obstacles_artist[i_obs].center = (obstacles_vec[i_obs].x, obstacles_vec[i_obs].y)
+        obstacles_arrow_artist[i_obs].remove()
+        obstacles_arrow_artist[i_obs] = plt.arrow(obstacles_vec[i_obs].x, obstacles_vec[i_obs].y, obstacles_vec[i_obs].radius*np.cos(obstacles_vec[i_obs].theta), obstacles_vec[i_obs].radius*np.sin(obstacles_vec[i_obs].theta), width=0.035, color="red")
+
+
     
     robot.x = robot.x + robot.v*np.cos(robot.theta)*timestep
     robot.y = robot.y + robot.v*np.sin(robot.theta)*timestep
     robot.theta = robot.theta + robot.w*timestep
     robot_artist.center = (robot.x, robot.y)
+    # robot_arrow_artist.center
+    robot_arrow_artist.remove()
+    robot_arrow_artist = plt.arrow(robot.x, robot.y, robot.radius*np.cos(robot.theta), robot.radius*np.sin(robot.theta), width=0.035, color="red")
     # This is for plotting the trajectory
     # ax.add_artist(plt.Circle((robot.x, robot.y), robot.radius/8, fill=True, color="blue"))
     ax.set_xlim(-4, 4)
@@ -100,4 +111,3 @@ anim.running = True
 # anim.save("saved_experiment.mp4", writer=ffmpeg_writer)
 
 plt.show()
-
