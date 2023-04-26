@@ -1,12 +1,50 @@
 from matplotlib import pyplot as plt
 import numpy as np
 
+"""Gets and prints the spreadsheet's header columns
+
+:param file_loc: The file location of the spreadsheet
+:type file_loc: str
+:param print_cols: A flag used to print the columns to the console
+    (default is False)
+:type print_cols: bool
+:returns: a list of strings representing the header columns
+:rtype: list
+"""
+
 class PlotDOVS:
+    """
+    A class for plotting the trajectories of the robot and dynamic obstacles.
+
+    Attributes:
+        robot (Robot): The robot object.
+        obstacles (list): A list of DynamicObstacle objects.
+
+    Methods:
+        plot_trajectories(robot_trajectories, obstacles_trajectory, collision_points_list):
+            Plots the trajectories of the robot and dynamic obstacles, as well as any collision points.
+    """
+
     def __init__(self, robot, obstacles) -> None:
+        """
+        Initializes a new instance of the PlotDOVS class.
+
+        Args:
+            robot (Robot): The robot object.
+            obstacles (list): A list of DynamicObstacle objects.
+        """
         self.plot_robot = PlotRobotDOVS(robot)
         self.plot_obstacles = list(map(lambda obstacle: PlotDynamicObstacleDOVS(obstacle), obstacles))
 
     def plot_trajectories(self, robot_trajectories, obstacles_trajectory, collision_points_list):
+        """
+        Plots the trajectories of the robot and dynamic obstacles, as well as any collision points.
+
+        Args:
+            robot_trajectories (list): A list of RobotTrajectory objects representing the robot's trajectory.
+            obstacles_trajectory (list): A list of lists of ObstacleTrajectory objects representing the dynamic obstacles' trajectories.
+            collision_points_list (list): A list of lists of CollisionPoint objects representing any collision points.
+        """
         fig, ax = plt.subplots()
 
         self.plot_robot.plot_position(ax)
@@ -59,7 +97,23 @@ class PlotDOVS:
 
     
 class PlotObjectDOVS:
+    """
+    A base class for plotting objects in the simulation.
+
+    Methods:
+        dibrobot(pos, axis, c):
+            Draws the robot at a given position on the plot.
+    """
+
     def dibrobot(self, pos, axis, c):
+        """
+        Draws the robot at a given position on the plot.
+
+        Args:
+            pos (tuple): A tuple representing the x, y, and theta coordinates of the robot.
+            axis (AxesSubplot): The subplot to draw the robot on.
+            c (str): The color to draw the robot in.
+        """
         largo=0.1
         corto=0.05
         descentre=0.01
@@ -83,12 +137,48 @@ class PlotObjectDOVS:
 
 
 class PlotDynamicObstacleDOVS(PlotObjectDOVS):
+    """
+    Clase que representa la visualización de un obstáculo dinámico en el simulador DOVS.
+
+    ...
+
+    Atributos
+    ----------
+    obstacle : DynamicObstacle
+        Objeto de la clase DynamicObstacle que representa el obstáculo dinámico a visualizar.
+
+    Métodos
+    -------
+    plot_trajectories(axis, trajectories)
+        Dibuja las trayectorias del obstáculo dinámico en el eje especificado.
+    plot_position(axis)
+        Dibuja la posición actual del obstáculo dinámico en el eje especificado.
+    """
 
     def __init__(self, obstacle) -> None:
+        """
+        Inicializa un objeto de la clase PlotDynamicObstacleDOVS.
+
+        Parámetros
+        ----------
+        obstacle : DynamicObstacle
+            Objeto de la clase DynamicObstacle que representa el obstáculo dinámico a visualizar.
+        """
         self.obstacle = obstacle
 
     # TODO: Maybe only plot as going straight and not backwords too
     def plot_trajectories(self, axis, trajectories):
+        """
+        Dibuja las trayectorias del obstáculo dinámico en el eje especificado.
+
+        Parámetros
+        ----------
+        axis : matplotlib.axes._subplots.AxesSubplot
+            Eje en el que se dibujarán las trayectorias.
+        trajectories : list[DOVSTrajectory]
+            Lista de objetos DOVSTrajectory que representan las trayectorias del obstáculo dinámico a dibujar.
+        """
+
         # print("Plotting obstacle trajectories")
         # print(trajectories)
         
@@ -101,14 +191,47 @@ class PlotDynamicObstacleDOVS(PlotObjectDOVS):
     
 
     def plot_position(self, axis):
+        """
+        Dibuja la posición actual del obstáculo dinámico en el eje especificado.
+
+        Parámetros
+        ----------
+        axis : matplotlib.axes._subplots.AxesSubplot
+            Eje en el que se dibujará la posición actual del obstáculo dinámico.
+        """
         self.dibrobot(self.obstacle.get_location(), axis, 'b')
         axis.add_patch(plt.Circle((self.obstacle.x, self.obstacle.y), self.obstacle.radius, color='blue', fill=False))
 
 
 
 class PlotRobotDOVS(PlotObjectDOVS):
+    """
+    Clase que representa la visualización de un robot en el simulador DOVS.
+
+    ...
+
+    Atributos
+    ----------
+    robot : Robot
+        Objeto de la clase Robot que representa el robot a visualizar.
+
+    Métodos
+    -------
+    plot_trajectories(axis, trajectories)
+        Dibuja las trayectorias del robot en el eje especificado.
+    plot_position(axis)
+        Dibuja la posición actual del robot en el eje especificado.
+    """
 
     def __init__(self, robot) -> None:
+        """
+        Inicializa un objeto de la clase PlotRobotDOVS.
+
+        Parámetros
+        ----------
+        robot : Robot
+            Objeto de la clase Robot que representa el robot a visualizar.
+        """
         self.robot = robot
 
     def plot_trajectories(self, axis, trajectories):

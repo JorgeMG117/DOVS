@@ -60,7 +60,8 @@ class DynamicObstacleDOVS(ObjectDOVS):
         # print("Posicion del obstaculo visto desde el mundo")
         # print((obstacle.x, obstacle.y, obstacle.theta))
         # Get the obstacle position in the robot frame
-        obstacle_pos = self.loc(np.dot(np.linalg.inv(self.hom(robot_location)),self.hom((obstacle.x, obstacle.y, obstacle.theta))))#TODO: Hago esto dos veces, igual lo puedo meter en una funcion
+        self.transform_robot = np.dot(np.linalg.inv(self.hom(robot_location)),self.hom((obstacle.x, obstacle.y, obstacle.theta)))
+        obstacle_pos = self.loc(self.transform_robot)#TODO: Hago esto dos veces, igual lo puedo meter en una funcion
 
         # print("Posicion del obstaculo visto desde el robot")
         # print(obstacle_pos)
@@ -91,6 +92,15 @@ class DynamicObstacleDOVS(ObjectDOVS):
         l2 = Line(p2, slope=ray_1.slope)
         
         return l1, l2
+    
+
+    def get_colision_points(self):
+        """
+        Devuelve los puntos del cuadrado circunscrito al obstaculo que seran los que choquen con los puntos de colision
+        """
+        value1 = np.dot(self.transform_robot, np.array([self.radius, self.radius, 0]))
+        value2 = np.dot(self.transform_robot, np.array([-self.radius, -self.radius, 0]))
+        return value1, value2
     
    
 
