@@ -7,6 +7,8 @@ import matplotlib.patches as patches
 import numpy as np
 
 from sympy import nsolve, Symbol, symbols
+from sympy import Polygon, plot
+
 
 from DOVS.object_dovs import DynamicObstacleDOVS, RobotDOVS
 from DOVS.plot_dovs import PlotDOVS
@@ -47,6 +49,7 @@ class DOVS:
         robot_trajectories = self.robot.compute_trajectories()
         
         obstacles_trajectory = []
+        list_dovs = []
         for obstacle in self.obstacles:
             # Compute the trajectory of the obstacle
             obstacle_trajectory = obstacle.compute_trajectory()
@@ -57,21 +60,18 @@ class DOVS:
             collision_points_list = []
             for trajectory in robot_trajectories:
                 collision_points = self._compute_collision_points(trajectory, obstacle_trajectory)
-                # print("Collision points")
-                # print(collision_points)
                 collision_points_list.append(collision_points)
 
                 velocity_time = self._collision_velocity_times(obstacle, collision_points, trajectory)
                 velocity_time_space.append(velocity_time)
             
-
             dovs = self._create_DOVS(velocity_time_space)#Calculamos el dovs para ese objeto
+            list_dovs.append(dovs)
 
+        dovs = self._combine_DOVS(list_dovs)#Añadimos el dovs calculado al dovs total, geometrically merged
+       
         plotDOVS.plot_trajectories(robot_trajectories, obstacles_trajectory, collision_points_list)
-        #     self.append_DOVS(list_dovs, dovs)#Añadimos el dovs calculado al dovs total, geometrically merged
-
-        
-        # plotDOVS.plot_DOVS(dovs)
+        plotDOVS.plot_DOVS(dovs)
         
     
     def _select_right_collision_point(self, collision_points, trajectory_radius, robot_position):
@@ -197,57 +197,27 @@ class DOVS:
 
 
 
-        return (t_max, v_max, w_max), (t_min, v_min, w_min)
-
-      
-   
+        return [(t_max, v_max, w_max), (t_min, v_min, w_min)]
 
 
        
     def _create_DOVS(self, velocity_time_space):
         """
         Dada la lista de velocidades crea el dovs de manera que se le puedan añadir mas dovs
-        velocity_time_space = [(t1,v1,w1),(t2,v2,w2),(t3,v3,w3),(t4,v4,w4)]
         """
-        print(velocity_time_space)
-        velocity_time_space = [(1, 2, 3),(2,4,4),(1,5,2),(1,7,7),(1,1,1),(2,8,8)]
-        t, v, w = zip(*velocity_time_space)
 
-        # v.sort()
-        # w.sort()
-
-        #t, v, w = []
-
-        # # Extract x and y coordinates from points
-        # x = [point[1] for point in velocity_time_space]
-        # y = [point[2] for point in velocity_time_space]
-
-        # # Add first point to end of lists to close the polygon
-        # x.append(x[0])
-        # y.append(y[0])
-
-        # # Plot polygon
-        # plt.plot(x, y)
-        # plt.show()
-        #is_inside = polygon.contains_point(point)
+        passBehind, passFront = [(passBehind[0][1], passBehind[0][2]) for passBehind in velocity_time_space], [(passFront[1][1], passFront[1][2]) for passFront in velocity_time_space]
 
 
+        # #is_inside = polygon.contains_point(point)
 
-        # vertices = [(0, 0), (0, 1), (1, 1), (1, 0.5), (0.5, 0)]
+        vertices = passBehind + passFront[::-1]
+        return vertices
 
-        # # Create a polygon object with the given vertices
-        # polygon = patches.Polygon(vertices, facecolor='red', edgecolor='black')
 
-        # # Create a figure and axis object
-        # fig, ax = plt.subplots()
-
-        # # Add the polygon to the axis
-        # ax.add_patch(polygon)
-
-        # # Set the limits of the axis
-        # ax.set_xlim([0, 1])
-        # ax.set_ylim([0, 1])
-
-        # # Show the plot
-        # plt.show()
-
+    def _combine_DOVS(self, list_dovs):
+        combine_dovs = []
+        for dovs in list_dovs:
+            combine_dovs = combine_dovs + dovs
+        return combine_dovs
+        

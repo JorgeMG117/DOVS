@@ -1,4 +1,5 @@
 from matplotlib import pyplot as plt
+import matplotlib.patches as patches
 import numpy as np
 
 """Gets and prints the spreadsheet's header columns
@@ -26,13 +27,6 @@ class PlotDOVS:
     """
 
     def __init__(self, robot, obstacles) -> None:
-        """
-        Initializes a new instance of the PlotDOVS class.
-
-        Args:
-            robot (Robot): The robot object.
-            obstacles (list): A list of DynamicObstacle objects.
-        """
         self.plot_robot = PlotRobotDOVS(robot)
         self.plot_obstacles = list(map(lambda obstacle: PlotDynamicObstacleDOVS(obstacle), obstacles))
 
@@ -53,6 +47,7 @@ class PlotDOVS:
 
         for i, obstacle in enumerate(self.plot_obstacles):
             obstacle.plot_position(ax)
+            obstacle.plot_colision_points(ax)
             obstacle.plot_trajectories(ax, obstacles_trajectory[i])
         
         for collision_points in collision_points_list:
@@ -68,32 +63,20 @@ class PlotDOVS:
 
         plt.show()
 
-    def plot_DOVS(self, velocity_time_space):
-        # # fig, ax = plt.subplots()
-        # # Dibujar las velocidades de velocity_time_space
-        # print(velocity_time_space)
+    def plot_DOVS(self, dovs):
+        polygon = patches.Polygon(dovs, closed=True, facecolor='green')
+        # polygon = patches.Polygon(vertices, facecolor='red', edgecolor='black')
 
-        # # Extract x and y coordinates from points
-        # v = [point[1] for point in velocity_time_space]
-        # w = [point[2] for point in velocity_time_space]
+        # Crear la figura y los ejes para mostrar los polígonos
+        fig, ax = plt.subplots()
 
-        # points = [(point[1], point[2]) for point in velocity_time_space]
+        ax.add_patch(polygon)
 
-        # # Add first point to end of lists to close the polygon
-        # # v.append(v[0])
-        # # w.append(w[0])
-        # polygon = plt.Polygon(points, closed=True, fill=None)
+        ax.set_xlim([-3, 3])
+        ax.set_ylim([-3, 3])
 
-
-        # fig, ax = plt.subplots()
-        # ax.add_patch(polygon)
-        # # ax.plot(v, w, 'bo')
-        # plt.xlabel('v')
-        # plt.ylabel('w')
-        # plt.axis('equal')
-        # plt.show()
-
-        pass
+        # Mostrar la figura
+        plt.show()
 
     
 class PlotObjectDOVS:
@@ -203,6 +186,10 @@ class PlotDynamicObstacleDOVS(PlotObjectDOVS):
         axis.add_patch(plt.Circle((self.obstacle.x, self.obstacle.y), self.obstacle.radius, color='blue', fill=False))
 
 
+    def plot_colision_points(self, axis):
+        col_behind, col_ahead = self.obstacle.get_colision_points()
+        axis.plot(col_behind[0], col_behind[1], 'k.')
+        axis.plot(col_ahead[0], col_ahead[1], 'k.')
 
 class PlotRobotDOVS(PlotObjectDOVS):
     """
