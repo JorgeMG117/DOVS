@@ -3,7 +3,6 @@ from sympy import Ray
 import math
 import numpy as np
 
-from sympy.plotting import plot
 from matplotlib import pyplot as plt
 
 class ObjectDOVS:
@@ -83,10 +82,22 @@ class DynamicObstacleDOVS(ObjectDOVS):
         y2 = self.y + self.radius * math.sin(self.theta - math.pi/2)
         p2 = Point(x2, y2)
 
-        # Create a line using the point and angle
-        ray_1 = Ray((0,0), angle=self.theta)
-        l1 = Line(p1, slope=ray_1.slope)
-        l2 = Line(p2, slope=ray_1.slope)
+        if self.w != 0:
+            radius = self.v/self.w
+            center_x = self.x + radius * math.cos(self.theta + math.pi/2)
+            center_y = self.y + radius * math.sin(self.theta + math.pi/2)
+
+            radius_1 = ((center_x - x1) ** 2 + (center_y - y1) ** 2) ** 0.5
+            radius_2 = ((center_x - x2) ** 2 + (center_y - y2) ** 2) ** 0.5  
+
+            l1 = Circle(Point(center_x, center_y), radius_1)
+            l2 = Circle(Point(center_x, center_y), radius_2)
+            
+        else:
+            # Create a line using the point and angle
+            ray_1 = Ray((0,0), angle=self.theta)
+            l1 = Line(p1, slope=ray_1.slope)
+            l2 = Line(p2, slope=ray_1.slope)
         
         return l1, l2
     
@@ -101,7 +112,30 @@ class DynamicObstacleDOVS(ObjectDOVS):
         return value1, value2
     
    
+# class LinearObstacle(DynamicObstacleDOVS):
+#     def compute_trajectory(self):
+#         """
+#         Returns the collision band of the obstacle(two trajectories)
+#         [passBehind, passFront]
+#         """
 
+#         x1 = self.x + self.radius * math.cos(self.theta + math.pi/2)
+#         y1 = self.y + self.radius * math.sin(self.theta + math.pi/2)
+#         p1 = Point(x1, y1)
+
+#         x2 = self.x + self.radius * math.cos(self.theta - math.pi/2)
+#         y2 = self.y + self.radius * math.sin(self.theta - math.pi/2)
+#         p2 = Point(x2, y2)
+
+#         # Create a line using the point and angle
+#         ray_1 = Ray((0,0), angle=self.theta)
+#         l1 = Line(p1, slope=ray_1.slope)
+#         l2 = Line(p2, slope=ray_1.slope)
+        
+#         return l1, l2
+
+# class CircularObstacle(DynamicObstacleDOVS):
+#     pass
 
 
 class RobotDOVS(ObjectDOVS):

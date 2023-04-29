@@ -44,6 +44,8 @@ class DOVS:
         """
 
         plotDOVS = PlotDOVS(self.robot, self.obstacles)
+
+        # plotDOVS.prueba()
         
         # Obtain all pasible trajectories of robot
         robot_trajectories = self.robot.compute_trajectories()
@@ -53,6 +55,7 @@ class DOVS:
         for obstacle in self.obstacles:
             # Compute the trajectory of the obstacle
             obstacle_trajectory = obstacle.compute_trajectory()
+            # print(obstacle_trajectory)
 
             obstacles_trajectory.append(obstacle_trajectory)
         
@@ -61,6 +64,9 @@ class DOVS:
             for trajectory in robot_trajectories:
                 collision_points = self._compute_collision_points(trajectory, obstacle_trajectory)
                 collision_points_list.append(collision_points)
+
+                # print(collision_points)
+                # plotDOVS.plot_trajectories(robot_trajectories, obstacles_trajectory, collision_points_list)
 
                 velocity_time = self._collision_velocity_times(obstacle, collision_points, trajectory)
                 velocity_time_space.append(velocity_time)
@@ -156,21 +162,27 @@ class DOVS:
 
         w_min = v_min = w_max = v_max = t_min = t_max = 0
 
-        if collision_points[0] == None:
-            # Calculo la velocidad maxima que puedo llevar
-            # Pongo como minima el limite superior. No hay velocidad de escape
-            (t_max, v_max, w_max) = self._collision_velocity_times_aux(collision_points[1], obs_col_behind, trajectory.radius, v_object)
-            
-            v_min = self.robot.max_v
-            w_min = v_min/trajectory.radius
 
-        elif collision_points[1] == None:
-            # Calculo la velocidad maxima que puedo llevar
-            # Pongo como minima el limite superior. No hay velocidad de escape
-            (t_max, v_max, w_max) = self._collision_velocity_times_aux(collision_points[0], obs_col_behind, trajectory.radius, v_object)
-            
-            v_min = self.robot.max_v
-            w_min = v_min/trajectory.radius
+        if collision_points[0] == None or collision_points[1] == None:
+            if collision_points[0] == None and collision_points[1] == None:
+                #TODO: Mirar si esto esta bien
+                v_min = self.robot.max_v
+                w_min = v_min/trajectory.radius
+
+                v_max = self.robot.max_v
+                w_max = v_min/trajectory.radius
+            else:
+                if collision_points[0] == None:
+                    collision_point =  collision_points[1]
+                else:
+                    collision_point =  collision_points[0]
+                
+                # Calculo la velocidad maxima que puedo llevar
+                # Pongo como minima el limite superior. No hay velocidad de escape
+                (t_max, v_max, w_max) = self._collision_velocity_times_aux(collision_point, obs_col_behind, trajectory.radius, v_object)
+                
+                v_min = self.robot.max_v
+                w_min = v_min/trajectory.radius
         else:
             idx_first = 0
 

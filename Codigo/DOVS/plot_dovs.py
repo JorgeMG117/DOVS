@@ -2,6 +2,12 @@ from matplotlib import pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
 
+from sympy.plotting import plot
+from sympy.plotting import plot_implicit
+from sympy.geometry import Point, Circle, Line
+  
+
+
 """Gets and prints the spreadsheet's header columns
 
 :param file_loc: The file location of the spreadsheet
@@ -29,6 +35,21 @@ class PlotDOVS:
     def __init__(self, robot, obstacles) -> None:
         self.plot_robot = PlotRobotDOVS(robot)
         self.plot_obstacles = list(map(lambda obstacle: PlotDynamicObstacleDOVS(obstacle), obstacles))
+
+    def prueba(self):
+        # using Circle()
+        c1 = Circle(Point(0, 0), 5)
+        print(c1.equation())
+        p1 = Point(1, 2)
+        p2 = Point(3, 4)
+
+        # equation of the line using two points
+        line = Line(p1, p2)
+        #print(c1.hradius, c1.vradius, c1.radius)
+        p1 = plot_implicit(line.equation(), show=False)
+        p1.show()
+
+
 
     def plot_trajectories(self, robot_trajectories, obstacles_trajectory, collision_points_list):
         """
@@ -72,8 +93,12 @@ class PlotDOVS:
 
         ax.add_patch(polygon)
 
-        ax.set_xlim([-3, 3])
-        ax.set_ylim([-3, 3])
+
+        # Dibujar rombo de velocidades#TODO
+        self.plot_robot.plot_velocity_window(ax)
+
+        ax.set_xlim([-1, 2])
+        ax.set_ylim([-1, 2])
 
         # Mostrar la figura
         plt.show()
@@ -139,14 +164,6 @@ class PlotDynamicObstacleDOVS(PlotObjectDOVS):
     """
 
     def __init__(self, obstacle) -> None:
-        """
-        Inicializa un objeto de la clase PlotDynamicObstacleDOVS.
-
-        Parámetros
-        ----------
-        obstacle : DynamicObstacle
-            Objeto de la clase DynamicObstacle que representa el obstáculo dinámico a visualizar.
-        """
         self.obstacle = obstacle
 
     # TODO: Maybe only plot as going straight and not backwords too
@@ -166,11 +183,15 @@ class PlotDynamicObstacleDOVS(PlotObjectDOVS):
         # print(trajectories)
         
         for trajectory in trajectories:
-            # print(trajectory)
-            point1 = trajectory.points[0].coordinates
-            point2 = trajectory.points[1].coordinates
+            # p1 = plot_implicit(trajectory.equation(), show=False)
+            
+            axis.add_patch(plt.Circle((trajectory.center.coordinates[0], trajectory.center.coordinates[1]), trajectory.radius, color='green', fill=False))
+            
+            # # print(trajectory)
+            # point1 = trajectory.points[0].coordinates
+            # point2 = trajectory.points[1].coordinates
 
-            axis.axline(xy1=tuple(float(coord) for coord in point1), xy2=tuple(float(coord) for coord in point2))
+            # axis.axline(xy1=tuple(float(coord) for coord in point1), xy2=tuple(float(coord) for coord in point2))
     
 
     def plot_position(self, axis):
@@ -211,14 +232,6 @@ class PlotRobotDOVS(PlotObjectDOVS):
     """
 
     def __init__(self, robot) -> None:
-        """
-        Inicializa un objeto de la clase PlotRobotDOVS.
-
-        Parámetros
-        ----------
-        robot : Robot
-            Objeto de la clase Robot que representa el robot a visualizar.
-        """
         self.robot = robot
 
     def plot_trajectories(self, axis, trajectories):
@@ -232,5 +245,10 @@ class PlotRobotDOVS(PlotObjectDOVS):
         self.dibrobot(self.robot.get_location(), axis, 'r')
         #axis.plot(self.robot.x, self.robot.y, marker=(3, 0, self.robot.theta*90), markersize=20, linestyle='None')
 
+    def plot_velocity_window(self, axis):
+        axis.plot(self.robot.v, self.robot.w, 'k.')
+        # TODO
+        # t = timestep
+        # v = self.robot.max_av * t
 
 
