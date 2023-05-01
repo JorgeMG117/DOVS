@@ -1,13 +1,13 @@
-import sympy
-from sympy.geometry import *
+# import sympy
+# from sympy.geometry import *
 import math
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
+# import matplotlib.pyplot as plt
+# import matplotlib.patches as patches
 
 import numpy as np
 
-from sympy import nsolve, Symbol, symbols
-from sympy import Polygon, plot
+# from sympy import nsolve, Symbol, symbols
+# from sympy import Polygon, plot
 from DOVS.geometry.velocity_window import VelocityWindow
 
 
@@ -32,7 +32,9 @@ https://www.matecdev.com/posts/shapely-polygon-from-points.html
 
 class DOVS:
     def __init__(self, robot, obstacles, timestep) -> None:
-        self.robot = RobotDOVS(robot)
+        velocity_window = VelocityWindow(robot, timestep)
+
+        self.robot = RobotDOVS(robot, velocity_window)
         self.obstacles = list(map(lambda obstacle: DynamicObstacleDOVS(obstacle, robot.radius, (robot.x, robot.y, robot.theta)), obstacles))
         self.timestep = timestep
 
@@ -47,9 +49,7 @@ class DOVS:
         This function should be call every timestep
         """
 
-        velocity_window = VelocityWindow(self.robot, self.timestep)
-        plotDOVS = PlotDOVS(self.robot, velocity_window, self.obstacles)
-        
+        plotDOVS = PlotDOVS(self.robot, self.obstacles)
 
         # plotDOVS.prueba()
         
@@ -121,15 +121,15 @@ class DOVS:
             return None
 
 
-    def _compute_collision_points(self, trajectory, collision_band):
+    def _compute_collision_points(self, trajectory, obstacle_trajectory):
         """
         Compute the collision points of the trajectory with the collision band
         returns (passBehindCollisionPoint, passFrontCollisionPoint)
         :return: returns a tuple with two values, if there is an intersection the value will be a Point2D, if not it will be None
         """
         
-        intersection_1 = trajectory.intersection(collision_band[0])
-        intersection_2 = trajectory.intersection(collision_band[1])
+        intersection_1 = trajectory.intersection(obstacle_trajectory[0])
+        intersection_2 = trajectory.intersection(obstacle_trajectory[1])
 
         return self._select_right_collision_point(intersection_1, trajectory.radius, self.robot.get_location()), self._select_right_collision_point(intersection_2, trajectory.radius, self.robot.get_location())
         
@@ -242,4 +242,10 @@ class DOVS:
         return combine_dovs
         
     def _choose_speed(self):
-        pass
+        v = 1
+        w = 1
+
+        if self.robot.velocity_window.contains([v,w]):
+            return v,w
+        else:
+            return 0,0

@@ -84,7 +84,7 @@ class PlotDOVS:
 
         plt.show()
 
-    def plot_DOVS(self, dovs, velocity_window):
+    def plot_DOVS(self, dovs):
         polygon = patches.Polygon(dovs, closed=True, facecolor='green')
         # polygon = patches.Polygon(vertices, facecolor='red', edgecolor='black')
 
@@ -247,23 +247,24 @@ class PlotRobotDOVS(PlotObjectDOVS):
         #axis.plot(self.robot.x, self.robot.y, marker=(3, 0, self.robot.theta*90), markersize=20, linestyle='None')
 
     def plot_velocity_window(self, axis):
-        axis.plot(self.robot.v, self.robot.w, 'k.')
-        # TODO cambia de donde sale esto
-        t = 0.2 #timestep
-        #a = (vf - vi) / t
-        v_max = self.robot.max_av * t + self.robot.v
-        v_min = -self.robot.max_av * t + self.robot.v
-        w_max = self.robot.max_aw * t + self.robot.v
-        w_min = -self.robot.max_aw * t + self.robot.v
-        # axis.plot(v_max, self.robot.w, 'k.')
-        # axis.plot(v_min, self.robot.w, 'k.')
-        # axis.plot(self.robot.v, w_max, 'k.')
-        # axis.plot(self.robot.v, w_min, 'k.')
+        self.robot.velocity_window.plot(axis)
+        # axis.plot(self.robot.v, self.robot.w, 'k.')
+        # # TODO cambia de donde sale esto
+        # t = 0.2 #timestep
+        # #a = (vf - vi) / t
+        # v_max = self.robot.max_av * t + self.robot.v
+        # v_min = -self.robot.max_av * t + self.robot.v
+        # w_max = self.robot.max_aw * t + self.robot.v
+        # w_min = -self.robot.max_aw * t + self.robot.v
+        # # axis.plot(v_max, self.robot.w, 'k.')
+        # # axis.plot(v_min, self.robot.w, 'k.')
+        # # axis.plot(self.robot.v, w_max, 'k.')
+        # # axis.plot(self.robot.v, w_min, 'k.')
 
-        poly = patches.Polygon(list(zip([v_max, self.robot.v, v_min, self.robot.v], [self.robot.w, w_max, self.robot.w, w_min])), color='lightblue', alpha=0.5)
+        # poly = patches.Polygon(list(zip([v_max, self.robot.v, v_min, self.robot.v], [self.robot.w, w_max, self.robot.w, w_min])), color='lightblue', alpha=0.5)
 
-        # Agrega el polígono al eje
-        axis.add_patch(poly)
-        # v = self.robot.max_av * t
+        # # Agrega el polígono al eje
+        # axis.add_patch(poly)
+        # # v = self.robot.max_av * t
 
 

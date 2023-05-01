@@ -1,5 +1,5 @@
-from sympy.geometry import *
-from sympy import Ray
+# from sympy.geometry import *
+# from sympy import Ray
 import math
 import numpy as np
 
@@ -138,7 +138,7 @@ class DynamicObstacleDOVS(ObjectDOVS):
 
 
 class RobotDOVS(ObjectDOVS):
-    def __init__(self, robot) -> None:
+    def __init__(self, robot, velocity_window) -> None:
 
         goal_pos = self.loc(np.dot(np.linalg.inv(self.hom((robot.x, robot.y, robot.theta))),self.hom((robot.x_goal, robot.y_goal, robot.theta))))
         self.x_goal = goal_pos[0]
@@ -153,6 +153,8 @@ class RobotDOVS(ObjectDOVS):
 
         self.trajectory_max_radius = 10
         self.trajectory_step_radius = 2
+
+        self.velocity_window = velocity_window
 
         super().__init__(robot.v, robot.w, 0, 0, 0)
         # super().__init__(robot.v, robot.w, robot.x, robot.y, robot.theta)
