@@ -8,6 +8,7 @@ import numpy as np
 
 from sympy import nsolve, Symbol, symbols
 from sympy import Polygon, plot
+from DOVS.geometry.velocity_window import VelocityWindow
 
 
 from DOVS.object_dovs import DynamicObstacleDOVS, RobotDOVS
@@ -35,6 +36,9 @@ class DOVS:
         self.obstacles = list(map(lambda obstacle: DynamicObstacleDOVS(obstacle, robot.radius, (robot.x, robot.y, robot.theta)), obstacles))
         self.timestep = timestep
 
+        #Velocity window
+        #El poligono de velocidades prohibidas
+
 
     def compute_DOVS(self):
         """
@@ -43,7 +47,9 @@ class DOVS:
         This function should be call every timestep
         """
 
-        plotDOVS = PlotDOVS(self.robot, self.obstacles)
+        velocity_window = VelocityWindow(self.robot, self.timestep)
+        plotDOVS = PlotDOVS(self.robot, velocity_window, self.obstacles)
+        
 
         # plotDOVS.prueba()
         
@@ -78,6 +84,8 @@ class DOVS:
        
         plotDOVS.plot_trajectories(robot_trajectories, obstacles_trajectory, collision_points_list)
         plotDOVS.plot_DOVS(dovs)
+
+        return self._choose_speed()
         
     
     def _select_right_collision_point(self, collision_points, trajectory_radius, robot_position):
@@ -233,3 +241,5 @@ class DOVS:
             combine_dovs = combine_dovs + dovs
         return combine_dovs
         
+    def _choose_speed(self):
+        pass

@@ -42,6 +42,7 @@ fig, ax = plt.subplots(1,1, figsize=(12,12))
 robot = Robot(0.0, 0.0, 0.0, 2.0, -np.pi/2, 0.2, 0.0, -2.0, 0.0, 0.7, -np.pi/2, np.pi/2, 0.7, np.pi/2)
 obstacles_vec = []
 obstacles_vec.append(DynamicObstacle(0.5, 0.5, -2.0, 0.0, 0.0, 0.2))
+obstacles_vec.append(DynamicObstacle(0.5, 0, 2.0, 0.0, 0.0, 0.2))
 
 
 obstacles_artist = []

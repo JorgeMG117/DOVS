@@ -49,8 +49,6 @@ class ObjectDOVS:
 
 
 
-
-
 class DynamicObstacleDOVS(ObjectDOVS):
     def __init__(self, obstacle, robot_radius, robot_location) -> None:
         # print("Posicion del robot visto desde el mundo")
@@ -82,6 +80,7 @@ class DynamicObstacleDOVS(ObjectDOVS):
         y2 = self.y + self.radius * math.sin(self.theta - math.pi/2)
         p2 = Point(x2, y2)
 
+        # TODO: Asi o con distintas clases
         if self.w != 0:
             radius = self.v/self.w
             center_x = self.x + radius * math.cos(self.theta + math.pi/2)

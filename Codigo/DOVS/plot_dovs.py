@@ -84,7 +84,7 @@ class PlotDOVS:
 
         plt.show()
 
-    def plot_DOVS(self, dovs):
+    def plot_DOVS(self, dovs, velocity_window):
         polygon = patches.Polygon(dovs, closed=True, facecolor='green')
         # polygon = patches.Polygon(vertices, facecolor='red', edgecolor='black')
 
@@ -182,17 +182,18 @@ class PlotDynamicObstacleDOVS(PlotObjectDOVS):
         # print("Plotting obstacle trajectories")
         # print(trajectories)
         
+        #TODO: Hago clases distintas para los tipos de trayectorias???
         for trajectory in trajectories:
             # p1 = plot_implicit(trajectory.equation(), show=False)
-            
-            axis.add_patch(plt.Circle((trajectory.center.coordinates[0], trajectory.center.coordinates[1]), trajectory.radius, color='green', fill=False))
-            
+            if self.obstacle.w != 0:
+                axis.add_patch(plt.Circle((trajectory.center.coordinates[0], trajectory.center.coordinates[1]), trajectory.radius, color='green', fill=False))
+            else:
             # # print(trajectory)
-            # point1 = trajectory.points[0].coordinates
-            # point2 = trajectory.points[1].coordinates
+                point1 = trajectory.points[0].coordinates
+                point2 = trajectory.points[1].coordinates
 
-            # axis.axline(xy1=tuple(float(coord) for coord in point1), xy2=tuple(float(coord) for coord in point2))
-    
+                axis.axline(xy1=tuple(float(coord) for coord in point1), xy2=tuple(float(coord) for coord in point2))
+        
 
     def plot_position(self, axis):
         """
@@ -247,8 +248,22 @@ class PlotRobotDOVS(PlotObjectDOVS):
 
     def plot_velocity_window(self, axis):
         axis.plot(self.robot.v, self.robot.w, 'k.')
-        # TODO
-        # t = timestep
+        # TODO cambia de donde sale esto
+        t = 0.2 #timestep
+        #a = (vf - vi) / t
+        v_max = self.robot.max_av * t + self.robot.v
+        v_min = -self.robot.max_av * t + self.robot.v
+        w_max = self.robot.max_aw * t + self.robot.v
+        w_min = -self.robot.max_aw * t + self.robot.v
+        # axis.plot(v_max, self.robot.w, 'k.')
+        # axis.plot(v_min, self.robot.w, 'k.')
+        # axis.plot(self.robot.v, w_max, 'k.')
+        # axis.plot(self.robot.v, w_min, 'k.')
+
+        poly = patches.Polygon(list(zip([v_max, self.robot.v, v_min, self.robot.v], [self.robot.w, w_max, self.robot.w, w_min])), color='lightblue', alpha=0.5)
+
+        # Agrega el polígono al eje
+        axis.add_patch(poly)
         # v = self.robot.max_av * t
 
 
