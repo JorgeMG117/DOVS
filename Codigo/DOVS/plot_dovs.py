@@ -2,64 +2,33 @@ from matplotlib import pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
 
-from sympy.plotting import plot
-from sympy.plotting import plot_implicit
-from sympy.geometry import Point, Circle, Line
-  
+# from sympy.plotting import plot
+# from sympy.plotting import plot_implicit
+# from sympy.geometry import Point, Circle, Line
 
-
-"""Gets and prints the spreadsheet's header columns
-
-:param file_loc: The file location of the spreadsheet
-:type file_loc: str
-:param print_cols: A flag used to print the columns to the console
-    (default is False)
-:type print_cols: bool
-:returns: a list of strings representing the header columns
-:rtype: list
-"""
 
 class PlotDOVS:
-    """
-    A class for plotting the trajectories of the robot and dynamic obstacles.
-
-    Attributes:
-        robot (Robot): The robot object.
-        obstacles (list): A list of DynamicObstacle objects.
-
-    Methods:
-        plot_trajectories(robot_trajectories, obstacles_trajectory, collision_points_list):
-            Plots the trajectories of the robot and dynamic obstacles, as well as any collision points.
-    """
 
     def __init__(self, robot, obstacles) -> None:
         self.plot_robot = PlotRobotDOVS(robot)
         self.plot_obstacles = list(map(lambda obstacle: PlotDynamicObstacleDOVS(obstacle), obstacles))
 
-    def prueba(self):
-        # using Circle()
-        c1 = Circle(Point(0, 0), 5)
-        print(c1.equation())
-        p1 = Point(1, 2)
-        p2 = Point(3, 4)
+    # def prueba(self):
+    #     # using Circle()
+    #     c1 = Circle(Point(0, 0), 5)
+    #     print(c1.equation())
+    #     p1 = Point(1, 2)
+    #     p2 = Point(3, 4)
 
-        # equation of the line using two points
-        line = Line(p1, p2)
-        #print(c1.hradius, c1.vradius, c1.radius)
-        p1 = plot_implicit(line.equation(), show=False)
-        p1.show()
+    #     # equation of the line using two points
+    #     line = Line(p1, p2)
+    #     #print(c1.hradius, c1.vradius, c1.radius)
+    #     p1 = plot_implicit(line.equation(), show=False)
+    #     p1.show()
 
 
 
     def plot_trajectories(self, robot_trajectories, obstacles_trajectory, collision_points_list):
-        """
-        Plots the trajectories of the robot and dynamic obstacles, as well as any collision points.
-
-        Args:
-            robot_trajectories (list): A list of RobotTrajectory objects representing the robot's trajectory.
-            obstacles_trajectory (list): A list of lists of ObstacleTrajectory objects representing the dynamic obstacles' trajectories.
-            collision_points_list (list): A list of lists of CollisionPoint objects representing any collision points.
-        """
         fig, ax = plt.subplots()
 
         self.plot_robot.plot_position(ax)
@@ -68,6 +37,7 @@ class PlotDOVS:
 
         for i, obstacle in enumerate(self.plot_obstacles):
             obstacle.plot_position(ax)
+            #print(obstacle.obstacle.radius)
             obstacle.plot_colision_points(ax)
             obstacle.plot_trajectories(ax, obstacles_trajectory[i])
         
@@ -105,23 +75,8 @@ class PlotDOVS:
 
     
 class PlotObjectDOVS:
-    """
-    A base class for plotting objects in the simulation.
-
-    Methods:
-        dibrobot(pos, axis, c):
-            Draws the robot at a given position on the plot.
-    """
 
     def dibrobot(self, pos, axis, c):
-        """
-        Draws the robot at a given position on the plot.
-
-        Args:
-            pos (tuple): A tuple representing the x, y, and theta coordinates of the robot.
-            axis (AxesSubplot): The subplot to draw the robot on.
-            c (str): The color to draw the robot in.
-        """
         largo=0.1
         corto=0.05
         descentre=0.01
@@ -145,65 +100,33 @@ class PlotObjectDOVS:
 
 
 class PlotDynamicObstacleDOVS(PlotObjectDOVS):
-    """
-    Clase que representa la visualización de un obstáculo dinámico en el simulador DOVS.
-
-    ...
-
-    Atributos
-    ----------
-    obstacle : DynamicObstacle
-        Objeto de la clase DynamicObstacle que representa el obstáculo dinámico a visualizar.
-
-    Métodos
-    -------
-    plot_trajectories(axis, trajectories)
-        Dibuja las trayectorias del obstáculo dinámico en el eje especificado.
-    plot_position(axis)
-        Dibuja la posición actual del obstáculo dinámico en el eje especificado.
-    """
 
     def __init__(self, obstacle) -> None:
         self.obstacle = obstacle
 
     # TODO: Maybe only plot as going straight and not backwords too
-    def plot_trajectories(self, axis, trajectories):
-        """
-        Dibuja las trayectorias del obstáculo dinámico en el eje especificado.
-
-        Parámetros
-        ----------
-        axis : matplotlib.axes._subplots.AxesSubplot
-            Eje en el que se dibujarán las trayectorias.
-        trajectories : list[DOVSTrajectory]
-            Lista de objetos DOVSTrajectory que representan las trayectorias del obstáculo dinámico a dibujar.
-        """
+    def plot_trajectories(self, axis, trajectory):
+        trajectory.plot(axis)
 
         # print("Plotting obstacle trajectories")
         # print(trajectories)
         
         #TODO: Hago clases distintas para los tipos de trayectorias???
-        for trajectory in trajectories:
+        # for trajectory in trajectories:
+        #     trajectory.plot(axis)
             # p1 = plot_implicit(trajectory.equation(), show=False)
-            if self.obstacle.w != 0:
-                axis.add_patch(plt.Circle((trajectory.center.coordinates[0], trajectory.center.coordinates[1]), trajectory.radius, color='green', fill=False))
-            else:
-            # # print(trajectory)
-                point1 = trajectory.points[0].coordinates
-                point2 = trajectory.points[1].coordinates
 
-                axis.axline(xy1=tuple(float(coord) for coord in point1), xy2=tuple(float(coord) for coord in point2))
+            # if self.obstacle.w != 0:
+            #     axis.add_patch(plt.Circle((trajectory.center.coordinates[0], trajectory.center.coordinates[1]), trajectory.radius, color='green', fill=False))
+            # else:
+            # # # print(trajectory)
+            #     point1 = trajectory.points[0].coordinates
+            #     point2 = trajectory.points[1].coordinates
+
+            #     axis.axline(xy1=tuple(float(coord) for coord in point1), xy2=tuple(float(coord) for coord in point2))
         
 
     def plot_position(self, axis):
-        """
-        Dibuja la posición actual del obstáculo dinámico en el eje especificado.
-
-        Parámetros
-        ----------
-        axis : matplotlib.axes._subplots.AxesSubplot
-            Eje en el que se dibujará la posición actual del obstáculo dinámico.
-        """
         self.dibrobot(self.obstacle.get_location(), axis, 'b')
         axis.add_patch(plt.Circle((self.obstacle.x, self.obstacle.y), self.obstacle.radius, color='blue', fill=False))
 
@@ -213,31 +136,15 @@ class PlotDynamicObstacleDOVS(PlotObjectDOVS):
         axis.plot(col_behind[0], col_behind[1], 'k.')
         axis.plot(col_ahead[0], col_ahead[1], 'k.')
 
+
 class PlotRobotDOVS(PlotObjectDOVS):
-    """
-    Clase que representa la visualización de un robot en el simulador DOVS.
-
-    ...
-
-    Atributos
-    ----------
-    robot : Robot
-        Objeto de la clase Robot que representa el robot a visualizar.
-
-    Métodos
-    -------
-    plot_trajectories(axis, trajectories)
-        Dibuja las trayectorias del robot en el eje especificado.
-    plot_position(axis)
-        Dibuja la posición actual del robot en el eje especificado.
-    """
 
     def __init__(self, robot) -> None:
         self.robot = robot
 
     def plot_trajectories(self, axis, trajectories):
         for trajectory in trajectories:
-            axis.add_patch(plt.Circle((trajectory.center.coordinates[0], trajectory.center.coordinates[1]), trajectory.radius, color='blue', fill=False))
+            trajectory.plot(axis)
 
     def plot_position(self, axis):
         #axis.scatter(self.robot.x, self.robot.y, color='red', marker='^', s=100, angle=0)

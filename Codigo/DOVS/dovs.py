@@ -14,6 +14,8 @@ from DOVS.geometry.velocity_window import VelocityWindow
 from DOVS.object_dovs import DynamicObstacleDOVS, RobotDOVS
 from DOVS.plot_dovs import PlotDOVS
 
+from DOVS.geometry.trajectory import intersection
+
 """
 https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Polygon.html
 Buscar funcion que dado un poligono ver si velocidades pertence a ese poligono
@@ -38,7 +40,6 @@ class DOVS:
         self.obstacles = list(map(lambda obstacle: DynamicObstacleDOVS(obstacle, robot.radius, (robot.x, robot.y, robot.theta)), obstacles))
         self.timestep = timestep
 
-        #Velocity window
         #El poligono de velocidades prohibidas
 
 
@@ -49,7 +50,7 @@ class DOVS:
         This function should be call every timestep
         """
 
-        plotDOVS = PlotDOVS(self.robot, self.obstacles)
+        
 
         # plotDOVS.prueba()
         
@@ -81,6 +82,9 @@ class DOVS:
             list_dovs.append(dovs)
 
         dovs = self._combine_DOVS(list_dovs)#Añadimos el dovs calculado al dovs total, geometrically merged
+
+
+        plotDOVS = PlotDOVS(self.robot, self.obstacles)
        
         plotDOVS.plot_trajectories(robot_trajectories, obstacles_trajectory, collision_points_list)
         plotDOVS.plot_DOVS(dovs)
@@ -128,8 +132,10 @@ class DOVS:
         :return: returns a tuple with two values, if there is an intersection the value will be a Point2D, if not it will be None
         """
         
-        intersection_1 = trajectory.intersection(obstacle_trajectory[0])
-        intersection_2 = trajectory.intersection(obstacle_trajectory[1])
+        intersection_1, intersection_2 = intersection(obstacle_trajectory, trajectory)
+        
+        # intersection_1 = trajectory.intersection(obstacle_trajectory[0])
+        # intersection_2 = trajectory.intersection(obstacle_trajectory[1])
 
         return self._select_right_collision_point(intersection_1, trajectory.radius, self.robot.get_location()), self._select_right_collision_point(intersection_2, trajectory.radius, self.robot.get_location())
         

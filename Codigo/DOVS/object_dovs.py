@@ -3,7 +3,9 @@
 import math
 import numpy as np
 
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
+
+from DOVS.geometry.trajectory import CircularTrajectory, LinearTrajectory, RobotTrajectory
 
 class ObjectDOVS:
     def __init__(self, v, w, x, y, theta) -> None:
@@ -63,6 +65,8 @@ class DynamicObstacleDOVS(ObjectDOVS):
         # El tamaño del objeto es el cuadrado que rodea al circulo
         self.radius = obstacle.radius + robot_radius
 
+        self.trajectory = None
+
         super().__init__(obstacle.v, obstacle.w, obstacle_pos[0], obstacle_pos[1], obstacle_pos[2])
         # super().__init__(obstacle.v, obstacle.w, obstacle.x, obstacle.y, obstacle.theta)
     
@@ -74,31 +78,17 @@ class DynamicObstacleDOVS(ObjectDOVS):
 
         x1 = self.x + self.radius * math.cos(self.theta + math.pi/2)
         y1 = self.y + self.radius * math.sin(self.theta + math.pi/2)
-        p1 = Point(x1, y1)
 
         x2 = self.x + self.radius * math.cos(self.theta - math.pi/2)
         y2 = self.y + self.radius * math.sin(self.theta - math.pi/2)
-        p2 = Point(x2, y2)
 
         # TODO: Asi o con distintas clases
         if self.w != 0:
-            radius = self.v/self.w
-            center_x = self.x + radius * math.cos(self.theta + math.pi/2)
-            center_y = self.y + radius * math.sin(self.theta + math.pi/2)
-
-            radius_1 = ((center_x - x1) ** 2 + (center_y - y1) ** 2) ** 0.5
-            radius_2 = ((center_x - x2) ** 2 + (center_y - y2) ** 2) ** 0.5  
-
-            l1 = Circle(Point(center_x, center_y), radius_1)
-            l2 = Circle(Point(center_x, center_y), radius_2)
-            
+            self.trajectory = CircularTrajectory((x1, y1), (x2, y2), (self.x, self.y, self.theta), (self.v, self.w))
         else:
-            # Create a line using the point and angle
-            ray_1 = Ray((0,0), angle=self.theta)
-            l1 = Line(p1, slope=ray_1.slope)
-            l2 = Line(p2, slope=ray_1.slope)
+            self.trajectory = LinearTrajectory((x1, y1), (x2, y2), self.theta)
         
-        return l1, l2
+        return self.trajectory
     
 
     def get_colision_points(self):
@@ -170,11 +160,8 @@ class RobotDOVS(ObjectDOVS):
         for radius in range(-self.trajectory_max_radius, self.trajectory_max_radius, self.trajectory_step_radius):
             if radius == 0: continue
             
-            center_x = self.x + radius * math.cos(self.theta + math.pi/2)
-            center_y = self.y + radius * math.sin(self.theta + math.pi/2)
-            c = Circle(Point(center_x, center_y), radius)
-            
-            trajectories.append(c)
+            trajectory = RobotTrajectory(radius, (self.x, self.y, self.theta))
+            trajectories.append(trajectory)
         
         return trajectories
     
