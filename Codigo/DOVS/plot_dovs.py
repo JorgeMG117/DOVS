@@ -39,12 +39,12 @@ class PlotDOVS:
             obstacle.plot_position(ax)
             #print(obstacle.obstacle.radius)
             obstacle.plot_colision_points(ax)
-            obstacle.plot_trajectories(ax, obstacles_trajectory[i])
+            obstacle.plot_trajectory(ax, obstacles_trajectory[i])
         
         for collision_points in collision_points_list:
             for collision_point in collision_points:
                 if collision_point != None:
-                    ax.plot(collision_point.coordinates[0], collision_point.coordinates[1], 'g.')
+                    ax.plot(collision_point[0], collision_point[1], 'g.')
                     
 
         # Set the axis limits
@@ -105,7 +105,7 @@ class PlotDynamicObstacleDOVS(PlotObjectDOVS):
         self.obstacle = obstacle
 
     # TODO: Maybe only plot as going straight and not backwords too
-    def plot_trajectories(self, axis, trajectory):
+    def plot_trajectory(self, axis, trajectory):
         trajectory.plot(axis)
 
         # print("Plotting obstacle trajectories")
@@ -155,23 +155,5 @@ class PlotRobotDOVS(PlotObjectDOVS):
 
     def plot_velocity_window(self, axis):
         self.robot.velocity_window.plot(axis)
-        # axis.plot(self.robot.v, self.robot.w, 'k.')
-        # # TODO cambia de donde sale esto
-        # t = 0.2 #timestep
-        # #a = (vf - vi) / t
-        # v_max = self.robot.max_av * t + self.robot.v
-        # v_min = -self.robot.max_av * t + self.robot.v
-        # w_max = self.robot.max_aw * t + self.robot.v
-        # w_min = -self.robot.max_aw * t + self.robot.v
-        # # axis.plot(v_max, self.robot.w, 'k.')
-        # # axis.plot(v_min, self.robot.w, 'k.')
-        # # axis.plot(self.robot.v, w_max, 'k.')
-        # # axis.plot(self.robot.v, w_min, 'k.')
-
-        # poly = patches.Polygon(list(zip([v_max, self.robot.v, v_min, self.robot.v], [self.robot.w, w_max, self.robot.w, w_min])), color='lightblue', alpha=0.5)
-
-        # # Agrega el polígono al eje
-        # axis.add_patch(poly)
-        # # v = self.robot.max_av * t
 
 

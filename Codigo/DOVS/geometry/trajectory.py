@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 def intersection(obstacle_trajectory, robot_trajectory):
     intersection_1 = robot_trajectory.c.intersection(obstacle_trajectory.l1)
     intersection_2 = robot_trajectory.c.intersection(obstacle_trajectory.l2)
-    # Transformar lista de puntos a coordenads
+    
     return intersection_1, intersection_2
 
 

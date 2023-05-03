@@ -32,6 +32,7 @@ https://www.matecdev.com/posts/shapely-polygon-from-points.html
 #         self.distance_up = 0 #distance from the collision point to the object
 #         self.distance_down = 0
 
+#TODO: Mirar que hacer cuando el obstaculo esta mirando hacia un lado y no deberia chocar con nada
 class DOVS:
     def __init__(self, robot, obstacles, timestep) -> None:
         velocity_window = VelocityWindow(robot, timestep)
@@ -59,21 +60,17 @@ class DOVS:
         
         obstacles_trajectory = []
         list_dovs = []
+        collision_points_list = []
         for obstacle in self.obstacles:
             # Compute the trajectory of the obstacle
             obstacle_trajectory = obstacle.compute_trajectory()
-            # print(obstacle_trajectory)
-
             obstacles_trajectory.append(obstacle_trajectory)
         
             velocity_time_space = []
-            collision_points_list = []
             for trajectory in robot_trajectories:
+                # Compute collision points of an obstacle for every robot trajectory
                 collision_points = self._compute_collision_points(trajectory, obstacle_trajectory)
                 collision_points_list.append(collision_points)
-
-                # print(collision_points)
-                # plotDOVS.plot_trajectories(robot_trajectories, obstacles_trajectory, collision_points_list)
 
                 velocity_time = self._collision_velocity_times(obstacle, collision_points, trajectory)
                 velocity_time_space.append(velocity_time)
