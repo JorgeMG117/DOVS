@@ -60,32 +60,96 @@ class PlotDOVS:
         #plt.show()
 
     def plot_DOVS(self, dovs):
-        #polygon = patches.Polygon(dovs, closed=True, facecolor='green')
+        print("dovs")
+        print(dovs)
+        print("fin")
+        
+        
+
+        passBehind, passFront = [(passBehind[0][1], passBehind[0][2]) for passBehind in dovs], [(passFront[1][1], passFront[1][2]) for passFront in dovs]
+        
+        # print(len(passBehind))
+        # print(len(passFront))
+
+        # #is_inside = polygon.contains_point(point)
+
+        #vertices = passBehind + passFront[::-1]
+        
+
+        
+        mitad_1 = passFront[:int(np.round((len(passFront)+1)/2))]
+        mitad_1 = mitad_1[::-1]#Dar la vuelta
+        print(len(mitad_1))
+
+        mitad_2 = passFront[int(np.round((len(passFront)+1)/2)):]
+        mitad_2 = mitad_2[::-1]
+        print(len(mitad_2))
+
+        vertices = mitad_1 + mitad_2
+
+
+        mitad_1 = passBehind[:int(np.round((len(passBehind)+1)/2))]
+        #mitad_1 = mitad_1[::-1]#Dar la vuelta
+        
+        mitad_2 = passBehind[int(np.round((len(passBehind)+1)/2)):]
+        # mitad_2 = mitad_2[::-1]
+        
+        vertices = vertices + mitad_2 + mitad_1
+    
+
+        polygon = patches.Polygon(vertices, closed=False, facecolor='green')
+        # polygon_2 = patches.Polygon(vertices_2, closed=False, facecolor='purple')
         # polygon = patches.Polygon(vertices, facecolor='red', edgecolor='black')
 
+        # plt.ion()
         # Crear la figura y los ejes para mostrar los polígonos
         fig, ax = plt.subplots()
 
-        # ax.add_patch(polygon)
-        print(dovs)
-        # ax.plot(dovs) 
 
-        for point in dovs:
-            print(point)
-            ax.plot(point[0][2], point[0][1], "k*")
-            ax.plot(point[1][2], point[1][1], "b*")
+        ax.add_patch(polygon)
+       
 
+        for point in passBehind:
+            # print(point)
+            # input("Press enter to continue...")
+            ax.plot(point[0], point[1], "k.")
+            # fig.canvas.draw()   # Redraw the plot
+            # plt.pause(0.5)
+            
+        for point in passFront:
+            # print(point)
+            
+            # input("Press enter to continue...")
+            ax.plot(point[0], point[1], "b.")
+            # fig.canvas.draw()   # Redraw the plot
+            # plt.pause(0.5)
+
+        ax.plot(mitad_1[0][0], mitad_1[0][1], "r*")
+        ax.plot(mitad_1[len(mitad_1)-1][0], mitad_1[len(mitad_1)-1][1], "y*")
+        ax.plot(mitad_2[0][0], mitad_2[0][1], "r*")
+        ax.plot(mitad_2[len(mitad_2)-1][0], mitad_2[len(mitad_2)-1][1], "y*")
+        # ax.plot(passBehind[0][0], passBehind[0][1], "r*")
+        # ax.plot(passBehind[len(passBehind)-1][0], passBehind[len(passBehind)-1][1], "y*")
+        # ax.plot(passFront[5][0], passFront[5][1], "r*")
+        # ax.plot(passFront[len(passFront)-1][0], passFront[len(passFront)-1][1], "y*")
+
+        # ax.plot(passBehind[1][0], passBehind[1][1], "y*")
+        # ax.plot(passBehind[len(passBehind)-2][0], passBehind[len(passBehind)-1][1], "y*")
+        # ax.plot(passFront[1][0], passFront[1][1], "y*")
+        # ax.plot(passFront[len(passFront)-2][0], passFront[len(passFront)-2][1], "y*")
+          
 
         # Dibujar rombo de velocidades#TODO
         self.plot_robot.plot_velocity_window(ax)
 
-        # ax.set_xlim([-1, 2])
-        # ax.set_ylim([-1, 2])
-        ax.set_xlim([self.plot_robot.robot.min_w, self.plot_robot.robot.max_w])
-        ax.set_ylim([self.plot_robot.robot.min_v, self.plot_robot.robot.max_v])
+        plt.axis('equal')
+        ax.set_xlim([-0.5, 2])
+        ax.set_ylim([-0.5, 2])
+        # ax.set_xlim([self.plot_robot.robot.min_w, self.plot_robot.robot.max_w])
+        # ax.set_ylim([self.plot_robot.robot.min_v, self.plot_robot.robot.max_v])
 
         # Mostrar la figura
-        # plt.show()
+        plt.show()
 
     
 class PlotObjectDOVS:
@@ -149,7 +213,7 @@ class PlotDynamicObstacleDOVS(PlotObjectDOVS):
         
         col_behind, col_ahead = self.obstacle.get_colision_points()
         axis.plot(col_behind[0], col_behind[1], 'k.')
-        axis.plot(col_ahead[0], col_ahead[1], 'k.')
+        axis.plot(col_ahead[0], col_ahead[1], 'b.')
 
 
 class PlotRobotDOVS(PlotObjectDOVS):
