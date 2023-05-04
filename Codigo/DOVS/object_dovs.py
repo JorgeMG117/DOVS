@@ -91,12 +91,21 @@ class DynamicObstacleDOVS(ObjectDOVS):
         return self.trajectory
     
 
-    def get_colision_points(self):
+    def get_colision_points_1(self):
         """
         Devuelve los puntos del cuadrado circunscrito al obstaculo que seran los que choquen con los puntos de colision
         """
         value1 = self.loc(np.dot(self.transform_robot, self.hom((self.radius, self.radius, 0))))
         value2 = self.loc(np.dot(self.transform_robot, self.hom((-self.radius, -self.radius, 0))))
+        
+        return value1, value2
+    
+    def get_colision_points(self):
+        """
+        Devuelve los puntos del cuadrado circunscrito al obstaculo que seran los que choquen con los puntos de colision
+        """
+        value1 = self.loc(np.dot(self.transform_robot, self.hom((-self.radius, self.radius, 0))))
+        value2 = self.loc(np.dot(self.transform_robot, self.hom((self.radius, -self.radius, 0))))
         
         return value1, value2
     

@@ -20,14 +20,20 @@ class ObstacleTrajectory():
 class LinearTrajectory(ObstacleTrajectory):
     def __init__(self, point1, point2, angle) -> None:
         ray_1 = Ray((0,0), angle=angle)
+        print(ray_1.points)
         l1 = Line(point1, slope=ray_1.slope)
         l2 = Line(point2, slope=ray_1.slope)
+        #s = Segment(point1, ray_1.points[1])
 
         super().__init__(l1, l2)
 
     def plot(self, axis):
         point1 = self.l1.points[0].coordinates
         point2 = self.l1.points[1].coordinates
+        # print(self.l1.points[0])
+        # print(self.l1.points[1])
+        # axis.plot(self.l1.points[0], 'g.')
+        # axis.plot(self.l1.points[1], 'b.')
 
         axis.axline(xy1=tuple(float(coord) for coord in point1), xy2=tuple(float(coord) for coord in point2))
 
