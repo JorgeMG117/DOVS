@@ -40,6 +40,10 @@ class LinearTrajectory(ObstacleTrajectory):
         point1 = self.l2.points[0].coordinates
         point2 = self.l2.points[1].coordinates
         axis.axline(xy1=tuple(float(coord) for coord in point1), xy2=tuple(float(coord) for coord in point2))
+    
+    # Le voy a pasar trayectoria a la funcion auxiliar ahi llamamos a esta funcion
+    def distance_between_points():
+        pass
 
     
     

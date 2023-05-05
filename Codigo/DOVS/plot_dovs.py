@@ -60,9 +60,9 @@ class PlotDOVS:
         #plt.show()
 
     def plot_DOVS(self, dovs):
-        print("dovs")
-        print(dovs)
-        print("fin")
+        # print("dovs")
+        # print(dovs)
+        # print("fin")
         
         
 
@@ -79,11 +79,11 @@ class PlotDOVS:
         
         mitad_1 = passFront[:int(np.round((len(passFront)+1)/2))]
         mitad_1 = mitad_1[::-1]#Dar la vuelta
-        print(len(mitad_1))
+        # print(len(mitad_1))
 
         mitad_2 = passFront[int(np.round((len(passFront)+1)/2)):]
         mitad_2 = mitad_2[::-1]
-        print(len(mitad_2))
+        # print(len(mitad_2))
 
         vertices = mitad_1 + mitad_2
 
@@ -103,7 +103,9 @@ class PlotDOVS:
 
         # plt.ion()
         # Crear la figura y los ejes para mostrar los polígonos
+        
         fig, ax = plt.subplots()
+        ax.clear()
 
 
         ax.add_patch(polygon)
@@ -124,10 +126,10 @@ class PlotDOVS:
             # fig.canvas.draw()   # Redraw the plot
             # plt.pause(0.5)
 
-        ax.plot(mitad_1[0][0], mitad_1[0][1], "r*")
-        ax.plot(mitad_1[len(mitad_1)-1][0], mitad_1[len(mitad_1)-1][1], "y*")
-        ax.plot(mitad_2[0][0], mitad_2[0][1], "r*")
-        ax.plot(mitad_2[len(mitad_2)-1][0], mitad_2[len(mitad_2)-1][1], "y*")
+        # ax.plot(mitad_1[0][0], mitad_1[0][1], "r*")
+        # ax.plot(mitad_1[len(mitad_1)-1][0], mitad_1[len(mitad_1)-1][1], "y*")
+        # ax.plot(mitad_2[0][0], mitad_2[0][1], "r*")
+        # ax.plot(mitad_2[len(mitad_2)-1][0], mitad_2[len(mitad_2)-1][1], "y*")
         # ax.plot(passBehind[0][0], passBehind[0][1], "r*")
         # ax.plot(passBehind[len(passBehind)-1][0], passBehind[len(passBehind)-1][1], "y*")
         # ax.plot(passFront[5][0], passFront[5][1], "r*")
@@ -142,6 +144,8 @@ class PlotDOVS:
         # Dibujar rombo de velocidades#TODO
         self.plot_robot.plot_velocity_window(ax)
 
+        # plt.draw()
+        # plt.pause(0.3)
         plt.axis('equal')
         ax.set_xlim([-0.5, 2])
         ax.set_ylim([-0.5, 2])

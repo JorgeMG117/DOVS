@@ -1,6 +1,14 @@
 \documentclass{article}
+
+\usepackage[spanish]{babel}
+\usepackage[latin1]{inputenc}
+
 \usepackage{graphicx}
 \graphicspath{{images/}}
+
+% Indice
+\usepackage{makeidx}
+\makeindex
 
 \usepackage{blindtext}
 
@@ -14,9 +22,15 @@
 
 \maketitle
 
-\section{Introduction}
+% Mostrar indice
+\printindex
 
 \subfile{secciones/introduccion}
+
+\index{Resumen}
+\section{Resumen}
+\subfile{secciones/resumen}
+
 
 
 \end{document}
