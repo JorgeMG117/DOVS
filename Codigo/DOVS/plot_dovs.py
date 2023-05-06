@@ -73,28 +73,28 @@ class PlotDOVS:
 
         # #is_inside = polygon.contains_point(point)
 
-        #vertices = passBehind + passFront[::-1]
+        vertices = passBehind + passFront[::-1]
         
 
-        
-        mitad_1 = passFront[:int(np.round((len(passFront)+1)/2))]
-        mitad_1 = mitad_1[::-1]#Dar la vuelta
-        # print(len(mitad_1))
+        # TODO: Esto funciona pero creo que estaria bien que dependiera del orden de las trayectorias mejor
+        # mitad_1 = passFront[:int(np.round((len(passFront)+1)/2))]
+        # mitad_1 = mitad_1[::-1]#Dar la vuelta
+        # # print(len(mitad_1))
 
-        mitad_2 = passFront[int(np.round((len(passFront)+1)/2)):]
-        mitad_2 = mitad_2[::-1]
-        # print(len(mitad_2))
-
-        vertices = mitad_1 + mitad_2
-
-
-        mitad_1 = passBehind[:int(np.round((len(passBehind)+1)/2))]
-        #mitad_1 = mitad_1[::-1]#Dar la vuelta
-        
-        mitad_2 = passBehind[int(np.round((len(passBehind)+1)/2)):]
+        # mitad_2 = passFront[int(np.round((len(passFront)+1)/2)):]
         # mitad_2 = mitad_2[::-1]
+        # # print(len(mitad_2))
+
+        # vertices = mitad_1 + mitad_2
+
+
+        # mitad_1 = passBehind[:int(np.round((len(passBehind)+1)/2))]
+        # #mitad_1 = mitad_1[::-1]#Dar la vuelta
         
-        vertices = vertices + mitad_2 + mitad_1
+        # mitad_2 = passBehind[int(np.round((len(passBehind)+1)/2)):]
+        # # mitad_2 = mitad_2[::-1]
+        
+        # vertices = vertices + mitad_2 + mitad_1
     
 
         polygon = patches.Polygon(vertices, closed=False, facecolor='green')

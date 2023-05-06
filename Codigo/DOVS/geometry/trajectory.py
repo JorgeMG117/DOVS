@@ -18,7 +18,29 @@ class ObstacleTrajectory():
         pass
 
 class LinearTrajectory(ObstacleTrajectory):
+    """
+    Represents a linear trajectory between two points.
+
+    Attributes:
+        l1: First line representing the trajectory.
+        l2: Second line representing the trajectory.
+
+    Methods:
+        plot(axis): Plots the linear trajectory on the given axis.
+        distance_between_points(x1, y1, x2, y2): Calculates the Euclidean distance between two points.
+    """
+
+
     def __init__(self, point1, point2, angle) -> None:
+        """
+        Initializes a LinearTrajectory object.
+
+        Args:
+            point1: The starting point of the trajectory.
+            point2: The ending point of the trajectory.
+            angle: The angle of the trajectory in degrees.
+        """
+        
         ray_1 = Ray((0,0), angle=angle)
         print(ray_1.points)
         l1 = Line(point1, slope=ray_1.slope)
@@ -28,6 +50,12 @@ class LinearTrajectory(ObstacleTrajectory):
         super().__init__(l1, l2)
 
     def plot(self, axis):
+        """
+        Plots the linear trajectory on the given axis.
+
+        Args:
+            axis: The axis on which to plot the trajectory.
+        """
         point1 = self.l1.points[0].coordinates
         point2 = self.l1.points[1].coordinates
         # print(self.l1.points[0])
@@ -41,9 +69,20 @@ class LinearTrajectory(ObstacleTrajectory):
         point2 = self.l2.points[1].coordinates
         axis.axline(xy1=tuple(float(coord) for coord in point1), xy2=tuple(float(coord) for coord in point2))
     
-    # Le voy a pasar trayectoria a la funcion auxiliar ahi llamamos a esta funcion
-    def distance_between_points():
-        pass
+    def distance_between_points(self, x1, y1, x2, y2):
+        """
+        Calculates the Euclidean distance between two points.
+
+        Args:
+            x1: x-coordinate of the first point.
+            y1: y-coordinate of the first point.
+            x2: x-coordinate of the second point.
+            y2: y-coordinate of the second point.
+
+        Returns:
+            The Euclidean distance between the two points.
+        """
+        return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
 
     
     
@@ -54,10 +93,10 @@ class CircularTrajectory(ObstacleTrajectory):
         v, w = velocity
         x, y, th = position
 
-        radius = v/w
+        self.radius = v/w
 
-        center_x = x + radius * math.cos(th + math.pi/2)
-        center_y = y + radius * math.sin(th + math.pi/2)
+        center_x = x + self.radius * math.cos(th + math.pi/2)
+        center_y = y + self.radius * math.sin(th + math.pi/2)
 
         radius_1 = ((center_x - x1) ** 2 + (center_y - y1) ** 2) ** 0.5
         radius_2 = ((center_x - x2) ** 2 + (center_y - y2) ** 2) ** 0.5  
@@ -71,6 +110,12 @@ class CircularTrajectory(ObstacleTrajectory):
         axis.add_patch(plt.Circle((self.l1.center.coordinates[0], self.l1.center.coordinates[1]), self.l1.radius, color='green', fill=False))
     
         axis.add_patch(plt.Circle((self.l2.center.coordinates[0], self.l2.center.coordinates[1]), self.l2.radius, color='green', fill=False))    
+
+    def distance_between_points(self, x1, y1, x2, y2):
+        d = math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
+        theta = 2 * math.atan(d / (2 * self.radius))
+        arclength = self.radius * theta
+        return arclength
 
     
 class RobotTrajectory():

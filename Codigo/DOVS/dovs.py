@@ -68,7 +68,7 @@ class DOVS:
             obstacles_trajectory.append(obstacle_trajectory)
         
             velocity_time_space = []
-            #robot_trajectories = robot_trajectories[6:]
+            #robot_trajectories = robot_trajectories[:3]
             for trajectory in robot_trajectories:
                 
                 # Compute collision points of an obstacle for every robot trajectory
@@ -84,9 +84,9 @@ class DOVS:
         dovs = self._combine_DOVS(list_dovs)#Añadimos el dovs calculado al dovs total, geometrically merged
 
         plotDOVS = PlotDOVS(self.robot, self.obstacles)
-        #plotDOVS.plot_trajectories(robot_trajectories, obstacles_trajectory, collision_points_list)
+        plotDOVS.plot_trajectories(robot_trajectories, obstacles_trajectory, collision_points_list)
         plotDOVS.plot_DOVS(velocity_time_space)
-        #plt.show()
+        plt.show()
         
 
         return self._choose_speed()
@@ -141,7 +141,7 @@ class DOVS:
         
 
 
-    def _collision_velocity_times_aux(self, collision_point, obs_col, trajectory_radius, v_obstacle, angle = None):
+    def _collision_velocity_times_aux(self, collision_point, obs_col, trajectory_radius, v_obstacle, obs_trajectory, angle = None):
         x_col = float(collision_point[0])
         y_col = float(collision_point[1])
 
@@ -152,8 +152,8 @@ class DOVS:
         # print(x_col, y_col)
         # print("x_obs_col, y_obs_col")
         # print(x_obs_col, y_obs_col)
-
-        distance = math.sqrt((x_col - x_obs_col)**2 + (y_col - y_obs_col)**2)
+        
+        distance = obs_trajectory.distance_between_points(x_col, y_col, x_obs_col, y_obs_col)
 
         # print(distance, angle, v_obstacle)
 
@@ -210,7 +210,7 @@ class DOVS:
                 
                 # Calculo la velocidad maxima que puedo llevar
                 # Pongo como minima el limite superior. No hay velocidad de escape
-                (t_max, w_max, v_max) = self._collision_velocity_times_aux(collision_point, obs_col_behind, trajectory.radius, v_object)
+                (t_max, w_max, v_max) = self._collision_velocity_times_aux(collision_point, obs_col_behind, trajectory.radius, v_object, obstacle.trajectory)
                 
                 v_min = self.robot.max_v
                 w_min = v_min/trajectory.radius
@@ -239,9 +239,9 @@ class DOVS:
             # print(float(collision_points[idx_first][0]), float(collision_points[idx_first][1]))
             # print("obs_col_behind,obs_col_ahead")
             # print(obs_col_behind, obs_col_ahead)
-            (t_max, w_max, v_max) = self._collision_velocity_times_aux(collision_points[idx_first], obs_col_behind, trajectory.radius, v_object, angles[idx_first])
+            (t_max, w_max, v_max) = self._collision_velocity_times_aux(collision_points[idx_first], obs_col_behind, trajectory.radius, v_object, obstacle.trajectory, angles[idx_first])
 
-            (t_min, w_min, v_min) = self._collision_velocity_times_aux(collision_points[(idx_first+1)%2], obs_col_ahead, trajectory.radius, v_object, angles[(idx_first+1)%2])
+            (t_min, w_min, v_min) = self._collision_velocity_times_aux(collision_points[(idx_first+1)%2], obs_col_ahead, trajectory.radius, v_object, obstacle.trajectory, angles[(idx_first+1)%2])
 
 
 

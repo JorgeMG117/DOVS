@@ -166,11 +166,21 @@ class RobotDOVS(ObjectDOVS):
 
         trajectories = []
 
-        for radius in range(-self.trajectory_max_radius, self.trajectory_max_radius, self.trajectory_step_radius):
-            if radius == 0: continue
-            
+        for radius in range(-self.trajectory_step_radius, -self.trajectory_max_radius, -self.trajectory_step_radius):
+            print(radius)
             trajectory = RobotTrajectory(radius, (self.x, self.y, self.theta))
             trajectories.append(trajectory)
+
+        for radius in range(self.trajectory_max_radius, self.trajectory_step_radius, -self.trajectory_step_radius):
+            print(radius)
+            trajectory = RobotTrajectory(radius, (self.x, self.y, self.theta))
+            trajectories.append(trajectory)
+
+        # for radius in range(-self.trajectory_max_radius, self.trajectory_max_radius, self.trajectory_step_radius):
+        #     if radius == 0: continue
+            
+        #     trajectory = RobotTrajectory(radius, (self.x, self.y, self.theta))
+        #     trajectories.append(trajectory)
         
         return trajectories
     
