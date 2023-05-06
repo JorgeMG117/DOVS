@@ -28,18 +28,18 @@ class PlotDOVS:
 
 
 
-    def plot_trajectories(self, robot_trajectories, obstacles_trajectory, collision_points_list):
+    def plot_trajectories(self, collision_points_list):
         fig, ax = plt.subplots()
 
         self.plot_robot.plot_position(ax)
 
-        self.plot_robot.plot_trajectories(ax, robot_trajectories)
+        self.plot_robot.plot_trajectories(ax)
 
-        for i, obstacle in enumerate(self.plot_obstacles):
+        for obstacle in self.plot_obstacles:
             obstacle.plot_position(ax)
             #print(obstacle.obstacle.radius)
             obstacle.plot_colision_points(ax)
-            obstacle.plot_trajectory(ax, obstacles_trajectory[i])
+            obstacle.plot_trajectory(ax)
         
         for collision_points in collision_points_list:
             i = 0
@@ -113,8 +113,8 @@ class PlotDynamicObstacleDOVS(PlotObjectDOVS):
         self.obstacle = obstacle
 
     # TODO: Maybe only plot as going straight and not backwords too
-    def plot_trajectory(self, axis, trajectory):
-        trajectory.plot(axis)
+    def plot_trajectory(self, axis):
+        self.obstacle.trajectory.plot(axis)
 
         # print("Plotting obstacle trajectories")
         # print(trajectories)
@@ -151,8 +151,8 @@ class PlotRobotDOVS(PlotObjectDOVS):
     def __init__(self, robot) -> None:
         self.robot = robot
 
-    def plot_trajectories(self, axis, trajectories):
-        for trajectory in trajectories:
+    def plot_trajectories(self, axis):
+        for trajectory in self.robot.trajectories:
             trajectory.plot(axis)
 
     def plot_position(self, axis):

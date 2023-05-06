@@ -52,31 +52,20 @@ class DOVS:
 
         This function should be call every timestep
         """
-
         
-
-        # plotDOVS.prueba()
-        
-        # Obtain all pasible trajectories of robot
-        robot_trajectories = self.robot.compute_trajectories()
-        
-        obstacles_trajectory = []
         list_dovs = []
         collision_points_list = []
         for obstacle in self.obstacles:
-            # Compute the trajectory of the obstacle
-            obstacle_trajectory = obstacle.compute_trajectory()
-            obstacles_trajectory.append(obstacle_trajectory)
         
             velocity_time_space = []
             #robot_trajectories = robot_trajectories[:3]
-            for trajectory in robot_trajectories:
+            for robot_trajectory in self.robot.trajectories:
                 
                 # Compute collision points of an obstacle for every robot trajectory
-                collision_points = self._compute_collision_points(trajectory, obstacle_trajectory)
+                collision_points = self._compute_collision_points(robot_trajectory, obstacle.trajectory)
                 collision_points_list.append(collision_points)
 
-                velocity_time = self._collision_velocity_times(obstacle, collision_points, trajectory)
+                velocity_time = self._collision_velocity_times(obstacle, collision_points, robot_trajectory)
                 velocity_time_space.append(velocity_time)
                 
             dovs = DOV(velocity_time_space)
@@ -86,7 +75,7 @@ class DOVS:
         # dovs = self._combine_DOVS(list_dovs)#Añadimos el dovs calculado al dovs total, geometrically merged
 
         plotDOVS = PlotDOVS(self.robot, self.obstacles)
-        plotDOVS.plot_trajectories(robot_trajectories, obstacles_trajectory, collision_points_list)
+        plotDOVS.plot_trajectories(collision_points_list)
         plotDOVS.plot_DOVS(dovs)
         plt.show()
         

@@ -65,10 +65,11 @@ class DynamicObstacleDOVS(ObjectDOVS):
         # El tamaño del objeto es el cuadrado que rodea al circulo
         self.radius = obstacle.radius + robot_radius
 
-        self.trajectory = None
 
         super().__init__(obstacle.v, obstacle.w, obstacle_pos[0], obstacle_pos[1], obstacle_pos[2])
         # super().__init__(obstacle.v, obstacle.w, obstacle.x, obstacle.y, obstacle.theta)
+
+        self.trajectory = self.compute_trajectory()
     
     def compute_trajectory(self):
         """
@@ -84,11 +85,11 @@ class DynamicObstacleDOVS(ObjectDOVS):
 
         # TODO: Asi o con distintas clases
         if self.w != 0:
-            self.trajectory = CircularTrajectory((x1, y1), (x2, y2), (self.x, self.y, self.theta), (self.v, self.w))
+            trajectory = CircularTrajectory((x1, y1), (x2, y2), (self.x, self.y, self.theta), (self.v, self.w))
         else:
-            self.trajectory = LinearTrajectory((x1, y1), (x2, y2), self.theta)
+            trajectory = LinearTrajectory((x1, y1), (x2, y2), self.theta)
         
-        return self.trajectory
+        return trajectory
     
 
     def get_colision_points_1(self):
@@ -155,8 +156,11 @@ class RobotDOVS(ObjectDOVS):
 
         self.velocity_window = velocity_window
 
+        
         super().__init__(robot.v, robot.w, 0, 0, 0)
         # super().__init__(robot.v, robot.w, robot.x, robot.y, robot.theta)
+
+        self.trajectories = self.compute_trajectories()
     
     def compute_trajectories(self):
         """
@@ -183,6 +187,9 @@ class RobotDOVS(ObjectDOVS):
         #     trajectories.append(trajectory)
         
         return trajectories
+    
+    # def get_trajectories(self):
+    #     return self.trajectories
     
 
         
