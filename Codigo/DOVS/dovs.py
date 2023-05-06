@@ -6,6 +6,7 @@ from matplotlib import pyplot as plt
 # import matplotlib.patches as patches
 
 import numpy as np
+from DOVS.geometry.dov import DOV
 
 # from sympy import nsolve, Symbol, symbols
 # from sympy import Polygon, plot
@@ -78,14 +79,15 @@ class DOVS:
                 velocity_time = self._collision_velocity_times(obstacle, collision_points, trajectory)
                 velocity_time_space.append(velocity_time)
                 
-            dovs = self._create_DOVS(velocity_time_space)#Calculamos el dovs para ese objeto
-            list_dovs.append(dovs)
+            dovs = DOV(velocity_time_space)
+            # dovs = self._create_DOVS(velocity_time_space)#Calculamos el dovs para ese objeto
+            # list_dovs.append(dovs)
 
-        dovs = self._combine_DOVS(list_dovs)#Añadimos el dovs calculado al dovs total, geometrically merged
+        # dovs = self._combine_DOVS(list_dovs)#Añadimos el dovs calculado al dovs total, geometrically merged
 
         plotDOVS = PlotDOVS(self.robot, self.obstacles)
         plotDOVS.plot_trajectories(robot_trajectories, obstacles_trajectory, collision_points_list)
-        plotDOVS.plot_DOVS(velocity_time_space)
+        plotDOVS.plot_DOVS(dovs)
         plt.show()
         
 
@@ -249,18 +251,18 @@ class DOVS:
 
 
        
-    def _create_DOVS(self, velocity_time_space):
-        """
-        Dada la lista de velocidades crea el dovs de manera que se le puedan añadir mas dovs
-        """
+    # def _create_DOVS(self, velocity_time_space):
+    #     """
+    #     Dada la lista de velocidades crea el dovs de manera que se le puedan añadir mas dovs
+    #     """
 
-        passBehind, passFront = [(passBehind[0][1], passBehind[0][2]) for passBehind in velocity_time_space], [(passFront[1][1], passFront[1][2]) for passFront in velocity_time_space]
+    #     passBehind, passFront = [(passBehind[0][1], passBehind[0][2]) for passBehind in velocity_time_space], [(passFront[1][1], passFront[1][2]) for passFront in velocity_time_space]
 
 
-        # #is_inside = polygon.contains_point(point)
+    #     # #is_inside = polygon.contains_point(point)
 
-        vertices = passBehind + passFront[::-1]
-        return vertices
+    #     vertices = passBehind + passFront[::-1]
+    #     return vertices
 
 
     def _combine_DOVS(self, list_dovs):
