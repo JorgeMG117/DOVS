@@ -42,12 +42,14 @@ class LinearTrajectory(ObstacleTrajectory):
         """
         
         ray_1 = Ray((0,0), angle=angle)
-        print(ray_1.points)
+    
         l1 = Line(point1, slope=ray_1.slope)
         l2 = Line(point2, slope=ray_1.slope)
-        #s = Segment(point1, ray_1.points[1])
+    
+        s1 = Segment(l1.points[0], l1.points[1])
+        s2 = Segment(l2.points[0], l2.points[1])
 
-        super().__init__(l1, l2)
+        super().__init__(s1, s2)
 
     def plot(self, axis):
         """
@@ -56,18 +58,12 @@ class LinearTrajectory(ObstacleTrajectory):
         Args:
             axis: The axis on which to plot the trajectory.
         """
-        point1 = self.l1.points[0].coordinates
-        point2 = self.l1.points[1].coordinates
-        # print(self.l1.points[0])
-        # print(self.l1.points[1])
-        # axis.plot(self.l1.points[0], 'g.')
-        # axis.plot(self.l1.points[1], 'b.')
-
-        axis.axline(xy1=tuple(float(coord) for coord in point1), xy2=tuple(float(coord) for coord in point2))
-
-        point1 = self.l2.points[0].coordinates
-        point2 = self.l2.points[1].coordinates
-        axis.axline(xy1=tuple(float(coord) for coord in point1), xy2=tuple(float(coord) for coord in point2))
+        (l1_x1,l1_y1), (l1_x2,l1_y2) = self.l1.points
+        (l2_x1,l2_y1), (l2_x2,l2_y2) = self.l2.points
+        
+        axis.plot([l1_x1, l1_x2], [l1_y1, l1_y2], 'g-')
+        axis.plot([l2_x1, l2_x2], [l2_y1, l2_y2], 'g-')
+       
     
     def distance_between_points(self, x1, y1, x2, y2):
         """

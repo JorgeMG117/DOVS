@@ -1,31 +1,11 @@
 from matplotlib import pyplot as plt
-import matplotlib.patches as patches
 import numpy as np
-
-# from sympy.plotting import plot
-# from sympy.plotting import plot_implicit
-# from sympy.geometry import Point, Circle, Line
-
 
 class PlotDOVS:
 
     def __init__(self, robot, obstacles) -> None:
         self.plot_robot = PlotRobotDOVS(robot)
         self.plot_obstacles = list(map(lambda obstacle: PlotDynamicObstacleDOVS(obstacle), obstacles))
-
-    # def prueba(self):
-    #     # using Circle()
-    #     c1 = Circle(Point(0, 0), 5)
-    #     print(c1.equation())
-    #     p1 = Point(1, 2)
-    #     p2 = Point(3, 4)
-
-    #     # equation of the line using two points
-    #     line = Line(p1, p2)
-    #     #print(c1.hradius, c1.vradius, c1.radius)
-    #     p1 = plot_implicit(line.equation(), show=False)
-    #     p1.show()
-
 
 
     def plot_trajectories(self, collision_points_list):
@@ -114,25 +94,8 @@ class PlotDynamicObstacleDOVS(PlotObjectDOVS):
 
     # TODO: Maybe only plot as going straight and not backwords too
     def plot_trajectory(self, axis):
-        self.obstacle.trajectory.plot(axis)
+        self.obstacle.trajectory.plot(axis)        
 
-        # print("Plotting obstacle trajectories")
-        # print(trajectories)
-        
-        #TODO: Hago clases distintas para los tipos de trayectorias???
-        # for trajectory in trajectories:
-        #     trajectory.plot(axis)
-            # p1 = plot_implicit(trajectory.equation(), show=False)
-
-            # if self.obstacle.w != 0:
-            #     axis.add_patch(plt.Circle((trajectory.center.coordinates[0], trajectory.center.coordinates[1]), trajectory.radius, color='green', fill=False))
-            # else:
-            # # # print(trajectory)
-            #     point1 = trajectory.points[0].coordinates
-            #     point2 = trajectory.points[1].coordinates
-
-            #     axis.axline(xy1=tuple(float(coord) for coord in point1), xy2=tuple(float(coord) for coord in point2))
-        
 
     def plot_position(self, axis):
         self.dibrobot(self.obstacle.get_location(), axis, 'b')

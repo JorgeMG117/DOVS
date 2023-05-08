@@ -11,22 +11,26 @@ class DOV():
 
         self.dov = patches.Polygon(vertices, closed=False, facecolor='green')
 
+        self.passBehind = passBehind
+        self.passFront = passFront
+
     def contains(self, point):
         return self.dov.contains_point(point)
 
     def plot(self, axis):
         axis.add_patch(self.dov)
-        # for point in passBehind:
-        #     # print(point)
-        #     # input("Press enter to continue...")
-        #     ax.plot(point[0], point[1], "k.")
-        #     # fig.canvas.draw()   # Redraw the plot
-        #     # plt.pause(0.5)
+
+        for point in self.passBehind:
+            # print(point)
+            # input("Press enter to continue...")
+            axis.plot(point[0], point[1], "k.")
+            # fig.canvas.draw()   # Redraw the plot
+            # plt.pause(0.5)
             
-        # for point in passFront:
-        #     # print(point)
+        for point in self.passFront:
+            # print(point)
             
-        #     # input("Press enter to continue...")
-        #     ax.plot(point[0], point[1], "b.")
-        #     # fig.canvas.draw()   # Redraw the plot
-        #     # plt.pause(0.5)
+            # input("Press enter to continue...")
+            axis.plot(point[0], point[1], "b.")
+            # fig.canvas.draw()   # Redraw the plot
+            # plt.pause(0.5)
