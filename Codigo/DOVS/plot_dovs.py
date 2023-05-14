@@ -1,11 +1,24 @@
 from matplotlib import pyplot as plt
 import numpy as np
 
+"""
+fig, ax = plt.subplots(2,2)
+fig.set_facecolor('lightgrey')
+ax[0,0].plot(data_x, data_y, 'r-')
+ax[0,1].plot(data_x, data_y, 'b-')
+fig.delaxes(ax[1,0])
+ax[1,1].plot(data_x, data_y, 'g-')
+
+"""
+
 class PlotDOVS:
 
-    def __init__(self, robot, obstacles) -> None:
+    def __init__(self, robot, obstacles, fig_dovs, ax_dovs) -> None:
         self.plot_robot = PlotRobotDOVS(robot)
         self.plot_obstacles = list(map(lambda obstacle: PlotDynamicObstacleDOVS(obstacle), obstacles))
+
+        self.fig_dovs = fig_dovs
+        self.ax_dovs = ax_dovs
 
 
     def plot_trajectories(self, collision_points_list):
@@ -25,6 +38,9 @@ class PlotDOVS:
             i = 0
             for collision_point in collision_points:
                 if collision_point != None:
+                    # print("collision_point")
+                    # print(float(collision_point[0]))
+                    # print(float(collision_point[1]))
                     if i == 0:
                         ax.plot(collision_point[0], collision_point[1], 'k.')
                     else:
@@ -37,29 +53,32 @@ class PlotDOVS:
         ax.set_xlim(-4, 4)
         ax.set_ylim(-4, 4)
 
-        #plt.show()
+        # plt.show()
 
     def plot_DOVS(self, dovs):
-        # # plt.ion()
+        # plt.ion()
         # # Crear la figura y los ejes para mostrar los polígonos
         
         fig, ax = plt.subplots()
-        ax.clear()
+        # self.ax_dovs.clear()
 
         dovs.plot(ax)
 
         self.plot_robot.plot_velocity_window(ax)
 
-        # plt.draw()
-        # plt.pause(0.3)
-        plt.axis('equal')
+        self.ax_dovs.set_xlim([self.plot_robot.robot.min_w, self.plot_robot.robot.max_w])
+        self.ax_dovs.set_ylim([self.plot_robot.robot.min_v, self.plot_robot.robot.max_v])
         # ax.set_xlim([-0.5, 2])
         # ax.set_ylim([-0.5, 2])
-        ax.set_xlim([self.plot_robot.robot.min_w, self.plot_robot.robot.max_w])
-        ax.set_ylim([self.plot_robot.robot.min_v, self.plot_robot.robot.max_v])
+
+        # plt.draw()
+        # plt.pause(0.1)
+        plt.axis('equal')
+        
+        
 
         # Mostrar la figura
-        plt.show()
+        # plt.show()
 
     
 class PlotObjectDOVS:

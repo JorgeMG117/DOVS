@@ -29,10 +29,11 @@ class Robot(DynamicObstacle):
 
 timestep = 0.2
 
-def computeDOVS(robot, obstacles, timestep):
+
+def computeDOVS(robot, obstacles, timestep, fig_dovs, ax_dovs):
     print("Here the DOVS function should be called")
     # return linear and angular velocities chosen for the robot
-    dovs = DOVS.DOVS(robot, obstacles, timestep)
+    dovs = DOVS.DOVS(robot, obstacles, timestep, fig_dovs, ax_dovs)
     dovs.compute_DOVS()
     return 0.0, 0.0
 
@@ -41,10 +42,10 @@ fig, ax = plt.subplots(1,1, figsize=(12,12))
 # ax = ax.reshape((-1))
 robot = Robot(0.0, 0.0, 0.0, 2.0, -np.pi/2, 0.2, 0.0, -2.0, 0.0, 0.7, -np.pi/2, np.pi/2, 0.7, np.pi/2)
 obstacles_vec = []
-#obstacles_vec.append(DynamicObstacle(10.5, 1.0, -2.0, 0.0, 0.0, 0.2))
-obstacles_vec.append(DynamicObstacle(0.5, 0, 2.0, 0.0, 0.0, 0.2))
+obstacles_vec.append(DynamicObstacle(.50, 0.10, -2.0, 0.0, 0.0, 0.2))
+#obstacles_vec.append(DynamicObstacle(0.5, 0, 2.0, 0.0, 0.0, 0.2))#TODO:Esto creo que va mal
 #obstacles_vec.append(DynamicObstacle(0.5, 0, 2.0, 0.0, np.pi, 0.2))
-#obstacles_vec.append(DynamicObstacle(0.5, 0, -2.0, 0.0, 0.0, 0.2))
+#obstacles_vec.append(DynamicObstacle(0.5, 0, -1.0, 0.0, 0.0, 0.2))
 
 obstacles_artist = []
 obstacles_arrow_artist = []
@@ -73,11 +74,12 @@ ax.set_ylim(-4, 4)
 # ax.axis('equal')
 # plt.tight_layout()
 
+fig_dovs, ax_dovs = plt.subplots()
 time = 0
 def update(i_video):
     global robot_arrow_artist
     time = i_video*timestep
-    v_new, w_new = computeDOVS(robot=robot, obstacles=obstacles_vec, timestep=timestep)
+    v_new, w_new = computeDOVS(robot=robot, obstacles=obstacles_vec, timestep=timestep, fig_dovs=fig_dovs, ax_dovs=ax_dovs)
     robot.v = v_new
     robot.w = w_new
 

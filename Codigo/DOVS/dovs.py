@@ -36,12 +36,15 @@ https://www.matecdev.com/posts/shapely-polygon-from-points.html
 
 #TODO: Mirar que hacer cuando el obstaculo esta mirando hacia un lado y no deberia chocar con nada
 class DOVS:
-    def __init__(self, robot, obstacles, timestep) -> None:
+    def __init__(self, robot, obstacles, timestep, fig_dovs, ax_dovs) -> None:
         velocity_window = VelocityWindow(robot, timestep)
 
         self.robot = RobotDOVS(robot, velocity_window)
         self.obstacles = list(map(lambda obstacle: DynamicObstacleDOVS(obstacle, robot.radius, (robot.x, robot.y, robot.theta)), obstacles))
         self.timestep = timestep
+
+        self.fig_dovs = fig_dovs
+        self.ax_dovs = ax_dovs
 
         #El poligono de velocidades prohibidas, #dynamic_object_velocity
 
@@ -53,8 +56,8 @@ class DOVS:
         This function should be call every timestep
         """
         
-        list_dovs = []
         collision_points_list = []
+        #final_dovs = DOV()
         for obstacle in self.obstacles:
         
             velocity_time_space = []
@@ -64,17 +67,14 @@ class DOVS:
                 # Compute collision points of an obstacle for every robot trajectory
                 collision_points = self._compute_collision_points(robot_trajectory, obstacle.trajectory)
                 collision_points_list.append(collision_points)
-
+                
                 velocity_time = self._collision_velocity_times(obstacle, collision_points, robot_trajectory)
                 velocity_time_space.append(velocity_time)
                 
             dovs = DOV(velocity_time_space)
-            # dovs = self._create_DOVS(velocity_time_space)#Calculamos el dovs para ese objeto
-            # list_dovs.append(dovs)
+            #final_dovs = final_dovs.combine_DOVS(dovs)#Añadimos el dovs calculado al dovs total, geometrically merged
 
-        # dovs = self._combine_DOVS(list_dovs)#Añadimos el dovs calculado al dovs total, geometrically merged
-
-        plotDOVS = PlotDOVS(self.robot, self.obstacles)
+        plotDOVS = PlotDOVS(self.robot, self.obstacles, self.fig_dovs, self.ax_dovs)#Quiza pasarle el dovs??
         plotDOVS.plot_trajectories(collision_points_list)
         plotDOVS.plot_DOVS(dovs)
         plt.show()
@@ -139,9 +139,9 @@ class DOVS:
         x_obs_col = obs_col[0]
         y_obs_col = obs_col[1]
 
-        # print("x_col, y_col")
-        # print(x_col, y_col)
-        # print("x_obs_col, y_obs_col")
+        print("x_col, y_col")
+        print(x_col, y_col)
+        # print("x_obs_col, y_obs_col")#TODO: Esto no cambia no?, quiza meterlo como atributo en dovs
         # print(x_obs_col, y_obs_col)
         
         distance = obs_trajectory.distance_between_points(x_col, y_col, x_obs_col, y_obs_col)
@@ -187,12 +187,12 @@ class DOVS:
 
         if collision_points[0] == None or collision_points[1] == None:
             if collision_points[0] == None and collision_points[1] == None:
-                #TODO: Mirar si esto esta bien
-                v_min = self.robot.max_v
-                w_min = v_min/trajectory.radius
+                # v_min = self.robot.max_v
+                # w_min = v_min/trajectory.radius
 
-                v_max = self.robot.max_v
-                w_max = v_min/trajectory.radius
+                # v_max = self.robot.max_v
+                # w_max = v_min/trajectory.radius
+                return []
             else:
                 if collision_points[0] == None:
                     collision_point =  collision_points[1]
@@ -202,6 +202,11 @@ class DOVS:
                 # Calculo la velocidad maxima que puedo llevar
                 # Pongo como minima el limite superior. No hay velocidad de escape
                 (t_max, w_max, v_max) = self._collision_velocity_times_aux(collision_point, obs_col_behind, trajectory.radius, v_object, obstacle.trajectory)
+
+                if v_max > self.robot.max_v or w_max > self.robot.max_w:
+                    v_max = self.robot.max_v
+                    w_max = v_max/trajectory.radius
+
                 
                 v_min = self.robot.max_v
                 w_min = v_min/trajectory.radius
@@ -218,11 +223,18 @@ class DOVS:
 
             angle_1 = np.arctan2(2*x_col_1*y_col_1, pow(x_col_1,2)-pow(y_col_1,2))
             angle_2 = np.arctan2(2*x_col_2*y_col_2, pow(x_col_2,2)-pow(y_col_2,2))
+
+            arclength_1 = trajectory.radius * angle_1
+            arclength_2 = trajectory.radius * angle_2
+
+            # print("arclength_1")
+            # print(arclength_1)
+            # print(arclength_2)
             
             #angle = np.arctan2(2*x*y, pow(x,2)-pow(y,2))
             angles = [angle_1, angle_2]
 
-            if abs(angle_1) > abs(angle_2):
+            if arclength_1 > arclength_2:
                 idx_first = idx_first + 1
             # print(idx_first)
             
@@ -234,31 +246,19 @@ class DOVS:
 
             (t_min, w_min, v_min) = self._collision_velocity_times_aux(collision_points[(idx_first+1)%2], obs_col_ahead, trajectory.radius, v_object, obstacle.trajectory, angles[(idx_first+1)%2])
 
-
+            if v_max > self.robot.max_v or w_max > self.robot.max_w:
+                v_max = self.robot.max_v
+                w_max = v_max/trajectory.radius
+            
+            if v_min > self.robot.max_v or w_min < self.robot.max_w:
+                v_min = self.robot.max_v
+                w_min = v_min/trajectory.radius
 
         return [(t_max, w_max, v_max), (t_min, w_min, v_min)]
 
 
-       
-    # def _create_DOVS(self, velocity_time_space):
-    #     """
-    #     Dada la lista de velocidades crea el dovs de manera que se le puedan añadir mas dovs
-    #     """
-
-    #     passBehind, passFront = [(passBehind[0][1], passBehind[0][2]) for passBehind in velocity_time_space], [(passFront[1][1], passFront[1][2]) for passFront in velocity_time_space]
 
 
-    #     # #is_inside = polygon.contains_point(point)
-
-    #     vertices = passBehind + passFront[::-1]
-    #     return vertices
-
-
-    def _combine_DOVS(self, list_dovs):
-        combine_dovs = []
-        for dovs in list_dovs:
-            combine_dovs = combine_dovs + dovs
-        return combine_dovs
         
     def _choose_speed(self):
         return 0,0
