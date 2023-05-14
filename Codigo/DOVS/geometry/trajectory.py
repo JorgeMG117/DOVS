@@ -45,9 +45,13 @@ class LinearTrajectory(ObstacleTrajectory):
     
         l1 = Line(point1, slope=ray_1.slope)
         l2 = Line(point2, slope=ray_1.slope)
-    
-        s1 = Segment(l1.points[0], l1.points[1])
-        s2 = Segment(l2.points[0], l2.points[1])
+
+        if angle < 0:
+            s1 = Segment(l1.points[0], -l1.points[1])
+            s2 = Segment(l2.points[0], -l2.points[1])
+        else:
+            s1 = Segment(l1.points[0], l1.points[1])
+            s2 = Segment(l2.points[0], l2.points[1])
 
         super().__init__(s1, s2)
 
