@@ -48,6 +48,9 @@ class DOVS:
 
         #El poligono de velocidades prohibidas, #dynamic_object_velocity
 
+        #limites del plano, dimensiones en metros
+            #planteo añadir esto para poder hacer un cuadrado y hacer la interseccion con la trayectoria rectilinea para sacar el punto donde corta
+
 
     def compute_DOVS(self):
         """
@@ -68,8 +71,9 @@ class DOVS:
                 collision_points = self._compute_collision_points(robot_trajectory, obstacle.trajectory)
                 collision_points_list.append(collision_points)
                 
-                velocity_time = self._collision_velocity_times(obstacle, collision_points, robot_trajectory)
-                velocity_time_space.append(velocity_time)
+                if collision_points[0] != None or collision_points[1] != None:
+                    velocity_time = self._collision_velocity_times(obstacle, collision_points, robot_trajectory)
+                    velocity_time_space.append(velocity_time)
                 
             dovs = DOV(velocity_time_space)
             #final_dovs = final_dovs.combine_DOVS(dovs)#Añadimos el dovs calculado al dovs total, geometrically merged
@@ -139,8 +143,8 @@ class DOVS:
         x_obs_col = obs_col[0]
         y_obs_col = obs_col[1]
 
-        print("x_col, y_col")
-        print(x_col, y_col)
+        # print("x_col, y_col")
+        # print(x_col, y_col)
         # print("x_obs_col, y_obs_col")#TODO: Esto no cambia no?, quiza meterlo como atributo en dovs
         # print(x_obs_col, y_obs_col)
         
@@ -186,30 +190,20 @@ class DOVS:
 
 
         if collision_points[0] == None or collision_points[1] == None:
-            if collision_points[0] == None and collision_points[1] == None:
-                # v_min = self.robot.max_v
-                # w_min = v_min/trajectory.radius
-
-                # v_max = self.robot.max_v
-                # w_max = v_min/trajectory.radius
-                return []
+            if collision_points[0] == None:
+                collision_point =  collision_points[1]
             else:
-                if collision_points[0] == None:
-                    collision_point =  collision_points[1]
-                else:
-                    collision_point =  collision_points[0]
-                
-                # Calculo la velocidad maxima que puedo llevar
-                # Pongo como minima el limite superior. No hay velocidad de escape
-                (t_max, w_max, v_max) = self._collision_velocity_times_aux(collision_point, obs_col_behind, trajectory.radius, v_object, obstacle.trajectory)
+                collision_point =  collision_points[0]
+            
+            # Calculo la velocidad maxima que puedo llevar
+            # Pongo como minima el limite superior. No hay velocidad de escape
+            (t_max, w_max, v_max) = self._collision_velocity_times_aux(collision_point, obs_col_behind, trajectory.radius, v_object, obstacle.trajectory)
 
-                if v_max > self.robot.max_v or w_max > self.robot.max_w:
-                    v_max = self.robot.max_v
-                    w_max = v_max/trajectory.radius
+            w_max, v_max = self.robot.normalize_speed(w_max, v_max, trajectory.radius)
 
-                
-                v_min = self.robot.max_v
-                w_min = v_min/trajectory.radius
+            
+            v_min = self.robot.max_v
+            w_min = v_min/trajectory.radius
         else:
             idx_first = 0
             
@@ -246,13 +240,8 @@ class DOVS:
 
             (t_min, w_min, v_min) = self._collision_velocity_times_aux(collision_points[(idx_first+1)%2], obs_col_ahead, trajectory.radius, v_object, obstacle.trajectory, angles[(idx_first+1)%2])
 
-            if v_max > self.robot.max_v or w_max > self.robot.max_w:
-                v_max = self.robot.max_v
-                w_max = v_max/trajectory.radius
-            
-            if v_min > self.robot.max_v or w_min < self.robot.max_w:
-                v_min = self.robot.max_v
-                w_min = v_min/trajectory.radius
+            w_max, v_max = self.robot.normalize_speed(w_max, v_max, trajectory.radius)
+            w_min, v_min = self.robot.normalize_speed(w_min, v_min, trajectory.radius)
 
         return [(t_max, w_max, v_max), (t_min, w_min, v_min)]
 

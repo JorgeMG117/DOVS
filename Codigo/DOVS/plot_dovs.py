@@ -26,6 +26,8 @@ class PlotDOVS:
 
         self.plot_robot.plot_position(ax)
 
+        self.plot_robot.plot_goal(ax)
+
         self.plot_robot.plot_trajectories(ax)
 
         for obstacle in self.plot_obstacles:
@@ -124,8 +126,8 @@ class PlotDynamicObstacleDOVS(PlotObjectDOVS):
     def plot_colision_points(self, axis):
         
         col_behind, col_ahead = self.obstacle.get_colision_points()
-        axis.plot(col_behind[0], col_behind[1], 'k.')
-        axis.plot(col_ahead[0], col_ahead[1], 'b.')
+        axis.plot(col_behind[0], col_behind[1], 'g.')
+        axis.plot(col_ahead[0], col_ahead[1], 'g.')
 
 
 class PlotRobotDOVS(PlotObjectDOVS):
@@ -147,4 +149,6 @@ class PlotRobotDOVS(PlotObjectDOVS):
     def plot_velocity_window(self, axis):
         self.robot.velocity_window.plot(axis)
 
+    def plot_goal(self, axis):
+        axis.plot(self.robot.x_goal, self.robot.y_goal, 'r*')
 

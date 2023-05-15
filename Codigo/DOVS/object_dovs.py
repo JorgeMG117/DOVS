@@ -190,6 +190,17 @@ class RobotDOVS(ObjectDOVS):
     
     # def get_trajectories(self):
     #     return self.trajectories
+
+    #TODO: Revisar esto, si se pasa w, aumentamos v y hacemos esto?
+    def normalize_speed(self, w, v, trajectory_radius):
+        if v > self.max_v or w > self.max_w:
+                v = self.max_v
+                w = v/trajectory_radius
+        elif v < self.min_v or w < self.min_w:
+                v = self.min_v
+                w = v/trajectory_radius
+        
+        return w, v
     
 
         

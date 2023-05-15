@@ -42,8 +42,9 @@ fig, ax = plt.subplots(1,1, figsize=(12,12))
 # ax = ax.reshape((-1))
 robot = Robot(0.0, 0.0, 0.0, 2.0, -np.pi/2, 0.2, 0.0, -2.0, 0.0, 0.7, -np.pi/2, np.pi/2, 0.7, np.pi/2)
 obstacles_vec = []
-obstacles_vec.append(DynamicObstacle(.50, 0.10, -2.0, 0.0, 0.0, 0.2))
-#obstacles_vec.append(DynamicObstacle(0.5, 0, 2.0, 0.0, 0.0, 0.2))#TODO:Esto creo que va mal
+#obstacles_vec.append(DynamicObstacle(0.1, 0, -3.0, 2.0, -np.pi/4, 0.2))
+obstacles_vec.append(DynamicObstacle(0.5/5, 0.1/5, 0.0, 0.0, 0.0, 0.2))
+#obstacles_vec.append(DynamicObstacle(0.5, 0, 2.0, 0.0, 0.0, 0.2))
 #obstacles_vec.append(DynamicObstacle(0.5, 0, 2.0, 0.0, np.pi, 0.2))
 #obstacles_vec.append(DynamicObstacle(0.5, 0, -1.0, 0.0, 0.0, 0.2))
 

@@ -1,0 +1,46 @@
+Prueba 1
+robot = Robot(0.0, 0.0, 0.0, 2.0, -np.pi/2, 0.2, 0.0, -2.0, 0.0, 0.7, -np.pi/2, np.pi/2, 0.7, np.pi/2)
+obstacles_vec.append(DynamicObstacle(0.5, 0, -1.0, 0.0, 0.0, 0.2))
+
+Prueba 2
+Esta basicamente delante por lo que las velocidades passFront son las maximas porque no hay manera de ir lo suficientemente rapido para pasar por delante
+obstacles_vec.append(DynamicObstacle(0.5, 0, -0.5, 0.0, 0.0, 0.2))
+
+Prueba 3
+El obstaculo va 5 veces mas lento que en la prueba 1
+obstacles_vec.append(DynamicObstacle(0.1, 0, -1.0, 0.0, 0.0, 0.2))
+
+Prueba 4
+No esta en direccion de choque con el robot
+Aun asi el obstaculo va tan lento que en las trayectorias circulares del robot que no se ven  ni en la grafica acaban chocando
+Ojo con esta!!
+obstacles_vec.append(DynamicObstacle(0.1, 0, 1.0, 0.0, 0.0, 0.2))
+
+Prueba 5
+Lo mismo pero con el obstaculo mas rapido
+
+Prueba 6
+Ahora el obstaculo si que esta en la direccion de choque del robot
+Tendria que ser mas parecida a la 6?
+obstacles_vec.append(DynamicObstacle(0.1, 0, 1.0, 0.0, np.pi, 0.2))
+
+Prueba 7
+MAL; No funciona la trayectoria
+obstacles_vec.append(DynamicObstacle(0.1, 0, -3.0, 2.0, -np.pi/4, 0.2))
+
+Prueba 8
+Primera trayectoria circular
+obstacles_vec.append(DynamicObstacle(0.5, 0.1, -2.0, 0.0, 0.0, 0.2))
+
+Prueba 9
+10 veces mas lento que el anterior
+La unica que tiene v max es la que no colisiona en passFront
+obstacles_vec.append(DynamicObstacle(0.5/10, 0.1/10, -2.0, 0.0, 0.0, 0.2))
+
+Prueba 10
+5 veces mas lento que la prueba 8
+obstacles_vec.append(DynamicObstacle(0.5/5, 0.1/5, -2.0, 0.0, 0.0, 0.2))
+
+Prueba 11
+MAL; Si esta en el medio de la trayectoria, mismo problema que con segmento
+    Y problema de punto de colision, no esta cogiendo el que me interesa
