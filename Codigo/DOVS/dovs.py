@@ -7,13 +7,14 @@ from matplotlib import pyplot as plt
 
 import numpy as np
 from DOVS.geometry.dov import DOV
+from DOVS.geometry.map import Map
 
 # from sympy import nsolve, Symbol, symbols
 # from sympy import Polygon, plot
 from DOVS.geometry.velocity_window import VelocityWindow
 
 
-from DOVS.object_dovs import DynamicObstacleDOVS, RobotDOVS
+from DOVS.object_dovs import DynamicObstacleDOVS, ObjectDOVS, RobotDOVS
 from DOVS.plot_dovs import PlotDOVS
 
 from DOVS.geometry.trajectory import intersection
@@ -37,20 +38,23 @@ https://www.matecdev.com/posts/shapely-polygon-from-points.html
 #TODO: Mirar que hacer cuando el obstaculo esta mirando hacia un lado y no deberia chocar con nada
 class DOVS:
     def __init__(self, robot, obstacles, timestep, fig_dovs, ax_dovs) -> None:
+        self.max_distance = 10
+
         velocity_window = VelocityWindow(robot, timestep)
 
         self.robot = RobotDOVS(robot, velocity_window)
-        self.obstacles = list(map(lambda obstacle: DynamicObstacleDOVS(obstacle, robot.radius, (robot.x, robot.y, robot.theta)), obstacles))
+        self.obstacles = list(map(lambda obstacle: DynamicObstacleDOVS(obstacle, robot.radius, (robot.x, robot.y, robot.theta), self.max_distance), obstacles))
         self.timestep = timestep
 
         self.fig_dovs = fig_dovs
         self.ax_dovs = ax_dovs
 
+
         #El poligono de velocidades prohibidas, #dynamic_object_velocity
 
         #limites del plano, dimensiones en metros
             #planteo añadir esto para poder hacer un cuadrado y hacer la interseccion con la trayectoria rectilinea para sacar el punto donde corta
-
+        #self.max_distance = 10
 
     def compute_DOVS(self):
         """
@@ -68,7 +72,7 @@ class DOVS:
             for robot_trajectory in self.robot.trajectories:
                 
                 # Compute collision points of an obstacle for every robot trajectory
-                collision_points = self._compute_collision_points(robot_trajectory, obstacle.trajectory)
+                collision_points = self._compute_collision_points(robot_trajectory, obstacle.trajectory, obstacle.get_location())
                 collision_points_list.append(collision_points)
                 
                 if collision_points[0] != None or collision_points[1] != None:
@@ -87,7 +91,7 @@ class DOVS:
         return self._choose_speed()
         
     
-    def _select_right_collision_point(self, collision_points, trajectory_radius, robot_position):
+    def _select_right_collision_point(self, collision_points, trajectory_radius, robot_position, obstacle_position):
         """
         Select the right collision point of the intersection of the robot trajectory and the obstacle trajectory
         """
@@ -95,6 +99,9 @@ class DOVS:
             if len(collision_points) == 1:
                 return collision_points[0]
             else:
+                collision1_from_obstacle = ObjectDOVS.loc(np.dot(np.linalg.inv(ObjectDOVS.hom(obstacle_position)),ObjectDOVS.hom((collision_points[0][0], collision_points[0][1], 0))))
+                collision2_from_obstacle = ObjectDOVS.loc(np.dot(np.linalg.inv(ObjectDOVS.hom(obstacle_position)),ObjectDOVS.hom((collision_points[1][0], collision_points[1][1], 0))))
+                
                 # Devolver el punto de colision mas cercano a la trayectoria del robot
                 # Calculo longitud arco desde el robot 
 
@@ -112,7 +119,18 @@ class DOVS:
                 theta = 2 * math.atan(d / (2 * trajectory_radius))
                 arclength_2 = trajectory_radius * theta
 
-                if arclength_1 <= arclength_2:
+
+                if collision1_from_obstacle[0] >= 0 and collision2_from_obstacle[0] >= 0:
+                    if arclength_1 <= arclength_2:
+                        return collision_points[0]
+                    else:
+                        return collision_points[1]
+                elif collision1_from_obstacle[0] < 0 and collision2_from_obstacle[0] < 0:
+                    if arclength_1 >= arclength_2:
+                        return collision_points[0]
+                    else:
+                        return collision_points[1]
+                elif collision1_from_obstacle[0] >= 0:
                     return collision_points[0]
                 else:
                     return collision_points[1]
@@ -120,7 +138,7 @@ class DOVS:
             return None
 
 
-    def _compute_collision_points(self, trajectory, obstacle_trajectory):
+    def _compute_collision_points(self, trajectory, obstacle_trajectory, obstacle_position):
         """
         Compute the collision points of the trajectory with the collision band
         returns (passBehindCollisionPoint, passFrontCollisionPoint)
@@ -132,7 +150,7 @@ class DOVS:
         # intersection_1 = trajectory.intersection(obstacle_trajectory[0])
         # intersection_2 = trajectory.intersection(obstacle_trajectory[1])
 
-        return self._select_right_collision_point(intersection_1, trajectory.radius, self.robot.get_location()), self._select_right_collision_point(intersection_2, trajectory.radius, self.robot.get_location())
+        return self._select_right_collision_point(intersection_1, trajectory.radius, self.robot.get_location(), obstacle_position), self._select_right_collision_point(intersection_2, trajectory.radius, self.robot.get_location(), obstacle_position)
         
 
 
@@ -145,7 +163,7 @@ class DOVS:
 
         # print("x_col, y_col")
         # print(x_col, y_col)
-        # print("x_obs_col, y_obs_col")#TODO: Esto no cambia no?, quiza meterlo como atributo en dovs
+        # print("x_obs_col, y_obs_col")
         # print(x_obs_col, y_obs_col)
         
         distance = obs_trajectory.distance_between_points(x_col, y_col, x_obs_col, y_obs_col)

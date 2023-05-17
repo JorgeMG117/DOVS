@@ -52,7 +52,7 @@ class ObjectDOVS:
 
 
 class DynamicObstacleDOVS(ObjectDOVS):
-    def __init__(self, obstacle, robot_radius, robot_location) -> None:
+    def __init__(self, obstacle, robot_radius, robot_location, max_distance) -> None:
         # print("Posicion del robot visto desde el mundo")
         # print(robot_location)
 
@@ -69,9 +69,9 @@ class DynamicObstacleDOVS(ObjectDOVS):
         super().__init__(obstacle.v, obstacle.w, obstacle_pos[0], obstacle_pos[1], obstacle_pos[2])
         # super().__init__(obstacle.v, obstacle.w, obstacle.x, obstacle.y, obstacle.theta)
 
-        self.trajectory = self.compute_trajectory()
+        self.trajectory = self.compute_trajectory(max_distance)
     
-    def compute_trajectory(self):
+    def compute_trajectory(self, max_distance):
         """
         Returns the collision band of the obstacle(two trajectories)
         [passBehind, passFront]
@@ -87,7 +87,7 @@ class DynamicObstacleDOVS(ObjectDOVS):
         if self.w != 0:
             trajectory = CircularTrajectory((x1, y1), (x2, y2), (self.x, self.y, self.theta), (self.v, self.w))
         else:
-            trajectory = LinearTrajectory((x1, y1), (x2, y2), self.theta)
+            trajectory = LinearTrajectory((x1, y1), (x2, y2), self.theta, max_distance)
         
         return trajectory
     

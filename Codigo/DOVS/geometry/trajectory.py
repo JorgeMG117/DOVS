@@ -1,4 +1,5 @@
 from sympy.geometry import *
+from sympy import Symbol, symbols, Eq, nsolve, solve
 import math
 from matplotlib import pyplot as plt
 
@@ -31,7 +32,7 @@ class LinearTrajectory(ObstacleTrajectory):
     """
 
 
-    def __init__(self, point1, point2, angle) -> None:
+    def __init__(self, point1, point2, angle, max_distance) -> None:
         """
         Initializes a LinearTrajectory object.
 
@@ -46,14 +47,56 @@ class LinearTrajectory(ObstacleTrajectory):
         l1 = Line(point1, slope=ray_1.slope)
         l2 = Line(point2, slope=ray_1.slope)
 
-        if angle < 0:
-            s1 = Segment(l1.points[0], -l1.points[1])
-            s2 = Segment(l2.points[0], -l2.points[1])
-        else:
-            s1 = Segment(l1.points[0], l1.points[1])
-            s2 = Segment(l2.points[0], l2.points[1])
+        #variables = equation.free_symbols
+        #variable = equation.lhs.free_symbols.pop()
 
-        super().__init__(s1, s2)
+        # # Solve the equation
+        # solutions = solve(equation, variables)
+
+
+
+       
+        
+        # x, y = symbols('x y')
+        # equation = Eq(l1.equation(), 0)
+        # print(equation)
+        # variables = equation.free_symbols
+        # print(type(variables))
+        # # equation = equation.subs(x, 0)
+        # # print(equation)
+        # # solutions = solve(equation, variables)
+        # # value = solutions[0].values()
+        # # print(value[0])
+        
+        
+
+        # x, y = symbols('x y')
+        # equation = Eq(x**2 + y**2, 25)
+        # equation = equation.subs(x, 0)
+        # numerical_solution = nsolve(equation, y, 0)
+        # print(numerical_solution)
+
+        # print(equation)
+        # # print(l1.equation())
+        # equation = equation.subs(x, 1)
+        # print(equation)
+        # print(equation.evalf())
+        # numerical_solution = nsolve(equation, y, 0)
+        # print(numerical_solution)
+
+        # solutions = solve(equation, x)
+        # print(solutions)
+
+
+
+        # if angle < 0:
+        #     s1 = Segment(l1.points[0], -l1.points[1])
+        #     s2 = Segment(l2.points[0], -l2.points[1])
+        # else:
+        #     s1 = Segment(l1.points[0], l1.points[1])
+        #     s2 = Segment(l2.points[0], l2.points[1])
+
+        super().__init__(l1, l2)
 
     def plot(self, axis):
         """
@@ -111,6 +154,7 @@ class CircularTrajectory(ObstacleTrajectory):
     
         axis.add_patch(plt.Circle((self.l2.center.coordinates[0], self.l2.center.coordinates[1]), self.l2.radius, color='green', fill=False))    
 
+    # TODO: revisar theta
     def distance_between_points(self, x1, y1, x2, y2):
         d = math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
         theta = 2 * math.atan(d / (2 * self.radius))

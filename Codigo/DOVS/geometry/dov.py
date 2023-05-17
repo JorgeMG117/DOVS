@@ -7,11 +7,13 @@ class DOV():
         passBehind = []
         passFront = []
     
-        print(velocity_time_space)
+        # print(velocity_time_space)
         if len(velocity_time_space) != 0:
             #TODO:Añadir que guarde los tiempos
             passBehind, passFront = [(passBehind[0][1], passBehind[0][2]) for passBehind in velocity_time_space], [(passFront[1][1], passFront[1][2]) for passFront in velocity_time_space]
-
+            tiempos = [passBehind[0][0] for passBehind in velocity_time_space]
+            print("tiempos")
+            print(tiempos)
             vertices = passBehind + passFront[::-1]
             self.dov = patches.Polygon(vertices, closed=True, facecolor='green')
         else:

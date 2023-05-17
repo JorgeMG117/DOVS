@@ -42,11 +42,9 @@ fig, ax = plt.subplots(1,1, figsize=(12,12))
 # ax = ax.reshape((-1))
 robot = Robot(0.0, 0.0, 0.0, 2.0, -np.pi/2, 0.2, 0.0, -2.0, 0.0, 0.7, -np.pi/2, np.pi/2, 0.7, np.pi/2)
 obstacles_vec = []
-#obstacles_vec.append(DynamicObstacle(0.1, 0, -3.0, 2.0, -np.pi/4, 0.2))
-obstacles_vec.append(DynamicObstacle(0.5/5, 0.1/5, 0.0, 0.0, 0.0, 0.2))
-#obstacles_vec.append(DynamicObstacle(0.5, 0, 2.0, 0.0, 0.0, 0.2))
-#obstacles_vec.append(DynamicObstacle(0.5, 0, 2.0, 0.0, np.pi, 0.2))
-#obstacles_vec.append(DynamicObstacle(0.5, 0, -1.0, 0.0, 0.0, 0.2))
+obstacles_vec.append(DynamicObstacle(0.1, 0, -3.0, 2.0, -np.pi/4, 0.2))
+#obstacles_vec.append(DynamicObstacle(0.5/5, 0.1/5, 0.0, 0.0, 0.0, 0.2))
+
 
 obstacles_artist = []
 obstacles_arrow_artist = []
@@ -75,7 +73,7 @@ ax.set_ylim(-4, 4)
 # ax.axis('equal')
 # plt.tight_layout()
 
-fig_dovs, ax_dovs = plt.subplots()
+fig_dovs, ax_dovs = plt.subplots(1, 2)
 time = 0
 def update(i_video):
     global robot_arrow_artist

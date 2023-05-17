@@ -17,24 +17,22 @@ class PlotDOVS:
         self.plot_robot = PlotRobotDOVS(robot)
         self.plot_obstacles = list(map(lambda obstacle: PlotDynamicObstacleDOVS(obstacle), obstacles))
 
-        self.fig_dovs = fig_dovs
-        self.ax_dovs = ax_dovs
+        self.fig = fig_dovs
+        self.ax_trajectories, self.ax_dovs = ax_dovs
 
 
     def plot_trajectories(self, collision_points_list):
-        fig, ax = plt.subplots()
+        self.plot_robot.plot_position(self.ax_trajectories)
 
-        self.plot_robot.plot_position(ax)
+        self.plot_robot.plot_goal(self.ax_trajectories)
 
-        self.plot_robot.plot_goal(ax)
-
-        self.plot_robot.plot_trajectories(ax)
+        self.plot_robot.plot_trajectories(self.ax_trajectories)
 
         for obstacle in self.plot_obstacles:
-            obstacle.plot_position(ax)
+            obstacle.plot_position(self.ax_trajectories)
             #print(obstacle.obstacle.radius)
-            obstacle.plot_colision_points(ax)
-            obstacle.plot_trajectory(ax)
+            obstacle.plot_colision_points(self.ax_trajectories)
+            obstacle.plot_trajectory(self.ax_trajectories)
         
         for collision_points in collision_points_list:
             i = 0
@@ -44,16 +42,16 @@ class PlotDOVS:
                     # print(float(collision_point[0]))
                     # print(float(collision_point[1]))
                     if i == 0:
-                        ax.plot(collision_point[0], collision_point[1], 'k.')
+                        self.ax_trajectories.plot(collision_point[0], collision_point[1], 'k.')
                     else:
-                        ax.plot(collision_point[0], collision_point[1], 'b.')
+                        self.ax_trajectories.plot(collision_point[0], collision_point[1], 'b.')
                 i = i + 1
                     
 
         # Set the axis limits
         plt.axis('equal')
-        ax.set_xlim(-4, 4)
-        ax.set_ylim(-4, 4)
+        self.ax_trajectories.set_xlim(-4, 4)
+        self.ax_trajectories.set_ylim(-4, 4)
 
         # plt.show()
 
@@ -61,15 +59,15 @@ class PlotDOVS:
         # plt.ion()
         # # Crear la figura y los ejes para mostrar los polígonos
         
-        fig, ax = plt.subplots()
+        
         # self.ax_dovs.clear()
 
-        dovs.plot(ax)
+        dovs.plot(self.ax_dovs)
 
-        self.plot_robot.plot_velocity_window(ax)
+        self.plot_robot.plot_velocity_window(self.ax_dovs)
 
         self.ax_dovs.set_xlim([self.plot_robot.robot.min_w, self.plot_robot.robot.max_w])
-        self.ax_dovs.set_ylim([self.plot_robot.robot.min_v, self.plot_robot.robot.max_v])
+        self.ax_dovs.set_ylim([0, self.plot_robot.robot.max_v])
         # ax.set_xlim([-0.5, 2])
         # ax.set_ylim([-0.5, 2])
 
