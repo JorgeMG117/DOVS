@@ -41,6 +41,7 @@ class LinearTrajectory(ObstacleTrajectory):
             point2: The ending point of the trajectory.
             angle: The angle of the trajectory in degrees.
         """
+        self.angle = angle
         
         ray_1 = Ray((0,0), angle=angle)
     
@@ -105,11 +106,23 @@ class LinearTrajectory(ObstacleTrajectory):
         Args:
             axis: The axis on which to plot the trajectory.
         """
-        (l1_x1,l1_y1), (l1_x2,l1_y2) = self.l1.points
-        (l2_x1,l2_y1), (l2_x2,l2_y2) = self.l2.points
+        distance = 10
+        dx = distance * math.cos(self.angle)
+        dy = distance * math.sin(self.angle)
+        l1_x1,l1_y1 = self.l1.points[0]
+        l2_x1,l2_y1 = self.l2.points[0]
         
-        axis.plot([l1_x1, l1_x2], [l1_y1, l1_y2], 'g-')
-        axis.plot([l2_x1, l2_x2], [l2_y1, l2_y2], 'g-')
+        # Compute the end point of the line using the large distance
+        x_end = l1_x1 + dx
+        y_end = l1_y1 + dy
+
+        # Plot the line using the point and end coordinates
+        axis.plot([l1_x1, x_end], [l1_y1, y_end], 'g-')
+
+        x_end = l2_x1 + dx
+        y_end = l2_y1 + dy
+
+        axis.plot([l2_x1, x_end], [l2_y1, y_end], 'g-')
        
     
     def distance_between_points(self, x1, y1, x2, y2):
