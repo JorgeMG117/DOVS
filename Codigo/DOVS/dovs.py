@@ -7,7 +7,6 @@ from matplotlib import pyplot as plt
 
 import numpy as np
 from DOVS.geometry.dov import DOV
-from DOVS.geometry.map import Map
 
 # from sympy import nsolve, Symbol, symbols
 # from sympy import Polygon, plot
@@ -87,6 +86,7 @@ class DOVS:
         plotDOVS.plot_DOVS(dovs)
         
 
+        return 0.0, 0.0
         return self._choose_speed()
         
     

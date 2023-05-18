@@ -108,9 +108,10 @@ def onclick(event):
 
 def main():
     timestep = 0.2
+    fig, ax = plt.subplots(1, 2, figsize=(19,12))
     for test in tests_list:
         #plt.ion()
-        fig, ax = plt.subplots(1, 2, figsize=(19,12))
+        
 
         
         # plt.title('Some Title')
