@@ -29,18 +29,8 @@ class Robot(DynamicObstacle):
 
 timestep = 0.2
 
-click_v = 0
-click_w = 0
-has_clicked = False
+i_video = 0
 
-def onclick(event):
-    print('%s click: button=%d, x=%d, y=%d, xdata=%f, ydata=%f' %
-          ('double' if event.dblclick else 'single', event.button,
-           event.x, event.y, event.xdata, event.ydata))
-    print(event.inaxes)
-    click_v = event.ydata
-    click_w = event.xdata
-    has_clicked = True
 
 
 def computeDOVS(robot, obstacles, timestep, fig_dovs, ax_dovs):
@@ -103,12 +93,17 @@ ax.set_ylim(-4, 4)
 #cid = fig_dovs.canvas.mpl_connect('button_press_event', onclick)
     
 time = 0
-def update(i_video):
+
+
+
+def onclick(event):
+    i_video = 0#TODO:Esto no funciona
     global robot_arrow_artist
     time = i_video*timestep
     for axis in ax_dovs:
         axis.clear()
-    v_new, w_new = computeDOVS(robot=robot, obstacles=obstacles_vec, timestep=timestep, fig_dovs=fig, ax_dovs=ax_dovs)
+    computeDOVS(robot=robot, obstacles=obstacles_vec, timestep=timestep, fig_dovs=fig, ax_dovs=ax_dovs)
+    v_new, w_new = event.ydata, event.xdata
     plt.pause(0.2)
     robot.v = v_new
     robot.w = w_new
@@ -139,9 +134,9 @@ def update(i_video):
     # ax.axis('equal')
     ax.title.set_text(r' -- Time: {0:.2f} s'.format(time))
 
-anim = animation.FuncAnimation(fig, update, interval=0.2 * 1000)
-anim.running = True
-# ffmpeg_writer = animation.FFMpegWriter(fps=4, metadata=dict(artist='Me'), bitrate=1800)
-# anim.save("saved_experiment.mp4", writer=ffmpeg_writer)
+    i_video = i_video + 1
+
+cid = fig.canvas.mpl_connect('button_press_event', onclick)
+
 
 plt.show()
