@@ -29,6 +29,19 @@ class Robot(DynamicObstacle):
 
 timestep = 0.2
 
+click_v = 0
+click_w = 0
+has_clicked = False
+
+def onclick(event):
+    print('%s click: button=%d, x=%d, y=%d, xdata=%f, ydata=%f' %
+          ('double' if event.dblclick else 'single', event.button,
+           event.x, event.y, event.xdata, event.ydata))
+    print(event.inaxes)
+    click_v = event.ydata
+    click_w = event.xdata
+    has_clicked = True
+
 
 def computeDOVS(robot, obstacles, timestep, fig_dovs, ax_dovs):
     print("Here the DOVS function should be called")
@@ -74,6 +87,8 @@ ax.set_ylim(-4, 4)
 # plt.tight_layout()
 
 fig_dovs, ax_dovs = plt.subplots(1, 2, figsize=(19,12))
+cid = fig_dovs.canvas.mpl_connect('button_press_event', onclick)
+    
 time = 0
 def update(i_video):
     global robot_arrow_artist
