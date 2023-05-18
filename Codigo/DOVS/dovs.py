@@ -95,10 +95,14 @@ class DOVS:
         Select the right collision point of the intersection of the robot trajectory and the obstacle trajectory
         """
         if collision_points:
+            collision1_from_obstacle = ObjectDOVS.loc(np.dot(np.linalg.inv(ObjectDOVS.hom(obstacle_position)),ObjectDOVS.hom((collision_points[0][0], collision_points[0][1], 0))))
             if len(collision_points) == 1:
-                return collision_points[0]
+                if collision1_from_obstacle[0] >= 0:
+                    return collision_points[0]
+                else:
+                    return None
             else:
-                collision1_from_obstacle = ObjectDOVS.loc(np.dot(np.linalg.inv(ObjectDOVS.hom(obstacle_position)),ObjectDOVS.hom((collision_points[0][0], collision_points[0][1], 0))))
+                #collision1_from_obstacle = ObjectDOVS.loc(np.dot(np.linalg.inv(ObjectDOVS.hom(obstacle_position)),ObjectDOVS.hom((collision_points[0][0], collision_points[0][1], 0))))
                 collision2_from_obstacle = ObjectDOVS.loc(np.dot(np.linalg.inv(ObjectDOVS.hom(obstacle_position)),ObjectDOVS.hom((collision_points[1][0], collision_points[1][1], 0))))
                 
                 # Devolver el punto de colision mas cercano a la trayectoria del robot
@@ -125,10 +129,7 @@ class DOVS:
                     else:
                         return collision_points[1]
                 elif collision1_from_obstacle[0] < 0 and collision2_from_obstacle[0] < 0:
-                    if arclength_1 >= arclength_2:
-                        return collision_points[0]
-                    else:
-                        return collision_points[1]
+                    return None
                 elif collision1_from_obstacle[0] >= 0:
                     return collision_points[0]
                 else:

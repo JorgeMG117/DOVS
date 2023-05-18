@@ -6,8 +6,8 @@ class VelocityWindow():
         #a = (vf - vi) / t
         v_max = robot.max_av * timestep + robot.v
         v_min = -robot.max_av * timestep + robot.v
-        w_max = robot.max_aw * timestep + robot.v
-        w_min = -robot.max_aw * timestep + robot.v
+        w_max = robot.max_aw * timestep + robot.w
+        w_min = -robot.max_aw * timestep + robot.w
 
         self.velocity_window = patches.Polygon(list(zip([v_max, robot.v, v_min, robot.v], [robot.w, w_max, robot.w, w_min])), color='lightblue', alpha=0.5, fill=True)
 

@@ -41,7 +41,7 @@ class DOV():
         print("len(self.passBehind)")
         print(len(self.passBehind))
         for point in self.passBehind:
-            print(point)
+            # print(point)
             # input("Press enter to continue...")
             axis.plot(point[0], point[1], "k.")
             # fig.canvas.draw()   # Redraw the plot
@@ -50,7 +50,7 @@ class DOV():
         print("len(self.passFront)")
         print(len(self.passFront))
         for point in self.passFront:
-            print(point)
+            # print(point)
             
             # input("Press enter to continue...")
             axis.plot(point[0], point[1], "b.")
