@@ -6,14 +6,15 @@ class DOV():
     def __init__(self, velocity_time_space = []) -> None:
         passBehind = []
         passFront = []
+        passBehind_times = []
+        passFront_times = []
     
         # print(velocity_time_space)
         if len(velocity_time_space) != 0:
-            #TODO:Añadir que guarde los tiempos
+            
             passBehind, passFront = [(passBehind[0][1], passBehind[0][2]) for passBehind in velocity_time_space], [(passFront[1][1], passFront[1][2]) for passFront in velocity_time_space]
-            tiempos = [passBehind[0][0] for passBehind in velocity_time_space]
-            print("tiempos")
-            print(tiempos)
+            passBehind_times, passFront_times = [value[0][0] for value in velocity_time_space], [value[1][0] for value in velocity_time_space]
+            
             vertices = passBehind + passFront[::-1]
             self.dov = patches.Polygon(vertices, closed=True, facecolor='green')
         else:
@@ -21,6 +22,12 @@ class DOV():
 
         self.passBehind = passBehind
         self.passFront = passFront
+        self.passBehind_times = passBehind_times
+        self.passFront_times = passFront_times
+        print("self.passBehind_times")
+        print(self.passBehind_times)
+        print("self.passFront_times")
+        print(self.passFront_times)
 
     def contains(self, point):
         return self.dov.contains_point(point)

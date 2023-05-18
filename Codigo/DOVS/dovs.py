@@ -85,7 +85,6 @@ class DOVS:
         plotDOVS = PlotDOVS(self.robot, self.obstacles, self.fig_dovs, self.ax_dovs)#Quiza pasarle el dovs??
         plotDOVS.plot_trajectories(collision_points_list)
         plotDOVS.plot_DOVS(dovs)
-        plt.show()
         
 
         return self._choose_speed()
@@ -268,7 +267,7 @@ class DOVS:
 
         
     def _choose_speed(self):
-        return 0,0
+        return 0.7,0
         v = 1
         w = 1
 

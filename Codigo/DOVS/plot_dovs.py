@@ -49,9 +49,12 @@ class PlotDOVS:
                     
 
         # Set the axis limits
-        plt.axis('equal')
+        
+        #
         self.ax_trajectories.set_xlim(-4, 4)
         self.ax_trajectories.set_ylim(-4, 4)
+
+        #plt.axis('equal')
 
         # plt.show()
 
@@ -66,6 +69,8 @@ class PlotDOVS:
 
         self.plot_robot.plot_velocity_window(self.ax_dovs)
 
+        #self.ax_dovs.axis('equal')
+
         self.ax_dovs.set_xlim([self.plot_robot.robot.min_w, self.plot_robot.robot.max_w])
         self.ax_dovs.set_ylim([0, self.plot_robot.robot.max_v])
         # ax.set_xlim([-0.5, 2])
@@ -73,7 +78,7 @@ class PlotDOVS:
 
         # plt.draw()
         # plt.pause(0.1)
-        plt.axis('equal')
+        #plt.axis('equal')
         
         
 
