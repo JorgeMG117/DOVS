@@ -16,19 +16,29 @@ class DOV():
         
         vertices = self.passBehind + self.passFront[::-1]
         #self.dov = patches.Polygon(vertices, closed=True, facecolor='green')
-        p = sg.Polygon(vertices)
-        self.dov = sg.MultiPolygon([p])
+        
+        self.dov = sg.Polygon(vertices)
+        #self.dov = sg.MultiPolygon([p])
 
 
+    # def contains(self, point):
+    #     if not self.valid: return False
+    #     return self.dov.contains_point(point)
 
-    def contains(self, point):
-        if not self.valid: return False
-        return self.dov.contains_point(point)
     
     def combine_DOVS(self, dovs):
         if not dovs.valid: return self
         if not self.valid: return dovs
+        # print(type(self.dov))
+        # print(type(dovs.dov))
+        # print(len(self.passBehind))
+        # print(len(self.passFront))
+        # print(len(dovs.passBehind))
+        # print(len(dovs.passFront))
         self.dov = so.unary_union([self.dov, dovs.dov])
+        if self.dov.geom_type == 'Polygon':
+            self.dov = sg.MultiPolygon([self.dov])
+        # print(type(self.dov))
         
         self.passBehind = self.passBehind + dovs.passBehind
         self.passFront = self.passFront + dovs.passFront
@@ -44,14 +54,15 @@ class DOV():
 
         #xs, ys = self.dov.exterior.xy
         #axis.fill(xs, ys, alpha=0.5, fc='r', ec='none')
+        
         for geom in self.dov.geoms:    
             xs, ys = geom.exterior.xy
             axis.fill(xs, ys, alpha=0.5, fc='r', ec='none')
 
-        print("self.passBehind_times")
-        print(self.passBehind_times)
-        print("self.passFront_times")
-        print(self.passFront_times)
+        # print("self.passBehind_times")
+        # print(self.passBehind_times)
+        # print("self.passFront_times")
+        # print(self.passFront_times)
 
         print("len(self.passBehind)")
         print(len(self.passBehind))
