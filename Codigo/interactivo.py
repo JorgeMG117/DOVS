@@ -44,6 +44,8 @@ plt.close('all')
 fig, axis = plt.subplots(2,2, figsize=(12,12))
 ax = axis[1, :]
 ax_dovs = (axis[0, 0], axis[0, 1])
+axis[0, 1].set_xlabel("w")
+axis[0, 1].set_ylabel("v")
 
 # Remove unused axis
 ax[1].remove()
@@ -58,8 +60,10 @@ ax = ax[0]
 # ax = ax.reshape((-1))
 robot = Robot(0.0, 0.0, 0.0, 2.0, -np.pi/2, 0.2, 0.0, -2.0, 0.0, 0.7, -np.pi/2, np.pi/2, 0.7, np.pi/2)
 obstacles_vec = []
+
+obstacles_vec.append(DynamicObstacle(0.5/5, 0.1/5, 0.0, 0.0, 0.0, 0.2))
 obstacles_vec.append(DynamicObstacle(0.5, 0, -1.0, 0.0, 0.0, 0.2))
-#obstacles_vec.append(DynamicObstacle(0.5/5, 0.1/5, 0.0, 0.0, 0.0, 0.2))
+
 
 
 obstacles_artist = []

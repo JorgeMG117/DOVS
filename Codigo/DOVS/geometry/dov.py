@@ -1,42 +1,57 @@
 import matplotlib.patches as patches
 
+import shapely.geometry as sg
+import shapely.ops as so
+
 #TODO: Es buen nombre??
 class DOV():
     #dynamic_object_velocity
     def __init__(self, velocity_time_space = []) -> None:
-        passBehind = []
-        passFront = []
-        passBehind_times = []
-        passFront_times = []
-    
-        # print(velocity_time_space)
-        if len(velocity_time_space) != 0:
-            
-            passBehind, passFront = [(passBehind[0][1], passBehind[0][2]) for passBehind in velocity_time_space], [(passFront[1][1], passFront[1][2]) for passFront in velocity_time_space]
-            passBehind_times, passFront_times = [value[0][0] for value in velocity_time_space], [value[1][0] for value in velocity_time_space]
-            
-            vertices = passBehind + passFront[::-1]
-            self.dov = patches.Polygon(vertices, closed=True, facecolor='green')
-        else:
-            self.dov = patches.Polygon([(0,0),(0,0)], closed=True, facecolor='green')
 
-        self.passBehind = passBehind
-        self.passFront = passFront
-        self.passBehind_times = passBehind_times
-        self.passFront_times = passFront_times
+        if len(velocity_time_space) == 0: self.valid = False; return
+        else: self.valid = True
+            
+        self.passBehind,  self.passFront = [(passBehind[0][1], passBehind[0][2]) for passBehind in velocity_time_space], [(passFront[1][1], passFront[1][2]) for passFront in velocity_time_space]
+        self.passBehind_times,  self.passFront_times = [value[0][0] for value in velocity_time_space], [value[1][0] for value in velocity_time_space]
+        
+        vertices = self.passBehind + self.passFront[::-1]
+        #self.dov = patches.Polygon(vertices, closed=True, facecolor='green')
+        p = sg.Polygon(vertices)
+        self.dov = sg.MultiPolygon([p])
+
+
+
+    def contains(self, point):
+        if not self.valid: return False
+        return self.dov.contains_point(point)
+    
+    def combine_DOVS(self, dovs):
+        if not dovs.valid: return self
+        if not self.valid: return dovs
+        self.dov = so.unary_union([self.dov, dovs.dov])
+        
+        self.passBehind = self.passBehind + dovs.passBehind
+        self.passFront = self.passFront + dovs.passFront
+        self.passBehind_times = self.passBehind_times + dovs.passBehind_times
+        self.passFront_times = self.passFront_times + dovs.passFront_times
+
+        return self
+
+
+    def plot(self, axis):
+        if not self.valid: return
+        #axis.add_patch(self.dov)
+
+        #xs, ys = self.dov.exterior.xy
+        #axis.fill(xs, ys, alpha=0.5, fc='r', ec='none')
+        for geom in self.dov.geoms:    
+            xs, ys = geom.exterior.xy
+            axis.fill(xs, ys, alpha=0.5, fc='r', ec='none')
+
         print("self.passBehind_times")
         print(self.passBehind_times)
         print("self.passFront_times")
         print(self.passFront_times)
-
-    def contains(self, point):
-        return self.dov.contains_point(point)
-    
-    def combine_DOVS(self, dovs):
-        return dovs
-
-    def plot(self, axis):
-        axis.add_patch(self.dov)
 
         print("len(self.passBehind)")
         print(len(self.passBehind))

@@ -9,10 +9,13 @@ class VelocityWindow():
         w_max = robot.max_aw * timestep + robot.w
         w_min = -robot.max_aw * timestep + robot.w
 
-        self.velocity_window = patches.Polygon(list(zip([v_max, robot.v, v_min, robot.v], [robot.w, w_max, robot.w, w_min])), color='lightblue', alpha=0.5, fill=True)
+        self.velocity_window = patches.Polygon(list(zip([robot.w, w_max, robot.w, w_min], [v_max, robot.v, v_min, robot.v])), color='lightblue', alpha=0.5, fill=True)
+        self.v = robot.v
+        self.w = robot.w
 
     def contains(self, point):
         return self.velocity_window.contains_point(point)
 
     def plot(self, axis):
         axis.add_patch(self.velocity_window)
+        axis.plot(self.w, self.v, 'r.')
