@@ -18,6 +18,9 @@ class ObstacleTrajectory():
     def plot(self, axis):
         pass
 
+    def distance_between_points(self, x1, y1, x2, y2):
+        pass
+
 class LinearTrajectory(ObstacleTrajectory):
     """
     Represents a linear trajectory between two points.

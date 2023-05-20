@@ -79,7 +79,7 @@ class DOVS:
                     velocity_time_space.append(velocity_time)
                 
             dovs = DOV(velocity_time_space)
-            final_dovs = final_dovs.combine_DOVS(dovs)#Añadimos el dovs calculado al dovs total, geometrically merged
+            final_dovs.combine_DOVS(dovs)
 
         plotDOVS = PlotDOVS(self.robot, self.obstacles, self.fig_dovs, self.ax_dovs)#Quiza pasarle el dovs??
         plotDOVS.plot_trajectories(collision_points_list)

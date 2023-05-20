@@ -61,8 +61,7 @@ ax = ax[0]
 robot = Robot(0.0, 0.0, 0.0, 2.0, -np.pi/2, 0.2, 0.0, -2.0, 0.0, 0.7, -np.pi/2, np.pi/2, 0.7, np.pi/2)
 obstacles_vec = []
 
-obstacles_vec.append(DynamicObstacle(0.5/5, 0.1/5, 0.0, 0.0, 0.0, 0.2))
-obstacles_vec.append(DynamicObstacle(0.5, 0, -1.0, 0.0, 0.0, 0.2))
+obstacles_vec.append(DynamicObstacle(0.1, 0, 1.0, 0.0, 0.0, 0.2))
 
 
 
