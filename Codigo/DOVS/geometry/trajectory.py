@@ -45,62 +45,15 @@ class LinearTrajectory(ObstacleTrajectory):
             angle: The angle of the trajectory in degrees.
         """
         self.angle = angle
+        self.max_distance = max_distance
         
         ray_1 = Ray((0,0), angle=angle)
     
         l1 = Line(point1, slope=ray_1.slope)
         l2 = Line(point2, slope=ray_1.slope)
 
-        #variables = equation.free_symbols
-        #variable = equation.lhs.free_symbols.pop()
 
-        # # Solve the equation
-        # solutions = solve(equation, variables)
-
-
-
-       
-        
-        # x, y = symbols('x y')
-        # equation = Eq(l1.equation(), 0)
-        # print(equation)
-        # variables = equation.free_symbols
-        # print(type(variables))
-        # # equation = equation.subs(x, 0)
-        # # print(equation)
-        # # solutions = solve(equation, variables)
-        # # value = solutions[0].values()
-        # # print(value[0])
-        
-        
-
-        # x, y = symbols('x y')
-        # equation = Eq(x**2 + y**2, 25)
-        # equation = equation.subs(x, 0)
-        # numerical_solution = nsolve(equation, y, 0)
-        # print(numerical_solution)
-
-        # print(equation)
-        # # print(l1.equation())
-        # equation = equation.subs(x, 1)
-        # print(equation)
-        # print(equation.evalf())
-        # numerical_solution = nsolve(equation, y, 0)
-        # print(numerical_solution)
-
-        # solutions = solve(equation, x)
-        # print(solutions)
-
-
-
-        # if angle < 0:
-        #     s1 = Segment(l1.points[0], -l1.points[1])
-        #     s2 = Segment(l2.points[0], -l2.points[1])
-        # else:
-        #     s1 = Segment(l1.points[0], l1.points[1])
-        #     s2 = Segment(l2.points[0], l2.points[1])
-
-        super().__init__(l1, l2)
+        super().__init__(l1, l2)#l1 a la derecha del objeto
 
     def plot(self, axis):
         """
@@ -109,9 +62,9 @@ class LinearTrajectory(ObstacleTrajectory):
         Args:
             axis: The axis on which to plot the trajectory.
         """
-        distance = 10
-        dx = distance * math.cos(self.angle)
-        dy = distance * math.sin(self.angle)
+        
+        dx = self.max_distance * math.cos(self.angle)
+        dy = self.max_distance * math.sin(self.angle)
         l1_x1,l1_y1 = self.l1.points[0]
         l2_x1,l2_y1 = self.l2.points[0]
         

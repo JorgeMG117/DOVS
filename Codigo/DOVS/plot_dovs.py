@@ -44,7 +44,7 @@ class PlotDOVS:
                     if i == 0:
                         self.ax_trajectories.plot(collision_point[0], collision_point[1], 'k.')
                     else:
-                        self.ax_trajectories.plot(collision_point[0], collision_point[1], 'b.')
+                        self.ax_trajectories.plot(collision_point[0], collision_point[1], 'k.')
                 i = i + 1
                     
 

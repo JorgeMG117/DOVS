@@ -3,7 +3,6 @@ import matplotlib.patches as patches
 import shapely.geometry as sg
 import shapely.ops as so
 
-#TODO: Es buen nombre??
 class DOV():
     #dynamic_object_velocity
     def __init__(self, velocity_time_space = []) -> None:
@@ -49,7 +48,7 @@ class DOV():
 
 
     def plot(self, axis):
-        print(self.valid)
+        # print(self.valid)
         if not self.valid: return
         #axis.add_patch(self.dov)
 
@@ -65,8 +64,9 @@ class DOV():
         # print("self.passFront_times")
         # print(self.passFront_times)
 
-        print("len(self.passBehind)")
-        print(len(self.passBehind))
+        # print("len(self.passBehind)")
+        # print(len(self.passBehind))
+        # print(self.passBehind)
         for point in self.passBehind:
             # print(point)
             # input("Press enter to continue...")
@@ -74,8 +74,9 @@ class DOV():
             # fig.canvas.draw()   # Redraw the plot
             # plt.pause(0.5)
             
-        print("len(self.passFront)")
-        print(len(self.passFront))
+        # print("len(self.passFront)")
+        # print(len(self.passFront))
+        # print(self.passFront)
         for point in self.passFront:
             # print(point)
             

@@ -29,19 +29,6 @@ class Robot(DynamicObstacle):
 
 timestep = 0.2
 
-click_v = 0
-click_w = 0
-has_clicked = False
-
-def onclick(event):
-    print('%s click: button=%d, x=%d, y=%d, xdata=%f, ydata=%f' %
-          ('double' if event.dblclick else 'single', event.button,
-           event.x, event.y, event.xdata, event.ydata))
-    print(event.inaxes)
-    click_v = event.ydata
-    click_w = event.xdata
-    has_clicked = True
-
 
 def computeDOVS(robot, obstacles, timestep, fig_dovs, ax_dovs):
     print("Here the DOVS function should be called")

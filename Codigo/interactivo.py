@@ -61,8 +61,10 @@ ax = ax[0]
 robot = Robot(0.0, 0.0, 0.0, 2.0, -np.pi/2, 0.2, 0.0, -2.0, 0.0, 0.7, -np.pi/2, np.pi/2, 0.7, np.pi/2)
 obstacles_vec = []
 
-obstacles_vec.append(DynamicObstacle(0.1, 0, 1.0, 0.0, 0.0, 0.2))
+obstacles_vec.append(DynamicObstacle(0.1, 0, 1.0, 1.0, -2*np.pi/3, 0.2))
+obstacles_vec.append(DynamicObstacle(0.5, 0.1, -2.0, 0.0, 0.0, 0.2))
 
+#obstacles_vec.append(DynamicObstacle(0.1, 0, 1.0, 0.0, 0.0, 0.2)) 
 
 
 obstacles_artist = []
@@ -107,6 +109,8 @@ def onclick(event):
         axis.clear()
     computeDOVS(robot=robot, obstacles=obstacles_vec, timestep=timestep, fig_dovs=fig, ax_dovs=ax_dovs)
     v_new, w_new = event.ydata, event.xdata
+    print(v_new)
+    print(w_new)
     plt.pause(0.2)
     robot.v = v_new
     robot.w = w_new

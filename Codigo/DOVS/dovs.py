@@ -49,12 +49,6 @@ class DOVS:
         self.ax_dovs = ax_dovs
 
 
-        #El poligono de velocidades prohibidas, #dynamic_object_velocity
-
-        #limites del plano, dimensiones en metros
-            #planteo añadir esto para poder hacer un cuadrado y hacer la interseccion con la trayectoria rectilinea para sacar el punto donde corta
-        #self.max_distance = 10
-
     def compute_DOVS(self):
         """
         Compute the DOVS algorithm
@@ -177,6 +171,13 @@ class DOVS:
 
         w = angle/t
         v = trajectory_radius*w
+
+        # print("x_col, y_col")
+        # print(x_col, y_col)
+        # print("Distancia:" + str(distance))
+        # print("t:" + str(t))
+        # print("angle:" + str(angle))
+        # print(w, v)
 
         return (t, w, v)
 

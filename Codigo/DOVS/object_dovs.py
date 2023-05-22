@@ -110,6 +110,25 @@ class DynamicObstacleDOVS(ObjectDOVS):
         
         return value1, value2
     
+    # def check_colision(self, x, y):
+    #     """
+    #     Given a point checks if its inside the cuadrado circunscrito
+    #     """
+    #     s = self.radius * math.sqrt(2)
+
+    #     # Step 3: Determine the boundaries of the square
+    #     min_x = self.x - s
+    #     max_x = self.x + s
+    #     min_y = self.y - s
+    #     max_y = self.y + s
+
+    #     # Step 4: Check if the point lies within the boundaries
+    #     if min_x <= x <= max_x and min_y <= y <= max_y:
+    #         return True
+    #     else:
+    #         return False
+        
+    
    
 # class LinearObstacle(DynamicObstacleDOVS):
 #     def compute_trajectory(self):
