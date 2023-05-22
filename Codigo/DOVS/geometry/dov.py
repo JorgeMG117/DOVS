@@ -15,6 +15,9 @@ class DOV():
         
         vertices = self.passBehind + self.passFront[::-1]
         #self.dov = patches.Polygon(vertices, closed=True, facecolor='green')
+
+        # print("Aqui")
+        # print(max(self.passBehind_times))
         
         p = sg.Polygon(vertices)
         self.dov = sg.MultiPolygon([p])
