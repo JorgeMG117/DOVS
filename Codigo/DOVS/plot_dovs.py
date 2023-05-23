@@ -69,6 +69,8 @@ class PlotDOVS:
 
         self.plot_robot.plot_velocity_window(self.ax_dovs)
 
+        self.plot_robot.plot_trajactory_goal(self.ax_dovs)
+
         #self.ax_dovs.axis('equal')
 
         self.ax_dovs.set_xlim([self.plot_robot.robot.min_w, self.plot_robot.robot.max_w])
@@ -154,4 +156,9 @@ class PlotRobotDOVS(PlotObjectDOVS):
 
     def plot_goal(self, axis):
         axis.plot(self.robot.x_goal, self.robot.y_goal, 'r*')
+
+    def plot_trajactory_goal(self, axis):
+        w, v = self.robot.get_speed_goal()
+        axis.plot([0, w], [0, v], color='red')
+        
 

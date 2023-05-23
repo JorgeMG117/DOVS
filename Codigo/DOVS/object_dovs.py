@@ -221,5 +221,12 @@ class RobotDOVS(ObjectDOVS):
         
         return w, v
     
+    def get_speed_goal(self):
+        pow(self.x_goal, 2)
+        r = (pow(self.x_goal, 2) + pow(self.y_goal, 2))/(2*self.y_goal)
+        w = self.v/r 
+        v = self.max_v
+        return w, v
+    
 
         
