@@ -249,7 +249,7 @@ def check_end(robot, obstacles):
 plt.close('all')
 
 
-test = tests_list[4]
+test = tests_list[1]
 print(test.name)
 
 fig, axis = plt.subplots(2,2, figsize=(12,12))

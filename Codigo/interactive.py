@@ -44,6 +44,9 @@ plt.close('all')
 fig, axis = plt.subplots(2,2, figsize=(12,12))
 ax = axis[1, :]
 ax_dovs = (axis[0, 0], axis[0, 1])
+axis[0, 0].title.set_text("Robocentric")
+axis[0, 0].set_xlabel("x (m)")
+axis[0, 0].set_ylabel("y (m)")
 axis[0, 1].set_xlabel("w")
 axis[0, 1].set_ylabel("v")
 
@@ -61,8 +64,7 @@ ax = ax[0]
 robot = Robot(0.0, 0.0, 0.0, 2.0, -np.pi/2, 0.2, 0.0, -2.0, 0.0, 0.7, -np.pi/2, np.pi/2, 0.7, np.pi/2)
 obstacles_vec = []
 
-obstacles_vec.append(DynamicObstacle(0.5, 0, -2.0, 0.0, 0.0, 0.2))
-
+obstacles_vec.append(DynamicObstacle(0.5, 0, -1.0, 0.0, 0.0, 0.2))
 # obstacles_vec.append(DynamicObstacle(0.1, 0, 1.0, 1.0, -2*np.pi/3, 0.2))
 # obstacles_vec.append(DynamicObstacle(0.5, 0.1, -2.0, 0.0, 0.0, 0.2))
 

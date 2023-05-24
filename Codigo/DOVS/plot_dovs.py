@@ -22,6 +22,9 @@ class PlotDOVS:
 
 
     def plot_trajectories(self, collision_points_list):
+        self.ax_trajectories.title.set_text("Robocentric view")
+        self.ax_trajectories.set_xlabel("x (m)")
+        self.ax_trajectories.set_ylabel("y (m)")
         self.plot_robot.plot_position(self.ax_trajectories)
 
         self.plot_robot.plot_goal(self.ax_trajectories)
@@ -59,6 +62,10 @@ class PlotDOVS:
         # plt.show()
 
     def plot_DOVS(self, dovs):
+        self.ax_dovs.title.set_text("DOVS")
+        self.ax_dovs.set_xlabel("w")
+        self.ax_dovs.set_ylabel("v")
+
         # plt.ion()
         # # Crear la figura y los ejes para mostrar los polígonos
         
