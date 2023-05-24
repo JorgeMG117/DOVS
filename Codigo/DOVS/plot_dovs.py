@@ -38,22 +38,11 @@ class PlotDOVS:
             obstacle.plot_trajectory(self.ax_trajectories)
         
         for collision_points in collision_points_list:
-            i = 0
             for collision_point in collision_points:
                 if collision_point != None:
-                    # print("collision_point")
-                    # print(float(collision_point[0]))
-                    # print(float(collision_point[1]))
-                    if i == 0:
-                        self.ax_trajectories.plot(collision_point[0], collision_point[1], 'k.')
-                    else:
-                        self.ax_trajectories.plot(collision_point[0], collision_point[1], 'k.')
-                i = i + 1
+                    collision_point.plot(self.ax_trajectories)
                     
 
-        # Set the axis limits
-        
-        #
         self.ax_trajectories.set_xlim(-4, 4)
         self.ax_trajectories.set_ylim(-4, 4)
 

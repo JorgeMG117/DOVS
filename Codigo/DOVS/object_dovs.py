@@ -77,13 +77,14 @@ class DynamicObstacleDOVS(ObjectDOVS):
         [passBehind, passFront]
         """
 
-        x1 = self.x + self.radius * math.cos(self.theta + math.pi/2)
-        y1 = self.y + self.radius * math.sin(self.theta + math.pi/2)
+        # x1 = self.x + self.radius * math.cos(self.theta + math.pi/2)
+        # y1 = self.y + self.radius * math.sin(self.theta + math.pi/2)
 
-        x2 = self.x + self.radius * math.cos(self.theta - math.pi/2)
-        y2 = self.y + self.radius * math.sin(self.theta - math.pi/2)
+        # x2 = self.x + self.radius * math.cos(self.theta - math.pi/2)
+        # y2 = self.y + self.radius * math.sin(self.theta - math.pi/2)
 
-        # TODO: Asi o con distintas clases
+        (x1, y1, _), (x2, y2, _) = self.get_colision_points()
+
         if self.w != 0:
             trajectory = CircularTrajectory((x1, y1), (x2, y2), (self.x, self.y, self.theta), (self.v, self.w))
         else:
@@ -92,14 +93,14 @@ class DynamicObstacleDOVS(ObjectDOVS):
         return trajectory
     
 
-    def get_colision_points_1(self):
-        """
-        Devuelve los puntos del cuadrado circunscrito al obstaculo que seran los que choquen con los puntos de colision
-        """
-        value1 = self.loc(np.dot(self.transform_robot, self.hom((self.radius, self.radius, 0))))
-        value2 = self.loc(np.dot(self.transform_robot, self.hom((-self.radius, -self.radius, 0))))
+    # def get_colision_points_1(self):
+    #     """
+    #     Devuelve los puntos del cuadrado circunscrito al obstaculo que seran los que choquen con los puntos de colision
+    #     """
+    #     value1 = self.loc(np.dot(self.transform_robot, self.hom((self.radius, self.radius, 0))))
+    #     value2 = self.loc(np.dot(self.transform_robot, self.hom((-self.radius, -self.radius, 0))))
         
-        return value1, value2
+    #     return value1, value2
     
     def get_colision_points(self):
         """
