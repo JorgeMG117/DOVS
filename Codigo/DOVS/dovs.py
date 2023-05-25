@@ -25,17 +25,7 @@ Buscar funcion que dado un poligono ver si velocidades pertence a ese poligono
 https://www.matecdev.com/posts/shapely-polygon-from-points.html
 """
 
-# class Collisions:
-#     def __init__(self) -> None:
-#         self.x = 0
-#         self.y = 0
 
-#         self.angle = 0 #angle between robot and collision
-#         self.arclenght = 0 #distance between robot and collision
-#         self.distance_up = 0 #distance from the collision point to the object
-#         self.distance_down = 0
-
-#TODO: Mirar que hacer cuando el obstaculo esta mirando hacia un lado y no deberia chocar con nada
 class DOVS:
     def __init__(self, robot, obstacles, timestep, fig_dovs, ax_dovs) -> None:
         self.max_distance = 10
@@ -69,9 +59,8 @@ class DOVS:
                 collision_points = self._compute_collision_points(robot_trajectory, obstacle.trajectory, obstacle.get_location())
                 collision_points_list.append(collision_points)
                 
-                if collision_points[0] != None or collision_points[1] != None:#TODO:Meter esto dentro
-                    velocity_time = self._collision_velocity_times(obstacle, collision_points, robot_trajectory)
-                    if len(velocity_time) != 0: velocity_time_space.append(velocity_time)
+                velocity_time = self._collision_velocity_times(obstacle, collision_points, robot_trajectory)
+                if len(velocity_time) != 0: velocity_time_space.append(velocity_time)
                 
             dovs = DOV(velocity_time_space)
             final_dovs.combine_DOVS(dovs)
@@ -83,85 +72,63 @@ class DOVS:
         plotDOVS.plot_DOVS(final_dovs)
         
 
-        return 0.0, 0.0
         return self._choose_speed()
         
     
     def _select_right_collision_point(self, collision_points, trajectory_radius, obstacle_position):
         """
         Select the right collision point of the intersection of the robot trajectory and the obstacle trajectory
+        obs_col_behind, obs_col_ahead = obstacle.get_colision_points() , cambiar esto collision1_from_obstacle[0] >= obs_col_behind
         """
         if collision_points:
-            collision_point_1 = CollisionPoint(float(collision_points[0][0]), float(collision_points[0][1]))
+            collision_point_1 = CollisionPoint(float(collision_points[0][0]), float(collision_points[0][1]), trajectory_radius)
 
             collision1_from_obstacle = ObjectDOVS.loc(np.dot(np.linalg.inv(ObjectDOVS.hom(obstacle_position)),ObjectDOVS.hom((collision_point_1.x, collision_point_1.y, 0))))
             
-            theta = np.arctan2(2*collision_point_1.x*abs(collision_point_1.y), pow(collision_point_1.x,2)-pow(abs(collision_point_1.y),2))
-            theta = (theta + 2*np.pi) % (2*np.pi)
-            # Otra opcion seria restar al angulo 360 si y es negativa
-        
-            arclength_1 = trajectory_radius * theta
-            angle_arc_1 = (arclength_1/trajectory_radius) * (180 / np.pi)
-            
             if len(collision_points) == 1:
-                if collision1_from_obstacle[0] >= 0 and angle_arc_1 <= 90:
+                if collision1_from_obstacle[0] >= 0 and collision_point_1.angle_arc <= 90:
                     return collision_point_1
                 else:
                     return None
             else:
-                collision_point_2 = CollisionPoint(float(collision_points[1][0]), float(collision_points[1][1]))
+                collision_point_2 = CollisionPoint(float(collision_points[1][0]), float(collision_points[1][1]), trajectory_radius)
                 #collision1_from_obstacle = ObjectDOVS.loc(np.dot(np.linalg.inv(ObjectDOVS.hom(obstacle_position)),ObjectDOVS.hom((collision_points[0][0], collision_points[0][1], 0))))
                 collision2_from_obstacle = ObjectDOVS.loc(np.dot(np.linalg.inv(ObjectDOVS.hom(obstacle_position)),ObjectDOVS.hom((collision_point_2.x, collision_point_2.y, 0))))
                 
                 # Devolver el punto de colision mas cercano a la trayectoria del robot
-                # Calculo longitud arco desde el robot 
 
-                
-                # Primer punto de colision
-                # d = sqrt((x2 - x1)^2 + (y2 - y1)^2)
-                # θ = 2 * arctan(d/2r)
-                # L = r * θ
-                
-
-                # Segundo punto de colision
-                #d = math.sqrt((collision_points[1][0] - robot_position[0])**2 + (collision_points[1][1] - robot_position[1])**2)
-                #theta = 2 * math.atan(d / (2 * trajectory_radius))
-                
-                theta = np.arctan2(2*collision_point_2.x*abs(collision_point_2.y), pow(collision_point_2.x,2)-pow(abs(collision_point_2.y),2))#Le ponemos el absoluto de y para pasarlo a la zona de arriba y que se marque
-                theta = (theta + 2*np.pi) % (2*np.pi)
-
-                arclength_2 = trajectory_radius * theta
-                angle_arc_2 = (arclength_2/trajectory_radius) * (180 / np.pi)
-
-
-                if collision1_from_obstacle[0] >= 0 and angle_arc_1 <= 90 and collision2_from_obstacle[0] >= 0 and angle_arc_2 <= 90:
-                    if arclength_1 <= arclength_2:
-                        print()
-                        print(float(collision_points[0][0]), float(collision_points[0][1]))
-                        print("th: " + str(theta))
-                        print("Angle len: " + str(arclength_1))
-                        print("Angle arc: " + str(angle_arc_1))
+                if collision1_from_obstacle[0] >= 0 and collision_point_1.angle_arc <= 90 and collision2_from_obstacle[0] >= 0 and collision_point_2.angle_arc <= 90:
+                    if collision_point_1.arclength <= collision_point_2.arclength:
+                        # print()
+                        # print(float(collision_points[0][0]), float(collision_points[0][1]))
+                        # print("th: " + str(theta))
+                        # print("Arc len: " + str(arclength_1))
+                        # print("Arc len2: " + str(collision_point_1.arclength))
+                        # print("Angle arc: " + str(angle_arc_1))
                         return collision_point_1
                     else:
-                        print()
-                        print(float(collision_points[1][0]), float(collision_points[1][1]))
-                        print("th: " + str(theta))
-                        print("Angle len: " + str(arclength_2))
-                        print("Angle arc: " + str(angle_arc_2))
+                        # print()
+                        # print(float(collision_points[1][0]), float(collision_points[1][1]))
+                        # print("th: " + str(theta))
+                        # print("Arc len: " + str(arclength_2))
+                        # print("Arc len2: " + str(collision_point_2.arclength))
+                        # print("Angle arc: " + str(angle_arc_2))
                         return collision_point_2
-                elif collision1_from_obstacle[0] >= 0 and angle_arc_1 <= 90:
-                    print()
-                    print(float(collision_points[0][0]), float(collision_points[0][1]))
-                    print("th: " + str(theta))
-                    print("Angle len: " + str(arclength_1))
-                    print("Angle arc: " + str(angle_arc_1))
+                elif collision1_from_obstacle[0] >= 0 and collision_point_1.angle_arc <= 90:
+                    # print()
+                    # print(float(collision_points[0][0]), float(collision_points[0][1]))
+                    # print("th: " + str(theta))
+                    # print("Arc len: " + str(arclength_1))
+                    # print("Arc len2: " + str(collision_point_1.arclength))
+                    # print("Angle arc: " + str(angle_arc_1))
                     return collision_point_1
-                elif collision2_from_obstacle[0] >= 0 and angle_arc_2 <= 90:
-                    print()
-                    print(float(collision_points[1][0]), float(collision_points[1][1]))
-                    print("th: " + str(theta))
-                    print("Angle len: " + str(arclength_2))
-                    print("Angle arc: " + str(angle_arc_2))
+                elif collision2_from_obstacle[0] >= 0 and collision_point_2.angle_arc <= 90:
+                    # print()
+                    # print(float(collision_points[1][0]), float(collision_points[1][1]))
+                    # print("th: " + str(theta))
+                    # print("Arc len: " + str(arclength_2))
+                    # print("Arc len2: " + str(collision_point_2.arclength))
+                    # print("Angle arc: " + str(angle_arc_2))
                     return collision_point_2
                 else:
                     return None
@@ -185,7 +152,7 @@ class DOVS:
         
 
 
-    def _collision_velocity_times_aux(self, collision_point, obs_col, trajectory_radius, v_obstacle, obs_trajectory, angle = None):
+    def _collision_velocity_times_aux(self, collision_point, obs_col, trajectory_radius, v_obstacle, obs_trajectory):
         x_col = collision_point.x
         y_col = collision_point.y
 
@@ -203,17 +170,17 @@ class DOVS:
 
         t = distance/v_obstacle
 
-        if angle == None:
-            angle = np.arctan2(2*x_col*y_col, pow(x_col,2)-pow(y_col,2))
+        # if angle == None:
+        #     angle = np.arctan2(2*x_col*y_col, pow(x_col,2)-pow(y_col,2))
 
-        w = angle/t
+        w = collision_point.angle/t
         v = trajectory_radius*w
 
         # print()
-        print("x_col, y_col: " + str(x_col) + "," + str(y_col))
-        print("Distancia:" + str(distance))
-        print("t:" + str(t))
-        print(w, v)
+        # print("x_col, y_col: " + str(x_col) + "," + str(y_col))
+        # print("Distancia:" + str(distance))
+        # print("t:" + str(t))
+        # print(w, v)
 
         return (t, w, v)
 
@@ -243,8 +210,9 @@ class DOVS:
 
         w_min = v_min = w_max = v_max = t_min = t_max = 0
 
-
-        if collision_points[0] == None or collision_points[1] == None:
+        if collision_points[0] == None and collision_points[1] == None: 
+            return []
+        elif collision_points[0] == None or collision_points[1] == None:
             if collision_points[0] == None:
                 collision_point =  collision_points[1]
             else:
@@ -264,27 +232,28 @@ class DOVS:
             idx_first = 0
             
             # Tenemos que ver cual de los dos puntos de colision es el que va a definir la velocidad maxima 
-            x_col_1 = collision_points[0].x
-            y_col_1 = collision_points[0].y
+            # x_col_1 = collision_points[0].x
+            # y_col_1 = collision_points[0].y
 
-            x_col_2 = collision_points[1].x
-            y_col_2 = collision_points[1].y
+            # x_col_2 = collision_points[1].x
+            # y_col_2 = collision_points[1].y
 
 
-            angle_1 = np.arctan2(2*x_col_1*y_col_1, pow(x_col_1,2)-pow(y_col_1,2))
-            angle_2 = np.arctan2(2*x_col_2*y_col_2, pow(x_col_2,2)-pow(y_col_2,2))
+            # angle_1 = np.arctan2(2*x_col_1*y_col_1, pow(x_col_1,2)-pow(y_col_1,2))
+            # angle_2 = np.arctan2(2*x_col_2*y_col_2, pow(x_col_2,2)-pow(y_col_2,2))
 
-            arclength_1 = trajectory.radius * angle_1
-            arclength_2 = trajectory.radius * angle_2
+            # arclength_1 = trajectory.radius * angle_1
+            # arclength_2 = trajectory.radius * angle_2
 
             # print("arclength_1")
             # print(arclength_1)
+            # print("arclength_2")
             # print(arclength_2)
             
             #angle = np.arctan2(2*x*y, pow(x,2)-pow(y,2))
-            angles = [angle_1, angle_2]
+            # angles = [angle_1, angle_2]
 
-            if arclength_1 > arclength_2:
+            if collision_points[0].arclength > collision_points[1].arclength:
                 idx_first = idx_first + 1
             # print(idx_first)
             
@@ -292,9 +261,9 @@ class DOVS:
             # print(float(collision_points[idx_first][0]), float(collision_points[idx_first][1]))
             # print("obs_col_behind,obs_col_ahead")
             # print(obs_col_behind, obs_col_ahead)
-            (t_max, w_max, v_max) = self._collision_velocity_times_aux(collision_points[idx_first], obs_col_behind, trajectory.radius, v_object, obstacle.trajectory, angles[idx_first])
+            (t_max, w_max, v_max) = self._collision_velocity_times_aux(collision_points[idx_first], obs_col_behind, trajectory.radius, v_object, obstacle.trajectory)
 
-            (t_min, w_min, v_min) = self._collision_velocity_times_aux(collision_points[(idx_first+1)%2], obs_col_ahead, trajectory.radius, v_object, obstacle.trajectory, angles[(idx_first+1)%2])
+            (t_min, w_min, v_min) = self._collision_velocity_times_aux(collision_points[(idx_first+1)%2], obs_col_ahead, trajectory.radius, v_object, obstacle.trajectory)
 
             if t_max > 7.5 or t_min > 7.5:
                 return []
@@ -309,11 +278,4 @@ class DOVS:
 
         
     def _choose_speed(self):
-        return 0.7,0
-        v = 1
-        w = 1
-
-        if self.robot.velocity_window.contains([v,w]):
-            return v,w
-        else:
-            return 0,0
+        return 0.0, 0.0

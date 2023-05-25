@@ -65,11 +65,15 @@ class DynamicObstacleDOVS(ObjectDOVS):
         # El tamaño del objeto es el cuadrado que rodea al circulo
         self.radius = obstacle.radius + robot_radius
 
+        self.obs_col_behind = self.loc(np.dot(self.transform_robot, self.hom((-self.radius, self.radius, 0))))
+        self.obs_col_ahead = self.loc(np.dot(self.transform_robot, self.hom((self.radius, -self.radius, 0))))
+
 
         super().__init__(obstacle.v, obstacle.w, obstacle_pos[0], obstacle_pos[1], obstacle_pos[2])
         # super().__init__(obstacle.v, obstacle.w, obstacle.x, obstacle.y, obstacle.theta)
 
         self.trajectory = self.compute_trajectory(max_distance)
+
     
     def compute_trajectory(self, max_distance):
         """
@@ -77,13 +81,13 @@ class DynamicObstacleDOVS(ObjectDOVS):
         [passBehind, passFront]
         """
 
-        # x1 = self.x + self.radius * math.cos(self.theta + math.pi/2)
-        # y1 = self.y + self.radius * math.sin(self.theta + math.pi/2)
+        x1 = self.x + self.radius * math.cos(self.theta + math.pi/2)
+        y1 = self.y + self.radius * math.sin(self.theta + math.pi/2)
 
-        # x2 = self.x + self.radius * math.cos(self.theta - math.pi/2)
-        # y2 = self.y + self.radius * math.sin(self.theta - math.pi/2)
+        x2 = self.x + self.radius * math.cos(self.theta - math.pi/2)
+        y2 = self.y + self.radius * math.sin(self.theta - math.pi/2)
 
-        (x1, y1, _), (x2, y2, _) = self.get_colision_points()
+        # (x1, y1, _), (x2, y2, _) = self.get_colision_points()
 
         if self.w != 0:
             trajectory = CircularTrajectory((x1, y1), (x2, y2), (self.x, self.y, self.theta), (self.v, self.w))
@@ -106,10 +110,7 @@ class DynamicObstacleDOVS(ObjectDOVS):
         """
         Devuelve los puntos del cuadrado circunscrito al obstaculo que seran los que choquen con los puntos de colision
         """
-        value1 = self.loc(np.dot(self.transform_robot, self.hom((-self.radius, self.radius, 0))))
-        value2 = self.loc(np.dot(self.transform_robot, self.hom((self.radius, -self.radius, 0))))
-        
-        return value1, value2
+        return self.obs_col_behind, self.obs_col_ahead
     
     # def check_colision(self, x, y):
     #     """

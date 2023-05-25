@@ -73,7 +73,8 @@ tests_list = [
         ],
         colision = False,
         name = "test_0",
-        description = "Evita la colision"
+        description = "Evita la colision",
+        tiempo_fin = 3.4
     ),
     Test(
         robot = Robot(
@@ -249,7 +250,7 @@ def check_end(robot, obstacles):
 plt.close('all')
 
 
-test = tests_list[1]
+test = tests_list[0]
 print(test.name)
 
 fig, axis = plt.subplots(2,2, figsize=(12,12))
