@@ -186,9 +186,10 @@ class DOVS:
 
         print()
         print("x_col, y_col: " + str(x_col) + "," + str(y_col))
-        #print("Distancia:" + str(distance))
+        print("x_obs_col, y_obs_col: " + str(x_obs_col) + "," + str(y_obs_col))
+        print("Distancia:" + str(distance))
         print("t:" + str(t))
-        # print(w, v)
+        print(w, v)
 
         return (t, w, v)
 
@@ -229,8 +230,8 @@ class DOVS:
             # Calculo la velocidad maxima que puedo llevar
             # Pongo como minima el limite superior. No hay velocidad de escape
             (t_max, w_max, v_max) = self._collision_velocity_times_aux(collision_point, obs_col_behind, trajectory.radius, v_object, obstacle.trajectory)
-            # if t_max > 7.5:
-            #     return []
+            if t_max > 8.5:
+                return []
             w_max, v_max = self.robot.normalize_speed(w_max, v_max, trajectory.radius)
 
             
@@ -273,8 +274,8 @@ class DOVS:
 
             (t_min, w_min, v_min) = self._collision_velocity_times_aux(collision_points[(idx_first+1)%2], obs_col_ahead, trajectory.radius, v_object, obstacle.trajectory)
 
-            # if t_max > 7.5 or t_min > 7.5:
-            #     return []
+            if t_max > 8.5 or t_min > 8.5:
+                return []
             
             w_max, v_max = self.robot.normalize_speed(w_max, v_max, trajectory.radius)
             w_min, v_min = self.robot.normalize_speed(w_min, v_min, trajectory.radius)

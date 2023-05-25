@@ -65,12 +65,17 @@ class DynamicObstacleDOVS(ObjectDOVS):
         # El tamaño del objeto es el cuadrado que rodea al circulo
         self.radius = obstacle.radius + robot_radius
 
-        self.obs_col_behind = self.loc(np.dot(self.transform_robot, self.hom((-self.radius, self.radius, 0))))
-        self.obs_col_ahead = self.loc(np.dot(self.transform_robot, self.hom((self.radius, -self.radius, 0))))
-
+        
 
         super().__init__(obstacle.v, obstacle.w, obstacle_pos[0], obstacle_pos[1], obstacle_pos[2])
         # super().__init__(obstacle.v, obstacle.w, obstacle.x, obstacle.y, obstacle.theta)
+
+        if self.theta < 0:
+            self.obs_col_ahead = self.loc(np.dot(self.transform_robot, self.hom((self.radius, self.radius, 0))))
+            self.obs_col_behind = self.loc(np.dot(self.transform_robot, self.hom((-self.radius, -self.radius, 0))))
+        else:
+            self.obs_col_behind = self.loc(np.dot(self.transform_robot, self.hom((-self.radius, self.radius, 0))))
+            self.obs_col_ahead = self.loc(np.dot(self.transform_robot, self.hom((self.radius, -self.radius, 0))))
 
         self.trajectory = self.compute_trajectory(max_distance)
 
@@ -110,6 +115,9 @@ class DynamicObstacleDOVS(ObjectDOVS):
         """
         Devuelve los puntos del cuadrado circunscrito al obstaculo que seran los que choquen con los puntos de colision
         """
+        # self.obs_col_behind = self.loc(np.dot(self.transform_robot, self.hom((-self.radius, self.radius, 0))))
+        # self.obs_col_ahead = self.loc(np.dot(self.transform_robot, self.hom((self.radius, -self.radius, 0))))
+        
         return self.obs_col_behind, self.obs_col_ahead
     
     # def check_colision(self, x, y):

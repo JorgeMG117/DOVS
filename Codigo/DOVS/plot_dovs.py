@@ -128,7 +128,7 @@ class PlotDynamicObstacleDOVS(PlotObjectDOVS):
         
         col_behind, col_ahead = self.obstacle.get_colision_points()
         axis.plot(col_behind[0], col_behind[1], 'g.')
-        axis.plot(col_ahead[0], col_ahead[1], 'g.')
+        axis.plot(col_ahead[0], col_ahead[1], 'r.')
 
 
 class PlotRobotDOVS(PlotObjectDOVS):

@@ -83,20 +83,29 @@ robot = Robot(
 
 obstacles_vec.append(
     DynamicObstacle(
-        v = 0.1, 
-        w = 0, 
-        x = 1.0, 
-        y = 1.0, 
-        theta = -2*np.pi/3, 
-        radius = 0.2))
+                v = 0.5, 
+                w = 0.1, 
+                x = -2.0, 
+                y = 0.0, 
+                theta = 0.0, 
+                radius = 0.2))
 obstacles_vec.append(
     DynamicObstacle(
-        v = 0.5, 
-        w = 0.1, 
-        x = -2.0, 
-        y = 0.0, 
-        theta = 0.0, 
-        radius = 0.2))
+                v = 0.1, 
+                w = 0, 
+                x = 1.0, 
+                y = 1.0, 
+                theta = -2*np.pi/3, 
+                radius = 0.2))
+
+# obstacles_vec.append(
+#     DynamicObstacle(
+#             v = 0.5, 
+#             w = 0.05, 
+#             x = 2.0, 
+#             y = -1.0, 
+#             theta = np.pi, 
+#             radius = 0.2))
 # obstacles_vec.append(DynamicObstacle(0.1, 0, 1.0, 1.0, -2*np.pi/3, 0.2))
 # obstacles_vec.append(DynamicObstacle(0.5, 0.1, -2.0, 0.0, 0.0, 0.2))
 
@@ -145,8 +154,8 @@ def onclick(event):
         axis.clear()
     computeDOVS(robot=robot, obstacles=obstacles_vec, timestep=timestep, fig_dovs=fig, ax_dovs=ax_dovs)
     v_new, w_new = event.ydata, event.xdata
-    # print(v_new)
-    # print(w_new)
+    print(v_new)
+    print(w_new)
     plt.pause(0.2)
     robot.v = v_new
     robot.w = w_new

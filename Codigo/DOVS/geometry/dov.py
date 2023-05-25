@@ -6,8 +6,8 @@ import shapely.ops as so
 class DOV():
     #dynamic_object_velocity
     def __init__(self, velocity_time_space = []) -> None:
-        print("len(velocity_time_space)")
-        print(len(velocity_time_space))
+        # print("len(velocity_time_space)")
+        # print(len(velocity_time_space))
 
         if len(velocity_time_space) <= 1: self.valid = False; return
         else: self.valid = True
@@ -59,6 +59,8 @@ class DOV():
 
         #xs, ys = self.dov.exterior.xy
         #axis.fill(xs, ys, alpha=0.5, fc='r', ec='none')
+
+        color_list = ['r', 'g', 'o']
         
         for geom in self.dov.geoms:    
             xs, ys = geom.exterior.xy
