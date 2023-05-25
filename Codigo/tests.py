@@ -252,6 +252,7 @@ plt.close('all')
 
 test = tests_list[0]
 print(test.name)
+print(test.description)
 
 fig, axis = plt.subplots(2,2, figsize=(12,12))
 
@@ -331,7 +332,7 @@ def update(i_video):
     global robot_arrow_artist
     time = i_video*timestep
     
-    print(time)
+    # print(time)
     if test.tiempo_fin != -1 and time >= test.tiempo_fin:
         print("Ya ha pasado los obstaculos")
         exit(0)
