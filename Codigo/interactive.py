@@ -66,9 +66,9 @@ obstacles_vec = []
 
 #obstacles_vec.append(DynamicObstacle(0.5, 0, -1.0, 0.0, 0.0, 0.2))
 robot = Robot(
-            v = 0.62,#0.52#0.14
-            w = 0.1,#-0.1#0.037
-            x = 0.0, 
+            v = 0.0,
+            w = 0.0,
+            x = -1.0, 
             y = 2.0, 
             theta = -np.pi/2, 
             radius = 0.2, 
@@ -81,22 +81,25 @@ robot = Robot(
             max_av = 0.7, 
             max_aw = np.pi/2)
 
-obstacles_vec.append(
-    DynamicObstacle(
-                v = 0.5, 
-                w = 0.1, 
-                x = -2.0, 
-                y = 0.0, 
-                theta = 0.0, 
-                radius = 0.2))
-obstacles_vec.append(
-    DynamicObstacle(
-                v = 0.1, 
-                w = 0, 
-                x = 1.0, 
-                y = 1.0, 
-                theta = -2*np.pi/3, 
-                radius = 0.2))
+obstacles_vec.append(DynamicObstacle(0.3, 0.1, 2.0, 0.0, np.pi, 0.2))
+#obstacles_vec.append(DynamicObstacle(0.5, 0, -1.0, 0.0, 0.0, 0.2))
+
+# obstacles_vec.append(
+#     DynamicObstacle(
+#                 v = 0.5, 
+#                 w = 0.1, 
+#                 x = -2.0, 
+#                 y = 0.0, 
+#                 theta = 0.0, 
+#                 radius = 0.2))
+# obstacles_vec.append(
+#     DynamicObstacle(
+#                 v = 0.1, 
+#                 w = 0, 
+#                 x = 1.0, 
+#                 y = 1.0, 
+#                 theta = -2*np.pi/3, 
+#                 radius = 0.2))
 
 # obstacles_vec.append(
 #     DynamicObstacle(

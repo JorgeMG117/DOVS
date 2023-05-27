@@ -3,6 +3,8 @@ import matplotlib.patches as patches
 import shapely.geometry as sg
 import shapely.ops as so
 
+from shapely.validation import explain_validity
+
 class DOV():
     #dynamic_object_velocity
     def __init__(self, velocity_time_space = []) -> None:
@@ -41,14 +43,15 @@ class DOV():
             self.passFront_times = dovs.passFront_times
             return
         
-        self.dov = so.unary_union([self.dov, dovs.dov])
-        if self.dov.geom_type == 'Polygon':
-            self.dov = sg.MultiPolygon([self.dov])
-        
-        self.passBehind = self.passBehind + dovs.passBehind
-        self.passFront = self.passFront + dovs.passFront
-        self.passBehind_times = self.passBehind_times + dovs.passBehind_times
-        self.passFront_times = self.passFront_times + dovs.passFront_times
+        if self.dov.is_valid and dovs.dov.is_valid:
+            self.dov = so.unary_union([self.dov, dovs.dov])
+            if self.dov.geom_type == 'Polygon':
+                self.dov = sg.MultiPolygon([self.dov])
+            
+            self.passBehind = self.passBehind + dovs.passBehind
+            self.passFront = self.passFront + dovs.passFront
+            self.passBehind_times = self.passBehind_times + dovs.passBehind_times
+            self.passFront_times = self.passFront_times + dovs.passFront_times
 
 
 

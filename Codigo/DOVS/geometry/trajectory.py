@@ -95,6 +95,17 @@ class LinearTrajectory(ObstacleTrajectory):
             The Euclidean distance between the two points.
         """
         return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
+    
+    def get_value(self, x):
+        """
+        Returns y value of the trajectory with x value x
+        """
+        l = Line(Point(x, 0), Point(x, 1))
+        y1 = l.intersection(self.l1)
+        y2 = l.intersection(self.l2)
+
+        return float(y1[0][1]), float(y2[0][1])
+        
 
     
     
@@ -129,6 +140,28 @@ class CircularTrajectory(ObstacleTrajectory):
         theta = 2 * math.atan(d / (2 * self.radius))
         arclength = self.radius * theta
         return arclength
+    
+    def get_value(self, x):
+        """
+        Returns y value of the trajectory with x value x
+        """
+        l = Line(Point(x, 0), Point(x, 1))
+        y1 = l.intersection(self.l1)
+        y2 = l.intersection(self.l2)
+        # print(y1)
+        # print(y2)
+
+        if len(y1) == 0:
+            y1 = float('inf')
+        else:
+            y1 = float(y1[0][1])
+
+        if len(y2) == 0:
+            y2 = float('inf')
+        else:
+            y2 = float(y2[0][1])
+
+        return y1, y2
 
     
 class RobotTrajectory():

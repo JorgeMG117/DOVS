@@ -148,7 +148,7 @@ tests_list = [
         ],
         colision = True,
         name = "test_2",
-        description = "TODO: Esta falla"
+        description = "Choca con el otro"
     ),
 
     Test(
@@ -308,8 +308,8 @@ tests_list = [
     
     Test(#r=6
         robot = Robot(
-            v = 0.2,
-            w = 0.2/6,
+            v = 0.1,
+            w = 0.1/6,
             x = 0.0, 
             y = 2.0, 
             theta = -np.pi/2, 
@@ -342,7 +342,45 @@ tests_list = [
         colision = False,
         name = "test_7",
         description = "Mism radio distintas velocidades, prueba 1",
-        tiempo_fin = -1
+        tiempo_fin = 12
+    ),
+    Test(#r=6
+        robot = Robot(
+            v = 0.6,
+            w = 0.6/6,
+            x = 0.0, 
+            y = 2.0, 
+            theta = -np.pi/2, 
+            radius = 0.2, 
+            x_goal = 0.0, 
+            y_goal = -2.0, 
+            min_v = 0.0, 
+            max_v = 0.7, 
+            min_w = -np.pi/2, 
+            max_w = np.pi/2, 
+            max_av = 0.7, 
+            max_aw = np.pi/2),
+
+        obstacles = [
+            DynamicObstacle(
+                v = 0.1, 
+                w = 0, 
+                x = 1.0, 
+                y = 1.0, 
+                theta = -2*np.pi/3, 
+                radius = 0.2),
+            DynamicObstacle(
+                v = 0.5, 
+                w = 0.1, 
+                x = -2.0, 
+                y = 0.0, 
+                theta = 0.0, 
+                radius = 0.2)
+        ],
+        colision = False,
+        name = "test_8",
+        description = "Mismo radio distintas velocidades, prueba 2",
+        tiempo_fin = 3.6
     ),
     
 ]
@@ -380,7 +418,7 @@ def check_end(robot, obstacles):
 plt.close('all')
 
 
-test = tests_list[7]
+test = tests_list[3]
 print(test.name)
 print(test.description)
 
@@ -470,7 +508,7 @@ def update(i_video):
     for axis in ax_dovs:
         axis.clear()
     v_new, w_new = computeDOVS(robot=robot, obstacles=obstacles_vec, timestep=timestep, fig_dovs=fig, ax_dovs=ax_dovs)
-    plt.pause(0.01)
+    plt.pause(0.1)
     robot.v = v_new
     robot.w = w_new
 
@@ -500,9 +538,13 @@ def update(i_video):
     # ax.axis('equal')
     ax.title.set_text(r' -- Time: {0:.2f} s'.format(time))
 
-anim = animation.FuncAnimation(fig, update, interval=0.05 * 1000)
+anim = animation.FuncAnimation(fig, update, interval=5*1000)
 anim.running = True
 # ffmpeg_writer = animation.FFMpegWriter(fps=4, metadata=dict(artist='Me'), bitrate=1800)
 # anim.save("saved_experiment.mp4", writer=ffmpeg_writer)
+
+file = "./Videos/" + str(test.name) + ".mp4"
+writervideo = animation.FFMpegWriter(fps=5) 
+anim.save(file, writer=writervideo)
 
 plt.show()

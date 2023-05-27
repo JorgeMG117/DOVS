@@ -51,6 +51,10 @@ class DOVS:
         final_dovs = DOV()
         for obstacle in self.obstacles:
         
+            # Check whether the robot is inside the collision band
+            self.inside_col_band = self.robot.inside_collision_band(obstacle.trajectory)
+            print(self.inside_col_band)
+
             velocity_time_space = []
             #self.robot.trajectories = self.robot.trajectories[1:]
             for robot_trajectory in self.robot.trajectories:
@@ -131,8 +135,9 @@ class DOVS:
             return None
         
     def _valid_collision_points(self, collision_point_1, collision_point_2):
+        
         if collision_point_1 != None and collision_point_2 != None:
-            if collision_point_1.angle_arc <= 90 or collision_point_2.angle_arc <= 90:
+            if collision_point_1.angle_arc <= 90 or collision_point_2.angle_arc <= 90:#Creo recordar que esto es para que si estas cerca se siga considerando la colision
                 return collision_point_1, collision_point_2
             else:
                 return None, None
@@ -187,6 +192,7 @@ class DOVS:
         print()
         print("x_col, y_col: " + str(x_col) + "," + str(y_col))
         print("x_obs_col, y_obs_col: " + str(x_obs_col) + "," + str(y_obs_col))
+        print("trajectory_radius: " + str(trajectory_radius))
         print("Distancia:" + str(distance))
         print("t:" + str(t))
         print(w, v)
@@ -219,9 +225,18 @@ class DOVS:
 
         w_min = v_min = w_max = v_max = t_min = t_max = 0
 
-        if collision_points[0] == None and collision_points[1] == None: 
-            return []
-        elif collision_points[0] == None or collision_points[1] == None:
+        if collision_points[0] == None and collision_points[1] == None:
+            if self.inside_col_band:
+                print("Aqui")
+                # No puede escapar
+                v_max = 0
+                w_max = 0
+
+                v_min = self.robot.max_v
+                w_min = v_min/trajectory.radius
+            else:
+                return []
+        elif collision_points[0] == None or collision_points[1] == None:#TODO: añadir mas si esta dentro de colision
             if collision_points[0] == None:
                 collision_point =  collision_points[1]
             else:
@@ -230,9 +245,9 @@ class DOVS:
             # Calculo la velocidad maxima que puedo llevar
             # Pongo como minima el limite superior. No hay velocidad de escape
             (t_max, w_max, v_max) = self._collision_velocity_times_aux(collision_point, obs_col_behind, trajectory.radius, v_object, obstacle.trajectory)
-            if t_max > 8.5:
-                return []
-            w_max, v_max = self.robot.normalize_speed(w_max, v_max, trajectory.radius)
+            # if t_max > 11:
+            #     return []
+            # w_max, v_max = self.robot.normalize_speed(w_max, v_max, trajectory.radius)
 
             
             v_min = self.robot.max_v
@@ -274,11 +289,11 @@ class DOVS:
 
             (t_min, w_min, v_min) = self._collision_velocity_times_aux(collision_points[(idx_first+1)%2], obs_col_ahead, trajectory.radius, v_object, obstacle.trajectory)
 
-            if t_max > 8.5 or t_min > 8.5:
-                return []
+            # if t_max > 11 or t_min > 11:
+            #     return []
             
-            w_max, v_max = self.robot.normalize_speed(w_max, v_max, trajectory.radius)
-            w_min, v_min = self.robot.normalize_speed(w_min, v_min, trajectory.radius)
+            #w_max, v_max = self.robot.normalize_speed(w_max, v_max, trajectory.radius)
+            #w_min, v_min = self.robot.normalize_speed(w_min, v_min, trajectory.radius)
 
         return [(t_max, w_max, v_max), (t_min, w_min, v_min)]
 

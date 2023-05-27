@@ -101,15 +101,6 @@ class DynamicObstacleDOVS(ObjectDOVS):
         
         return trajectory
     
-
-    # def get_colision_points_1(self):
-    #     """
-    #     Devuelve los puntos del cuadrado circunscrito al obstaculo que seran los que choquen con los puntos de colision
-    #     """
-    #     value1 = self.loc(np.dot(self.transform_robot, self.hom((self.radius, self.radius, 0))))
-    #     value2 = self.loc(np.dot(self.transform_robot, self.hom((-self.radius, -self.radius, 0))))
-        
-    #     return value1, value2
     
     def get_colision_points(self):
         """
@@ -220,22 +211,35 @@ class RobotDOVS(ObjectDOVS):
     # def get_trajectories(self):
     #     return self.trajectories
 
-    #TODO: Revisar esto, si se pasa w, aumentamos v y hacemos esto?
-    def normalize_speed(self, w, v, trajectory_radius):
-        if v > self.max_v or w > self.max_w:
-                v = self.max_v
-                w = v/trajectory_radius
-        elif v < self.min_v or w < self.min_w:
-                v = self.min_v
-                w = v/trajectory_radius
+
+    # def normalize_speed(self, w, v, trajectory_radius):
+    #     if v > self.max_v or w > self.max_w:
+    #             v = self.max_v
+    #             w = v/trajectory_radius
+    #     elif v < self.min_v or w < self.min_w:
+    #             v = self.min_v
+    #             w = v/trajectory_radius
         
-        return w, v
+    #     return w, v
+
+    def inside_collision_band(self, trajectory):
+        y1, y2 = trajectory.get_value(self.x)
+        # print(y1)
+        # print(y2)
+
+        if (y1 > 0 and y2 < 0) or (y1 < 0 and y2 > 0):
+            return True
+        else:
+            return False 
+        
+        
     
     def get_speed_goal(self):
-        pow(self.x_goal, 2)
+        
         r = (pow(self.x_goal, 2) + pow(self.y_goal, 2))/(2*self.y_goal)
-        w = self.v/r 
         v = self.max_v
+        w = self.v/r 
+        
         return w, v
     
 
