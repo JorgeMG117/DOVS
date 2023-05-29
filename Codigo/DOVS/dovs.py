@@ -52,7 +52,7 @@ class DOVS:
         for obstacle in self.obstacles:
         
             # Check whether the robot is inside the collision band
-            self.inside_col_band = self.robot.inside_collision_band(obstacle.trajectory)
+            self.inside_col_band = obstacle.inside_collision_band(self.robot.get_location())
             print(self.inside_col_band)
 
             velocity_time_space = []
@@ -136,11 +136,13 @@ class DOVS:
         
     def _valid_collision_points(self, collision_point_1, collision_point_2):
         
-        if collision_point_1 != None and collision_point_2 != None:
-            if collision_point_1.angle_arc <= 90 or collision_point_2.angle_arc <= 90:#Creo recordar que esto es para que si estas cerca se siga considerando la colision
-                return collision_point_1, collision_point_2
-            else:
-                return None, None
+        if collision_point_1 != None and collision_point_2 != None and collision_point_1.angle_arc <= 90 and collision_point_2.angle_arc <= 90:
+            # if collision_point_1.angle_arc <= 90 or collision_point_2.angle_arc <= 90:#Creo recordar que esto es para que si estas cerca se siga considerando la colision
+            #     return collision_point_1, collision_point_2
+            # else:
+            #     return None, None
+            
+            return collision_point_1, collision_point_2
         elif collision_point_1 != None and collision_point_1.angle_arc <= 90:
             return collision_point_1, None
         elif collision_point_2 != None and collision_point_2.angle_arc <= 90:
@@ -241,17 +243,26 @@ class DOVS:
                 collision_point =  collision_points[1]
             else:
                 collision_point =  collision_points[0]
-            
-            # Calculo la velocidad maxima que puedo llevar
-            # Pongo como minima el limite superior. No hay velocidad de escape
-            (t_max, w_max, v_max) = self._collision_velocity_times_aux(collision_point, obs_col_behind, trajectory.radius, v_object, obstacle.trajectory)
-            # if t_max > 11:
-            #     return []
-            # w_max, v_max = self.robot.normalize_speed(w_max, v_max, trajectory.radius)
 
-            
-            v_min = self.robot.max_v
-            w_min = v_min/trajectory.radius
+            if self.inside_col_band:
+                # Calculamos la velocidad con la que podemos salir
+                v_max = 0
+                w_max = 0
+
+                # TODO: Mirar si hay que pasar el obs_col_ahead
+                (t_min, w_min, v_min) = self._collision_velocity_times_aux(collision_point, obs_col_ahead, trajectory.radius, v_object, obstacle.trajectory)
+
+            else:
+                # Calculo la velocidad maxima que puedo llevar
+                # Pongo como minima el limite superior. No hay velocidad de escape
+                (t_max, w_max, v_max) = self._collision_velocity_times_aux(collision_point, obs_col_behind, trajectory.radius, v_object, obstacle.trajectory)
+                # if t_max > 11:
+                #     return []
+                # w_max, v_max = self.robot.normalize_speed(w_max, v_max, trajectory.radius)
+
+                
+                v_min = self.robot.max_v
+                w_min = v_min/trajectory.radius
         else:
             idx_first = 0
             

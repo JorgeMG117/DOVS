@@ -155,6 +155,6 @@ class PlotRobotDOVS(PlotObjectDOVS):
 
     def plot_trajactory_goal(self, axis):
         w, v = self.robot.get_speed_goal()
-        axis.plot([0, w], [0, v], color='red')
+        axis.plot([0, w], [0, v], color='gray')
         
 

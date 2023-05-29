@@ -66,14 +66,14 @@ obstacles_vec = []
 
 #obstacles_vec.append(DynamicObstacle(0.5, 0, -1.0, 0.0, 0.0, 0.2))
 robot = Robot(
-            v = 0.0,
-            w = 0.0,
-            x = -1.0, 
-            y = 2.0, 
-            theta = -np.pi/2, 
+            v = 0.5,
+            w = 0.1,
+            x = -2.0, 
+            y = -2.0, 
+            theta = 0, #np.pi/4-0.5
             radius = 0.2, 
-            x_goal = 0.0, 
-            y_goal = -2.0, 
+            x_goal = 1.6, 
+            y_goal = 2.0, 
             min_v = 0.0, 
             max_v = 0.7, 
             min_w = -np.pi/2, 
@@ -81,34 +81,34 @@ robot = Robot(
             max_av = 0.7, 
             max_aw = np.pi/2)
 
-obstacles_vec.append(DynamicObstacle(0.3, 0.1, 2.0, 0.0, np.pi, 0.2))
+#obstacles_vec.append(DynamicObstacle(0.3, 0.1, 2.0, 0.0, np.pi, 0.2))
 #obstacles_vec.append(DynamicObstacle(0.5, 0, -1.0, 0.0, 0.0, 0.2))
 
 # obstacles_vec.append(
 #     DynamicObstacle(
-#                 v = 0.5, 
-#                 w = 0.1, 
-#                 x = -2.0, 
-#                 y = 0.0, 
-#                 theta = 0.0, 
-#                 radius = 0.2))
-# obstacles_vec.append(
-#     DynamicObstacle(
-#                 v = 0.1, 
+#                 v = 0.25, 
 #                 w = 0, 
-#                 x = 1.0, 
-#                 y = 1.0, 
+#                 x = 0.0, 
+#                 y = 2.0, 
 #                 theta = -2*np.pi/3, 
 #                 radius = 0.2))
-
 # obstacles_vec.append(
 #     DynamicObstacle(
-#             v = 0.5, 
-#             w = 0.05, 
-#             x = 2.0, 
-#             y = -1.0, 
-#             theta = np.pi, 
-#             radius = 0.2))
+#                 v = 0.5/1.3, 
+#                 w = 0.1/1.3, 
+#                 x = -2.0, 
+#                 y = 0.0, 
+#                 theta = np.pi/4, 
+#                 radius = 0.2))
+
+obstacles_vec.append(
+    DynamicObstacle(
+                v = 0.55, 
+                w = 0.05, 
+                x = 2.0, 
+                y = -1.0, 
+                theta = np.pi, 
+                radius = 0.2))
 # obstacles_vec.append(DynamicObstacle(0.1, 0, 1.0, 1.0, -2*np.pi/3, 0.2))
 # obstacles_vec.append(DynamicObstacle(0.5, 0.1, -2.0, 0.0, 0.0, 0.2))
 

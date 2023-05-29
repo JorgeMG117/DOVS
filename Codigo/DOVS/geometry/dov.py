@@ -27,6 +27,7 @@ class DOV():
         self.dov = sg.MultiPolygon([p])
 
 
+
     # def contains(self, point):
     #     if not self.valid: return False
     #     return self.dov.contains_point(point)
@@ -43,15 +44,25 @@ class DOV():
             self.passFront_times = dovs.passFront_times
             return
         
+        #if self.dov.is_valid and dovs.dov.is_valid:
         if self.dov.is_valid and dovs.dov.is_valid:
             self.dov = so.unary_union([self.dov, dovs.dov])
             if self.dov.geom_type == 'Polygon':
                 self.dov = sg.MultiPolygon([self.dov])
+        else:
+            geometries = []
+            for geom in self.dov.geoms: 
+                geometries.append(geom)
+            for geom in dovs.dov.geoms: 
+                geometries.append(geom)
             
-            self.passBehind = self.passBehind + dovs.passBehind
-            self.passFront = self.passFront + dovs.passFront
-            self.passBehind_times = self.passBehind_times + dovs.passBehind_times
-            self.passFront_times = self.passFront_times + dovs.passFront_times
+            self.dov = sg.MultiPolygon(geometries)
+            #self.dov = sg.MultiPolygon([self.dov, dovs.dov])
+            
+        self.passBehind = self.passBehind + dovs.passBehind
+        self.passFront = self.passFront + dovs.passFront
+        self.passBehind_times = self.passBehind_times + dovs.passBehind_times
+        self.passFront_times = self.passFront_times + dovs.passFront_times
 
 
 

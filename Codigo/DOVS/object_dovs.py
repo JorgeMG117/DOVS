@@ -111,6 +111,37 @@ class DynamicObstacleDOVS(ObjectDOVS):
         
         return self.obs_col_behind, self.obs_col_ahead
     
+    def inside_collision_band(self, position):
+        is_inside = self.trajectory.contains_point(position[0], position[1])
+
+        if is_inside:
+            position_from_obstacle = self.loc(np.dot(np.linalg.inv(self.hom(self.get_location())),self.hom((position[0], position[1], position[2]))))
+            #print(p1_from_obstacle[0])
+            if position_from_obstacle[0] >= 0:
+                return True
+            else:
+                return False
+        else:
+            return False
+
+
+        p1, p2 = self.trajectory.get_value(x)
+
+        # x1, y1 = p1
+        # x2, y2 = p2
+        
+        # if (y1 > 0 and y2 < 0) or (y1 < 0 and y2 > 0):
+        #     # Si un punto es negativo y otro positivo significa que el el robot esta en medio de la banda de colision
+        #     # Ahora hay que ver que la orientacion del obstaculo sea hacia el robot
+        #     p1_from_obstacle = self.loc(np.dot(np.linalg.inv(self.hom(self.get_location())),self.hom((x1, y1, 0))))
+        #     #print(p1_from_obstacle[0])
+        #     if p1_from_obstacle[0] >= 0:
+        #         return True
+        #     else:
+        #         return False
+        # else:
+        #     return False 
+    
     # def check_colision(self, x, y):
     #     """
     #     Given a point checks if its inside the cuadrado circunscrito
@@ -221,16 +252,6 @@ class RobotDOVS(ObjectDOVS):
     #             w = v/trajectory_radius
         
     #     return w, v
-
-    def inside_collision_band(self, trajectory):
-        y1, y2 = trajectory.get_value(self.x)
-        # print(y1)
-        # print(y2)
-
-        if (y1 > 0 and y2 < 0) or (y1 < 0 and y2 > 0):
-            return True
-        else:
-            return False 
         
         
     

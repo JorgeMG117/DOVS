@@ -96,15 +96,50 @@ class LinearTrajectory(ObstacleTrajectory):
         """
         return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
     
-    def get_value(self, x):
-        """
-        Returns y value of the trajectory with x value x
-        """
-        l = Line(Point(x, 0), Point(x, 1))
-        y1 = l.intersection(self.l1)
-        y2 = l.intersection(self.l2)
+    # def get_value(self, x):
+    #     """
+    #     Returns y value of the trajectory with x value x
+    #     """
+    #     slope = self.l1.slope
 
-        return float(y1[0][1]), float(y2[0][1])
+    #     if slope >= 16331230000000000:
+    #         # Es perpendicular al eje x
+    #         l = Line(Point(0,x), Point(1, x))
+    #         y1 = l.intersection(self.l1)
+    #         print(y1)
+    #         y2 = l.intersection(self.l2)
+    #     else:
+    #         l = Line(Point(x, 0), Point(x, 1))
+    #         y1 = l.intersection(self.l1)
+    #         print(y1)
+    #         y2 = l.intersection(self.l2)
+
+    #     return (float(y1[0][0]), float(y1[0][1])), (float(y2[0][0]), float(y2[0][1]))
+        
+    def contains_point(self, x, y):
+        slope = self.l1.slope
+
+        if slope >= 16331230000000000:
+            # Es perpendicular al eje x
+            l = Line(Point(0, y), Point(1, y))
+            y1 = l.intersection(self.l1)
+            y2 = l.intersection(self.l2)
+            
+            y1 = float(y1[0][0])
+            y2 = float(y2[0][0])
+        else:
+            l = Line(Point(x, 0), Point(x, 1))
+            y1 = l.intersection(self.l1)
+            y2 = l.intersection(self.l2)
+        
+            y1 = float(y1[0][1])
+            y2 = float(y2[0][1])
+
+        if (y1 > 0 and y2 < 0) or (y1 < 0 and y2 > 0):
+            return True
+        else:
+            return False
+
         
 
     
@@ -116,16 +151,16 @@ class CircularTrajectory(ObstacleTrajectory):
         v, w = velocity
         x, y, th = position
 
-        self.radius = v/w
+        self.radius = v/w#TODO:Ojo quien usa esto
 
-        center_x = x + self.radius * math.cos(th + math.pi/2)
-        center_y = y + self.radius * math.sin(th + math.pi/2)
+        self.center_x = x + self.radius * math.cos(th + math.pi/2)
+        self.center_y = y + self.radius * math.sin(th + math.pi/2)
 
-        radius_1 = ((center_x - x1) ** 2 + (center_y - y1) ** 2) ** 0.5
-        radius_2 = ((center_x - x2) ** 2 + (center_y - y2) ** 2) ** 0.5  
+        radius_1 = ((self.center_x - x1) ** 2 + (self.center_y - y1) ** 2) ** 0.5
+        radius_2 = ((self.center_x - x2) ** 2 + (self.center_y - y2) ** 2) ** 0.5  
 
-        l1 = Circle(Point(center_x, center_y), radius_1)
-        l2 = Circle(Point(center_x, center_y), radius_2)
+        l1 = Circle(Point(self.center_x, self.center_y), radius_1)
+        l2 = Circle(Point(self.center_x, self.center_y), radius_2)
 
         super().__init__(l1, l2)
     
@@ -136,32 +171,60 @@ class CircularTrajectory(ObstacleTrajectory):
 
     # TODO: revisar theta
     def distance_between_points(self, x1, y1, x2, y2):
+        #Engordar el punto
+        p = Circle(Point(x2, y2), 0.1)
+        inter = self.l1.intersection(p)
+        
+        if inter == []:
+            radius = self.l2.radius
+        else:
+            radius = self.l1.radius
+            
         d = math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
-        theta = 2 * math.atan(d / (2 * self.radius))
-        arclength = self.radius * theta
+        theta = 2 * math.atan(d / (2 * radius))
+        arclength = radius * theta
         return arclength
     
-    def get_value(self, x):
-        """
-        Returns y value of the trajectory with x value x
-        """
-        l = Line(Point(x, 0), Point(x, 1))
-        y1 = l.intersection(self.l1)
-        y2 = l.intersection(self.l2)
-        # print(y1)
-        # print(y2)
+    # def get_value(self, x):
+    #     """
+    #     Returns y value of the trajectory with x value x
+    #     """
+    #     l = Line(Point(x, 0), Point(x, 1))
+    #     y1 = l.intersection(self.l1)
+    #     y2 = l.intersection(self.l2)
+    #     print(y1)
+        
+    #     #TODO:Ojo podria haber mas de una interseccion
+    #     if len(y1) == 0:
+    #         x1 = 0
+    #         y1 = float('inf')
+    #     else:
+    #         x1 = float(y1[0][0])
+    #         y1 = float(y1[0][1])
 
-        if len(y1) == 0:
-            y1 = float('inf')
+    #     if len(y2) == 0:
+    #         x2 = 0
+    #         y2 = float('inf')
+    #     else:
+    #         x2 = float(y2[0][0])
+    #         y2 = float(y2[0][1])
+
+    #     return (x1, y1), (x2, y2)
+
+    def contains_point(self, x, y):
+        if abs(self.l1.radius) < abs(self.l2.radius):
+            r1 = self.l1.radius
+            r2 = self.l2.radius
         else:
-            y1 = float(y1[0][1])
-
-        if len(y2) == 0:
-            y2 = float('inf')
+            r1 = self.l2.radius
+            r2 = self.l1.radius
+        #((robot_x - Cx1)^2 + (robot_y - Cy1)^2) > R1^2 && ((robot_x - Cx2)^2 + (robot_y - Cy2)^2) < R2^2
+        if (pow(x - self.center_x, 2) + pow(y - self.center_y, 2)) > pow(r1, 2) and (pow(x - self.center_x, 2) + pow(y - self.center_y, 2)) < pow(r2, 2):
+            return True
         else:
-            y2 = float(y2[0][1])
-
-        return y1, y2
+            return False
+        
+        
 
     
 class RobotTrajectory():

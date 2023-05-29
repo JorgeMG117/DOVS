@@ -37,193 +37,16 @@ class Test:
         self.tiempo_fin = tiempo_fin
 
 
-tests_list = [
-    Test(
+test = Test(
         robot = Robot(
-            v = 0.62,#0.52#0.14
-            w = 0.1,#-0.1#0.037
-            x = 0.0, 
-            y = 2.0, 
-            theta = -np.pi/2, 
-            radius = 0.2, 
-            x_goal = 0.0, 
-            y_goal = -2.0, 
-            min_v = 0.0, 
-            max_v = 0.7, 
-            min_w = -np.pi/2, 
-            max_w = np.pi/2, 
-            max_av = 0.7, 
-            max_aw = np.pi/2),
-
-        obstacles = [
-            DynamicObstacle(
-                v = 0.1, 
-                w = 0, 
-                x = 1.0, 
-                y = 1.0, 
-                theta = -2*np.pi/3, 
-                radius = 0.2),
-            DynamicObstacle(
-                v = 0.5, 
-                w = 0.1, 
-                x = -2.0, 
-                y = 0.0, 
-                theta = 0.0, 
-                radius = 0.2)
-        ],
-        colision = False,
-        name = "test_0",
-        description = "Evita la colision",
-        tiempo_fin = 3.4
-    ),
-    Test(
-        robot = Robot(
-            v = 0.52,#0.52#0.14
-            w = -0.1,#-0.1#0.037
-            x = 0.0, 
-            y = 2.0, 
-            theta = -np.pi/2, 
-            radius = 0.2, 
-            x_goal = 0.0, 
-            y_goal = -2.0, 
-            min_v = 0.0, 
-            max_v = 0.7, 
-            min_w = -np.pi/2, 
-            max_w = np.pi/2, 
-            max_av = 0.7, 
-            max_aw = np.pi/2),
-
-        obstacles = [
-            DynamicObstacle(
-                v = 0.1, 
-                w = 0, 
-                x = 1.0, 
-                y = 1.0, 
-                theta = -2*np.pi/3, 
-                radius = 0.2),
-            DynamicObstacle(
-                v = 0.5, 
-                w = 0.1, 
-                x = -2.0, 
-                y = 0.0, 
-                theta = 0.0, 
-                radius = 0.2)
-        ],
-        colision = True,
-        name = "test_1",
-        description = "Choca con el que va recto"
-    ),
-    Test(
-        robot = Robot(
-            v = 0.14,#0.52#0.14
-            w = 0.037,#-0.1#0.037
-            x = 0.0, 
-            y = 2.0, 
-            theta = -np.pi/2, 
-            radius = 0.2, 
-            x_goal = 0.0, 
-            y_goal = -2.0, 
-            min_v = 0.0, 
-            max_v = 0.7, 
-            min_w = -np.pi/2, 
-            max_w = np.pi/2, 
-            max_av = 0.7, 
-            max_aw = np.pi/2),
-
-        obstacles = [
-            DynamicObstacle(
-                v = 0.1, 
-                w = 0, 
-                x = 1.0, 
-                y = 1.0, 
-                theta = -2*np.pi/3, 
-                radius = 0.2),
-            DynamicObstacle(
-                v = 0.5, 
-                w = 0.1, 
-                x = -2.0, 
-                y = 0.0, 
-                theta = 0.0, 
-                radius = 0.2)
-        ],
-        colision = True,
-        name = "test_2",
-        description = "Choca con el otro"
-    ),
-
-    Test(
-        robot = Robot(
-            v = 0.68,
-            w = 0.05,
-            x = 0.0, 
-            y = 2.0, 
-            theta = -np.pi/2, 
-            radius = 0.2, 
-            x_goal = 0.0, 
-            y_goal = -2.0, 
-            min_v = 0.0, 
-            max_v = 0.7, 
-            min_w = -np.pi/2, 
-            max_w = np.pi/2, 
-            max_av = 0.7, 
-            max_aw = np.pi/2),
-
-        obstacles = [
-            DynamicObstacle(
-                v = 0.5, 
-                w = 0, 
-                x = -2.0, 
-                y = 0.0, 
-                theta = 0.0, 
-                radius = 0.2),
-        ],
-        colision = True,
-        name = "test_3",
-        description = "Pasar antes",
-        tiempo_fin = 4
-    ),
-    Test(
-        robot = Robot(
-            v = 0.249,
-            w = 0.0,
-            x = 0.0, 
-            y = 2.0, 
-            theta = -np.pi/2, 
-            radius = 0.2, 
-            x_goal = 0.0, 
-            y_goal = -2.0, 
-            min_v = 0.0, 
-            max_v = 0.7, 
-            min_w = -np.pi/2, 
-            max_w = np.pi/2, 
-            max_av = 0.7, 
-            max_aw = np.pi/2),
-
-        obstacles = [
-            DynamicObstacle(
-                v = 0.5, 
-                w = 0, 
-                x = -2.0, 
-                y = 0.0, 
-                theta = 0.0, 
-                radius = 0.2),
-        ],
-        colision = True,
-        name = "test_4",
-        description = "Pasar despues",
-        tiempo_fin = 5.4
-    ),
-
-    Test(
-        robot = Robot(
-            v = 0.636,
-            w = 0.07,
+            v = 0.5,
+            w = 0.14,
             x = -2.0, 
-            y = 2.0, 
-            theta = -np.pi/4, 
+            y = -2.0, 
+            theta = 0, #np.pi/4-0.5
             radius = 0.2, 
-            x_goal = 1.0, 
-            y_goal = -2.0, 
+            x_goal = 1.6, 
+            y_goal = 2.0, 
             min_v = 0.0, 
             max_v = 0.7, 
             min_w = -np.pi/2, 
@@ -232,158 +55,49 @@ tests_list = [
             max_aw = np.pi/2),
 
         obstacles = [
-            DynamicObstacle(
-                v = 0.25, 
-                w = 0, 
-                x = 0.0, 
-                y = 2.0, 
-                theta = -2*np.pi/3, 
-                radius = 0.2),
-            DynamicObstacle(
-                v = 0.5/1.3, 
-                w = 0.1/1.3, 
-                x = -2.0, 
-                y = 0.0, 
-                theta = np.pi/4, 
-                radius = 0.2),
-            DynamicObstacle(
-                v = 0.5, 
-                w = 0.05, 
-                x = 2.0, 
-                y = -1.0, 
-                theta = np.pi, 
-                radius = 0.2)
-        ],
-        colision = True,
-        name = "test_5",
-        description = "Pasar antes de tres obstaculos",
-        tiempo_fin = 3.4
-    ),
+            # DynamicObstacle(
+            #     v = 0.25, 
+            #     w = 0, 
+            #     x = 0.0, 
+            #     y = 2.0, 
+            #     theta = -2*np.pi/3, 
+            #     radius = 0.2),
+            # DynamicObstacle(
+            #     v = 0.5/1.3, 
+            #     w = 0.1/1.3, 
+            #     x = -2.0, 
+            #     y = 0.0, 
+            #     theta = np.pi/4, 
+            #     radius = 0.2),
+            # DynamicObstacle(
+            #     v = 0.55, 
+            #     w = 0.05, 
+            #     x = 2.0, 
+            #     y = -1.0, 
+            #     theta = np.pi, 
+            #     radius = 0.2),
 
-    Test(
-        robot = Robot(
-            v = 0.1,
-            w = 0.0,
-            x = -2.0, 
-            y = 2.0, 
-            theta = -np.pi/4, 
-            radius = 0.2, 
-            x_goal = 1.0, 
-            y_goal = -2.0, 
-            min_v = 0.0, 
-            max_v = 0.7, 
-            min_w = -np.pi/2, 
-            max_w = np.pi/2, 
-            max_av = 0.7, 
-            max_aw = np.pi/2),
-
-        obstacles = [
             DynamicObstacle(
-                v = 0.25, 
-                w = 0, 
-                x = 0.0, 
-                y = 2.0, 
-                theta = -2*np.pi/3, 
-                radius = 0.2),
-            DynamicObstacle(
-                v = 0.5/1.3, 
-                w = 0.1/1.3, 
-                x = -2.0, 
-                y = 0.0, 
-                theta = np.pi/4, 
-                radius = 0.2),
-            DynamicObstacle(
-                v = 0.5, 
+                v = 0.35, 
                 w = 0.05, 
-                x = 2.0, 
-                y = -1.0, 
-                theta = np.pi, 
+                x = 1.0, 
+                y = -2.0, 
+                theta = 2*np.pi/3, 
+                radius = 0.2),
+            DynamicObstacle(
+                v = 0.33, 
+                w = -0.05, 
+                x = -2.0, 
+                y = 1.4, 
+                theta = 0, 
                 radius = 0.2)
+                
         ],
         colision = True,
         name = "test_6",
         description = "Pasar despues de tres obstaculos",
-        tiempo_fin = 7
-    ),
-    
-    Test(#r=6
-        robot = Robot(
-            v = 0.1,
-            w = 0.1/6,
-            x = 0.0, 
-            y = 2.0, 
-            theta = -np.pi/2, 
-            radius = 0.2, 
-            x_goal = 0.0, 
-            y_goal = -2.0, 
-            min_v = 0.0, 
-            max_v = 0.7, 
-            min_w = -np.pi/2, 
-            max_w = np.pi/2, 
-            max_av = 0.7, 
-            max_aw = np.pi/2),
-
-        obstacles = [
-            DynamicObstacle(
-                v = 0.1, 
-                w = 0, 
-                x = 1.0, 
-                y = 1.0, 
-                theta = -2*np.pi/3, 
-                radius = 0.2),
-            DynamicObstacle(
-                v = 0.5, 
-                w = 0.1, 
-                x = -2.0, 
-                y = 0.0, 
-                theta = 0.0, 
-                radius = 0.2)
-        ],
-        colision = False,
-        name = "test_7",
-        description = "Mism radio distintas velocidades, prueba 1",
-        tiempo_fin = 12
-    ),
-    Test(#r=6
-        robot = Robot(
-            v = 0.6,
-            w = 0.6/6,
-            x = 0.0, 
-            y = 2.0, 
-            theta = -np.pi/2, 
-            radius = 0.2, 
-            x_goal = 0.0, 
-            y_goal = -2.0, 
-            min_v = 0.0, 
-            max_v = 0.7, 
-            min_w = -np.pi/2, 
-            max_w = np.pi/2, 
-            max_av = 0.7, 
-            max_aw = np.pi/2),
-
-        obstacles = [
-            DynamicObstacle(
-                v = 0.1, 
-                w = 0, 
-                x = 1.0, 
-                y = 1.0, 
-                theta = -2*np.pi/3, 
-                radius = 0.2),
-            DynamicObstacle(
-                v = 0.5, 
-                w = 0.1, 
-                x = -2.0, 
-                y = 0.0, 
-                theta = 0.0, 
-                radius = 0.2)
-        ],
-        colision = False,
-        name = "test_8",
-        description = "Mismo radio distintas velocidades, prueba 2",
-        tiempo_fin = 3.6
-    ),
-    
-]
+        tiempo_fin = -1
+    )
 
 timestep = 0.2
 
@@ -418,7 +132,6 @@ def check_end(robot, obstacles):
 plt.close('all')
 
 
-test = tests_list[3]
 print(test.name)
 print(test.description)
 
@@ -544,7 +257,7 @@ anim.running = True
 # anim.save("saved_experiment.mp4", writer=ffmpeg_writer)
 
 file = "./Videos/" + str(test.name) + ".mp4"
-writervideo = animation.FFMpegWriter(fps=5) 
+writervideo = animation.FFMpegWriter(fps=3) 
 anim.save(file, writer=writervideo)
 
 plt.show()
