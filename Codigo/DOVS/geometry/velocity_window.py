@@ -2,8 +2,6 @@ import matplotlib.patches as patches
 
 class VelocityWindow():
     def __init__(self, robot, timestep) -> None:
-        # poly = Polygon([], fill=False)
-        #a = (vf - vi) / t
         v_max = robot.max_av * timestep + robot.v
         v_min = -robot.max_av * timestep + robot.v
         w_max = robot.max_aw * timestep + robot.w

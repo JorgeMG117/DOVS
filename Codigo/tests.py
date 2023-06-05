@@ -39,14 +39,14 @@ class Test:
 
 test = Test(
         robot = Robot(
-            v = 0.5,
-            w = 0.14,
-            x = -2.0, 
-            y = -2.0, 
-            theta = 0, #np.pi/4-0.5
+            v = 0.667,
+            w = 0.0,
+            x = 0.0, 
+            y = 2.0, 
+            theta = -np.pi/2, 
             radius = 0.2, 
-            x_goal = 1.6, 
-            y_goal = 2.0, 
+            x_goal = 0.0, 
+            y_goal = -2.0, 
             min_v = 0.0, 
             max_v = 0.7, 
             min_w = -np.pi/2, 
@@ -55,49 +55,20 @@ test = Test(
             max_aw = np.pi/2),
 
         obstacles = [
-            # DynamicObstacle(
-            #     v = 0.25, 
-            #     w = 0, 
-            #     x = 0.0, 
-            #     y = 2.0, 
-            #     theta = -2*np.pi/3, 
-            #     radius = 0.2),
-            # DynamicObstacle(
-            #     v = 0.5/1.3, 
-            #     w = 0.1/1.3, 
-            #     x = -2.0, 
-            #     y = 0.0, 
-            #     theta = np.pi/4, 
-            #     radius = 0.2),
-            # DynamicObstacle(
-            #     v = 0.55, 
-            #     w = 0.05, 
-            #     x = 2.0, 
-            #     y = -1.0, 
-            #     theta = np.pi, 
-            #     radius = 0.2),
-
             DynamicObstacle(
-                v = 0.35, 
-                w = 0.05, 
-                x = 1.0, 
-                y = -2.0, 
+                v = 0.5, 
+                w = 0, 
+                x = 0.5, 
+                y = -1.0, 
                 theta = 2*np.pi/3, 
-                radius = 0.2),
-            DynamicObstacle(
-                v = 0.33, 
-                w = -0.05, 
-                x = -2.0, 
-                y = 1.4, 
-                theta = 0, 
                 radius = 0.2)
-                
         ],
         colision = True,
-        name = "test_6",
-        description = "Pasar despues de tres obstaculos",
+        name = "test_9",
+        description = "Colisiona con un obstaculo de frente",
         tiempo_fin = -1
     )
+
 
 timestep = 0.2
 

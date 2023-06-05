@@ -1,16 +1,9 @@
-import matplotlib.patches as patches
-
 import shapely.geometry as sg
 import shapely.ops as so
-
-from shapely.validation import explain_validity
 
 class DOV():
     #dynamic_object_velocity
     def __init__(self, velocity_time_space = []) -> None:
-        # print("len(velocity_time_space)")
-        # print(len(velocity_time_space))
-
         if len(velocity_time_space) <= 1: self.valid = False; return
         else: self.valid = True
             
@@ -18,10 +11,6 @@ class DOV():
         self.passBehind_times,  self.passFront_times = [value[0][0] for value in velocity_time_space], [value[1][0] for value in velocity_time_space]
         
         vertices = self.passBehind + self.passFront[::-1]
-        #self.dov = patches.Polygon(vertices, closed=True, facecolor='green')
-
-        # print("Aqui")
-        # print(max(self.passBehind_times))
         
         p = sg.Polygon(vertices)
         self.dov = sg.MultiPolygon([p])
@@ -44,7 +33,6 @@ class DOV():
             self.passFront_times = dovs.passFront_times
             return
         
-        #if self.dov.is_valid and dovs.dov.is_valid:
         if self.dov.is_valid and dovs.dov.is_valid:
             self.dov = so.unary_union([self.dov, dovs.dov])
             if self.dov.geom_type == 'Polygon':
@@ -57,7 +45,6 @@ class DOV():
                 geometries.append(geom)
             
             self.dov = sg.MultiPolygon(geometries)
-            #self.dov = sg.MultiPolygon([self.dov, dovs.dov])
             
         self.passBehind = self.passBehind + dovs.passBehind
         self.passFront = self.passFront + dovs.passFront
@@ -67,41 +54,14 @@ class DOV():
 
 
     def plot(self, axis):
-        # print(self.valid)
         if not self.valid: return
-        #axis.add_patch(self.dov)
-
-        #xs, ys = self.dov.exterior.xy
-        #axis.fill(xs, ys, alpha=0.5, fc='r', ec='none')
-
-        color_list = ['r', 'g', 'o']
         
         for geom in self.dov.geoms:    
             xs, ys = geom.exterior.xy
             axis.fill(xs, ys, alpha=0.5, fc='r', ec='none')
 
-        # print("self.passBehind_times")
-        # print(self.passBehind_times)
-        # print("self.passFront_times")
-        # print(self.passFront_times)
-
-        # print("len(self.passBehind)")
-        # print(len(self.passBehind))
-        # print(self.passBehind)
         for point in self.passBehind:
-            # print(point)
-            # input("Press enter to continue...")
             axis.plot(point[0], point[1], "k.")
-            # fig.canvas.draw()   # Redraw the plot
-            # plt.pause(0.5)
-            
-        # print("len(self.passFront)")
-        # print(len(self.passFront))
-        # print(self.passFront)
+
         for point in self.passFront:
-            # print(point)
-            
-            # input("Press enter to continue...")
             axis.plot(point[0], point[1], "b.")
-            # fig.canvas.draw()   # Redraw the plot
-            # plt.pause(0.5)

@@ -1,15 +1,6 @@
 from matplotlib import pyplot as plt
 import numpy as np
 
-"""
-fig, ax = plt.subplots(2,2)
-fig.set_facecolor('lightgrey')
-ax[0,0].plot(data_x, data_y, 'r-')
-ax[0,1].plot(data_x, data_y, 'b-')
-fig.delaxes(ax[1,0])
-ax[1,1].plot(data_x, data_y, 'g-')
-
-"""
 
 class PlotDOVS:
 
@@ -33,7 +24,6 @@ class PlotDOVS:
 
         for obstacle in self.plot_obstacles:
             obstacle.plot_position(self.ax_trajectories)
-            #print(obstacle.obstacle.radius)
             obstacle.plot_colision_points(self.ax_trajectories)
             obstacle.plot_trajectory(self.ax_trajectories)
         
@@ -46,20 +36,11 @@ class PlotDOVS:
         self.ax_trajectories.set_xlim(-4, 4)
         self.ax_trajectories.set_ylim(-4, 4)
 
-        #plt.axis('equal')
-
-        # plt.show()
 
     def plot_DOVS(self, dovs):
         self.ax_dovs.title.set_text("DOVS")
         self.ax_dovs.set_xlabel("w")
         self.ax_dovs.set_ylabel("v")
-
-        # plt.ion()
-        # # Crear la figura y los ejes para mostrar los polígonos
-        
-        
-        # self.ax_dovs.clear()
 
         dovs.plot(self.ax_dovs)
 
@@ -67,21 +48,9 @@ class PlotDOVS:
 
         self.plot_robot.plot_trajactory_goal(self.ax_dovs)
 
-        #self.ax_dovs.axis('equal')
-
         self.ax_dovs.set_xlim([self.plot_robot.robot.min_w, self.plot_robot.robot.max_w])
         self.ax_dovs.set_ylim([0, self.plot_robot.robot.max_v])
-        # ax.set_xlim([-0.5, 2])
-        # ax.set_ylim([-0.5, 2])
 
-        # plt.draw()
-        # plt.pause(0.1)
-        #plt.axis('equal')
-        
-        
-
-        # Mostrar la figura
-        # plt.show()
 
     
 class PlotObjectDOVS:
@@ -114,7 +83,6 @@ class PlotDynamicObstacleDOVS(PlotObjectDOVS):
     def __init__(self, obstacle) -> None:
         self.obstacle = obstacle
 
-    # TODO: Maybe only plot as going straight and not backwords too
     def plot_trajectory(self, axis):
         self.obstacle.trajectory.plot(axis)        
 
@@ -141,11 +109,7 @@ class PlotRobotDOVS(PlotObjectDOVS):
             trajectory.plot(axis)
 
     def plot_position(self, axis):
-        #axis.scatter(self.robot.x, self.robot.y, color='red', marker='^', s=100, angle=0)
-
-        #axis.plot(self.robot.x, self.robot.y, 'r.')
         self.dibrobot(self.robot.get_location(), axis, 'r')
-        #axis.plot(self.robot.x, self.robot.y, marker=(3, 0, self.robot.theta*90), markersize=20, linestyle='None')
 
     def plot_velocity_window(self, axis):
         self.robot.velocity_window.plot(axis)

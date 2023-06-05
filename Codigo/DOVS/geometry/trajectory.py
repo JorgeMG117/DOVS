@@ -1,5 +1,4 @@
 from sympy.geometry import *
-from sympy import Symbol, symbols, Eq, nsolve, solve
 import math
 from matplotlib import pyplot as plt
 
@@ -22,28 +21,7 @@ class ObstacleTrajectory():
         pass
 
 class LinearTrajectory(ObstacleTrajectory):
-    """
-    Represents a linear trajectory between two points.
-
-    Attributes:
-        l1: First line representing the trajectory.
-        l2: Second line representing the trajectory.
-
-    Methods:
-        plot(axis): Plots the linear trajectory on the given axis.
-        distance_between_points(x1, y1, x2, y2): Calculates the Euclidean distance between two points.
-    """
-
-
     def __init__(self, point1, point2, angle, max_distance) -> None:
-        """
-        Initializes a LinearTrajectory object.
-
-        Args:
-            point1: The starting point of the trajectory.
-            point2: The ending point of the trajectory.
-            angle: The angle of the trajectory in degrees.
-        """
         self.angle = angle
         self.max_distance = max_distance
         
@@ -96,25 +74,6 @@ class LinearTrajectory(ObstacleTrajectory):
         """
         return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
     
-    # def get_value(self, x):
-    #     """
-    #     Returns y value of the trajectory with x value x
-    #     """
-    #     slope = self.l1.slope
-
-    #     if slope >= 16331230000000000:
-    #         # Es perpendicular al eje x
-    #         l = Line(Point(0,x), Point(1, x))
-    #         y1 = l.intersection(self.l1)
-    #         print(y1)
-    #         y2 = l.intersection(self.l2)
-    #     else:
-    #         l = Line(Point(x, 0), Point(x, 1))
-    #         y1 = l.intersection(self.l1)
-    #         print(y1)
-    #         y2 = l.intersection(self.l2)
-
-    #     return (float(y1[0][0]), float(y1[0][1])), (float(y2[0][0]), float(y2[0][1]))
         
     def contains_point(self, x, y):
         slope = self.l1.slope
@@ -151,7 +110,7 @@ class CircularTrajectory(ObstacleTrajectory):
         v, w = velocity
         x, y, th = position
 
-        self.radius = v/w#TODO:Ojo quien usa esto
+        self.radius = v/w
 
         self.center_x = x + self.radius * math.cos(th + math.pi/2)
         self.center_y = y + self.radius * math.sin(th + math.pi/2)
@@ -169,7 +128,7 @@ class CircularTrajectory(ObstacleTrajectory):
     
         axis.add_patch(plt.Circle((self.l2.center.coordinates[0], self.l2.center.coordinates[1]), self.l2.radius, color='green', fill=False))    
 
-    # TODO: revisar theta
+
     def distance_between_points(self, x1, y1, x2, y2):
         #Engordar el punto
         p = Circle(Point(x2, y2), 0.1)
@@ -185,31 +144,6 @@ class CircularTrajectory(ObstacleTrajectory):
         arclength = radius * theta
         return arclength
     
-    # def get_value(self, x):
-    #     """
-    #     Returns y value of the trajectory with x value x
-    #     """
-    #     l = Line(Point(x, 0), Point(x, 1))
-    #     y1 = l.intersection(self.l1)
-    #     y2 = l.intersection(self.l2)
-    #     print(y1)
-        
-    #     #TODO:Ojo podria haber mas de una interseccion
-    #     if len(y1) == 0:
-    #         x1 = 0
-    #         y1 = float('inf')
-    #     else:
-    #         x1 = float(y1[0][0])
-    #         y1 = float(y1[0][1])
-
-    #     if len(y2) == 0:
-    #         x2 = 0
-    #         y2 = float('inf')
-    #     else:
-    #         x2 = float(y2[0][0])
-    #         y2 = float(y2[0][1])
-
-    #     return (x1, y1), (x2, y2)
 
     def contains_point(self, x, y):
         if abs(self.l1.radius) < abs(self.l2.radius):

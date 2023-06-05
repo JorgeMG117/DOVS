@@ -1,4 +1,3 @@
-import matplotlib.patches as patches
 import numpy as np
 
 class CollisionPoint():
@@ -7,7 +6,7 @@ class CollisionPoint():
         self.y = y
         
         self.angle = np.arctan2(2*self.x*self.y, pow(self.x,2)-pow(self.y,2))
-        self.arclength = trajectory_radius * self.angle#Distancia desde el robot al punto de colision
+        self.arclength = trajectory_radius * self.angle #Distancia desde el robot al punto de colision
 
         theta = np.arctan2(2*self.x*abs(self.y), pow(self.x,2)-pow(abs(self.y),2))
         theta = (theta + 2*np.pi) % (2*np.pi)
