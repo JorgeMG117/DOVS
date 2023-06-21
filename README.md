@@ -1,19 +1,23 @@
 # DOVS
 
-Este repositorio contiene la implementación en Python del modelo DOVS para la navegación en entornos dinámicos, definido en (María Teresa, Eduardo, Luis, 2018)
+This repository contains the Python implementation of the DOVS model for navigation in dynamic environments, defined in (Maria Teresa, Eduardo, Luis, 2018).
 
 
 [![Alt text](https://img.youtube.com/vi/m3_k_ppJ7_Y/0.jpg)](https://www.youtube.com/watch?v=m3_k_ppJ7_Y)
 
-## Uso
+***Language***
+- [🇪🇸 Español](./README.es.md)
+- 🇺🇸 English
 
-Primero se tiene que instalar los paquetes necesarios, para ello ejecutar:
+## Usage
+
+First you have to install the necessary packages, to do this run:
 
 ```
 pip install -r requirements.txt
 ```
 
-Para probar la librería DOVS se puede ejecutar uno de los programas principales, con:
+To test the DOVS library you can run one of the main programs, with:
 
 ```
 python simulator.py
@@ -27,7 +31,7 @@ python interactive.py
 python tests.py
 ```
 
-La parte del código que define el entorno y sus características, el robot y los obstáculos, es la siguiente:
+The part of the code that defines the environment and its features, the robot and the obstacles, is as follows:
 
 ```python
 robot = Robot(
@@ -64,9 +68,9 @@ obstacles_vec.append(
             radius = 0.2))
 ```
 
-Modificando estas líneas de código, pueden conseguirse diferentes configuraciones de entorno.
+By modifying these lines of code, different environment configurations can be achieved.
 
 
-## Referencias
+## References
 
 María Teresa Lorente, Eduardo Owen, and Luis Montano. Model-based robocentric planning and navigation for dynamic environments. The International Journal of Robotics Research, 37(8):867–889, 2018.
