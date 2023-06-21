@@ -5,6 +5,13 @@ Este repositorio contiene la implementación en Python del modelo DOVS para la n
 
 [![Alt text](https://img.youtube.com/vi/m3_k_ppJ7_Y/0.jpg)](https://www.youtube.com/watch?v=m3_k_ppJ7_Y)
 
+
+
+***Idioma***
+- 🇪🇸 Español
+- [🇺🇸 English](https://github.com/antoniosarosi/dotfiles](https://github.com/JorgeMG117/DOVS/blob/main/README.md)
+
+
 ## Uso
 
 Primero se tiene que instalar los paquetes necesarios, para ello ejecutar:
