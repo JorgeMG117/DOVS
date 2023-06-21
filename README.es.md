@@ -9,7 +9,7 @@ Este repositorio contiene la implementación en Python del modelo DOVS para la n
 
 ***Idioma***
 - 🇪🇸 Español
-- [🇺🇸 English](https://github.com/antoniosarosi/dotfiles](https://github.com/JorgeMG117/DOVS/blob/main/README.md)
+- [🇺🇸 English](https://github.com/JorgeMG117/DOVS/blob/main/README.md)
 
 
 ## Uso
